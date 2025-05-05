@@ -6,5 +6,12 @@
   "password": "Mật khẩu",
   "confirmPassword": "Nhập lại mật khẩu",
   "submit": "Đăng ký",
-  "welcomeMessage": "Chào mừng bạn đến với trang web của chúng tôi!"
+  "signupWithGoogle": "Google",
+  "signupWithFacebook": "Facebook",
+  "rememberMe": "Ghi nhớ tôi",
+  "forgotPassword": "Quên mật khẩu?",
+  "alreadyHaveAccount": "Đã có tài khoản?",
+  "signin": "Đăng nhập",
+  "welcomeMessage": "Chào mừng bạn đến với trang web của chúng tôi!",
+  "notFoundMessage": "Không tìm thấy trang."
 }

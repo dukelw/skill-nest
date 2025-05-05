@@ -12,9 +12,11 @@ import { useTranslation } from "react-i18next";
 
 const AppNavbar = () => {
   const { i18n } = useTranslation();
+  const currentLang = i18n.language;
 
-  const handleChangeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
+  const handleChangeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+    localStorage.setItem("i18nextLng", lang);
   };
 
   return (
@@ -45,19 +47,22 @@ const AppNavbar = () => {
           arrowIcon={false}
           label={
             <span className="text-white font-medium">
-              {i18n.language.toUpperCase()}
+              {i18n?.language?.toUpperCase()}
             </span>
           }
           inline
           className="text-white"
         >
           <DropdownItem
-            className="text-white"
+            className={` ${currentLang === "en" ? "text-green font-bold" : ""}`}
             onClick={() => handleChangeLanguage("en")}
           >
             🇬🇧 English
           </DropdownItem>
-          <DropdownItem onClick={() => handleChangeLanguage("vi")}>
+          <DropdownItem
+            className={`${currentLang === "vi" ? "text-green font-bold" : ""}`}
+            onClick={() => handleChangeLanguage("vi")}
+          >
             🇻🇳 Tiếng Việt
           </DropdownItem>
         </Dropdown>

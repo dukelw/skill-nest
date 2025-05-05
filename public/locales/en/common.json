@@ -1,10 +1,17 @@
 {
   "home": "SKILL NEST",
-  "signup": "Sign up",
-  "fullname": "Full name",
+  "signup": "Sign Up",
+  "fullname": "Full Name",
   "email": "Email",
   "password": "Password",
-  "confirmPassword": "Confirm password",
-  "submit": "Sign up",
-  "welcomeMessage": "Welcome to our website!"
+  "confirmPassword": "Confirm Password",
+  "submit": "Sign Up",
+  "signupWithGoogle": "Google",
+  "signupWithFacebook": "Facebook",
+  "rememberMe": "Remember me",
+  "forgotPassword": "Forgot password?",
+  "alreadyHaveAccount": "Already have an account?",
+  "signin": "Sign In",
+  "welcomeMessage": "Welcome to our website!",
+  "notFoundMessage": "Oops! Page not found."
 }

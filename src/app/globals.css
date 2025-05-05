@@ -10,6 +10,7 @@
 
   --text-black: #0D1216;
   --text-white: #FFFFFF;
+  --text-color: #0D1216;
 
   --cyan: #13a3b5;
   --green: #0ba84a;
@@ -33,6 +34,10 @@
 @layer utilities {
   .text-black {
     color: var(--text-black);
+  }
+
+  .text-color {
+    color: var(--text-color)
   }
 
   .text-white {

@@ -5,13 +5,21 @@ type LewisButtonProps = ButtonProps & {
   color?: "green" | "pink" | "blue" | "red" | "orange" | "yellow";
   variant?: "contained" | "outlined";
   hoverColor?: string;
+  space?: boolean;
 };
 
 const sizeClasses = {
-  small: "text-sm px-3 py-1.5 min-w-16 max-w-32",
-  medium: "text-base px-4 py-2 min-w-32 max-w-48",
-  large: "text-lg px-5 py-3 min-w-48 max-w-60",
+  small: "text-sm min-w-16 max-w-32",
+  medium: "text-base min-w-32 max-w-48",
+  large: "text-lg min-w-48 max-w-60",
   full: "w-full",
+};
+
+const spacePadding = {
+  small: "px-3 py-1.5 me-2 mb-2",
+  medium: "px-4 py-2 me-2 mb-2",
+  large: "px-5 py-3 me-2 mb-2",
+  full: "me-2 mb-2",
 };
 
 const getColorClasses = (
@@ -32,6 +40,7 @@ const LewisButton = ({
   color = "green",
   variant = "contained",
   hoverColor = "dark-green",
+  space = true,
   className = "",
   ...props
 }: LewisButtonProps) => {
@@ -39,8 +48,9 @@ const LewisButton = ({
     <Button
       {...props}
       color="none"
-      className={`focus:outline-none focus:ring-2 hover:opacity-90 font-medium rounded-lg me-2 mb-2 transition-all duration-200 
+      className={`focus:outline-none focus:ring-2 hover:opacity-90 font-medium rounded-lg transition-all duration-200 
         ${sizeClasses[lewisSize]} 
+        ${space ? spacePadding[lewisSize] : ""} 
         ${getColorClasses(color, variant, hoverColor)} 
         ${className}`}
     >

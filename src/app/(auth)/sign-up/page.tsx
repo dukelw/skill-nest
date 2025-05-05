@@ -1,8 +1,13 @@
 "use client";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { TextInput, Label, Checkbox } from "flowbite-react";
+import { FaGoogle, FaFacebook } from "react-icons/fa";
+import Link from "next/link";
+import LewisButton from "~/components/partial/LewisButton";
+import "../../../i18n/client";
+import { i18n } from "next-i18next";
 
 export default function SignUp() {
   const { t } = useTranslation();
@@ -12,54 +17,122 @@ export default function SignUp() {
     email: "",
     password: "",
     confirmPassword: "",
+    remember: false,
   });
 
-  const handleChange = (e: any) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setForm({ ...form, [name]: type === "checkbox" ? checked : value });
   };
 
   return (
-    <div className="w-full min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="max-w-sm w-full p-6 bg-white rounded shadow-md">
-        <h1 className="text-2xl font-bold mb-4 text-center">{t("signup")}</h1>
-        <form className="space-y-4">
-          <input
-            name="fullname"
-            value={form.fullname}
-            onChange={handleChange}
-            placeholder={t("fullname")}
-            className="w-full p-2 border rounded"
-          />
-          <input
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            placeholder={t("email")}
-            className="w-full p-2 border rounded"
-          />
-          <input
-            name="password"
-            type="password"
-            value={form.password}
-            onChange={handleChange}
-            placeholder={t("password")}
-            className="w-full p-2 border rounded"
-          />
-          <input
-            name="confirmPassword"
-            type="password"
-            value={form.confirmPassword}
-            onChange={handleChange}
-            placeholder={t("confirmPassword")}
-            className="w-full p-2 border rounded"
-          />
-          <button
-            type="submit"
-            className="w-full py-2 bg-blue-500 text-white rounded"
+    <div
+      lang={i18n?.language}
+      className="w-full min-h-screen flex items-center justify-center bg-gray-100 px-4"
+    >
+      <div className="max-w-md w-full p-6 bg-white rounded shadow-md space-y-5">
+        <h1 className="text-2xl font-bold text-center">{t("signup")}</h1>
+
+        <div className="flex justify-center gap-3">
+          <LewisButton
+            lewisSize="full"
+            space={false}
+            className="flex items-center gap-2"
           >
+            <FaGoogle className="text-white" />
+            {t("signupWithGoogle")}
+          </LewisButton>
+          <LewisButton
+            lewisSize="full"
+            color="blue"
+            space={false}
+            className="flex items-center gap-2"
+          >
+            <FaFacebook className="text-white" />
+            {t("signupWithFacebook")}
+          </LewisButton>
+        </div>
+
+        <form className="space-y-4">
+          <div>
+            <Label htmlFor="fullname" />
+            <TextInput
+              id="fullname"
+              name="fullname"
+              value={form.fullname}
+              onChange={handleChange}
+              placeholder={t("fullname")}
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="email" />
+            <TextInput
+              id="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder={t("email")}
+              type="email"
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="password" />
+            <TextInput
+              id="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder={t("password")}
+              type="password"
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="confirmPassword" />
+            <TextInput
+              id="confirmPassword"
+              name="confirmPassword"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              placeholder={t("confirmPassword")}
+              type="password"
+              required
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="remember"
+                name="remember"
+                checked={form.remember}
+                onChange={handleChange}
+              />
+              <Label className="text-color" htmlFor="remember">
+                {t("rememberMe")}
+              </Label>
+            </div>
+            <Link
+              href="/forgot-password"
+              className="text-sm text-blue-600 hover:underline"
+            >
+              {t("forgotPassword")}
+            </Link>
+          </div>
+
+          <LewisButton lewisSize="full" type="submit">
             {t("submit")}
-          </button>
+          </LewisButton>
         </form>
+
+        <p className="text-sm text-center">
+          {t("alreadyHaveAccount")}{" "}
+          <Link href="/sign-in" className="text-blue-600 hover:underline">
+            {t("signin")}
+          </Link>
+        </p>
       </div>
     </div>
   );
