@@ -21,5 +21,15 @@
   "signinFailed": "Đăng nhập thất bại!",
   "signinWithGoogle": "Google",
   "signinWithFacebook": "Facebook",
-  "dontHaveAccount": "Chưa có tài khoản?"
+  "dontHaveAccount": "Chưa có tài khoản?",
+  "createClassroom": "Tạo lớp mới",
+  "joinClassroom": "Đi tham gia",
+  "accountInformation": "Thông tin tài khoản",
+  "logout": "Đăng xuất",
+  "homeTab": "Trang chủ",
+  "calendarTab": "Lịch",
+  "taskTab": "Bài tập",
+  "reviewTab": "Lịch sử",
+  "storageTab": "Lưu trữ",
+  "noCurrentClass": "Hiện bạn không tham gia lớp nào."
 }

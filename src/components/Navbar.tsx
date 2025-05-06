@@ -16,7 +16,7 @@ import { useAuthStore } from "~/store/authStore";
 import { useRouter } from "next/navigation";
 
 const AppNavbar = () => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const currentLang = i18n.language;
   const router = useRouter();
 
@@ -45,7 +45,7 @@ const AppNavbar = () => {
             height={32}
           />
           <span className="ml-2 self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-            SKILLNEST
+            {t("home")}
           </span>
         </NavbarBrand>
       </div>
@@ -100,8 +100,10 @@ const AppNavbar = () => {
               />
             }
           >
-            <DropdownItem href="/profile">👤 Thông tin tài khoản</DropdownItem>
-            <DropdownItem onClick={handleLogout}>🚪 Đăng xuất</DropdownItem>
+            <DropdownItem href="/profile">
+              👤 {t("accountInformation")}
+            </DropdownItem>
+            <DropdownItem onClick={handleLogout}>🚪 {t("logout")}</DropdownItem>
           </Dropdown>
         ) : (
           <Dropdown
@@ -113,8 +115,8 @@ const AppNavbar = () => {
               </span>
             }
           >
-            <DropdownItem href="/sign-in">🔑 Đăng nhập</DropdownItem>
-            <DropdownItem href="/sign-up">📝 Đăng ký</DropdownItem>
+            <DropdownItem href="/sign-in">🔑 {t("signin")}</DropdownItem>
+            <DropdownItem href="/sign-up">📝 {t("submit")}</DropdownItem>
           </Dropdown>
         )}
       </div>

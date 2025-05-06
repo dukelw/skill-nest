@@ -21,5 +21,15 @@
   "signinFailed": "Sign in failed!",
   "signinWithGoogle": "Google",
   "signinWithFacebook": "Facebook",
-  "dontHaveAccount": "Don't have an account?"
+  "dontHaveAccount": "Don't have an account?",
+  "createClassroom": "New classroom",
+  "joinClassroom": "Join classroom",
+  "accountInformation": "Account information",
+  "logout": "Log out",
+  "homeTab": "Home",
+  "calendarTab": "Calendar",
+  "taskTab": "Tasks",
+  "reviewTab": "Review",
+  "storageTab": "Storage",
+  "noCurrentClass": "You do not have any class now"
 }

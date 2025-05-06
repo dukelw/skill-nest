@@ -18,11 +18,14 @@ export default function GeneralLayout({
   };
 
   return (
-    <div lang={i18n.language} className="w-full font-sans bg-gray-50 flex">
+    <div
+      lang={i18n.language}
+      className="overflow-hidden w-full font-sans bg-gray-50 flex"
+    >
       <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} />
       <div className="flex-1">
         <Navbar />
-        <div className="ml-5">{children}</div>
+        <div className="ml-5 min-h-full">{children}</div>
       </div>
     </div>
   );

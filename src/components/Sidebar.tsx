@@ -1,10 +1,7 @@
-import {
-  FaHome,
-  FaInfoCircle,
-  FaServicestack,
-  FaPhoneAlt,
-} from "react-icons/fa";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import Link from "next/link";
 import { FaBars } from "react-icons/fa";
+import staticSidebarItems from "~/static/SideBarItem";
 
 const Sidebar = ({
   isOpen,
@@ -13,6 +10,7 @@ const Sidebar = ({
   isOpen: boolean;
   toggleSidebar: () => void;
 }) => {
+  const sidebarItems = staticSidebarItems();
   return (
     <div
       className={`transition-all duration-300 ${
@@ -27,41 +25,21 @@ const Sidebar = ({
       </button>
 
       <div className="space-y-4 p-4 flex-grow">
-        <button
-          className={`flex items-center w-full text-white hover:bg-white hover:text-green-600 p-2 rounded ${
-            isOpen ? "justify-start" : "justify-center"
-          }`}
-        >
-          <FaHome className={`mr-3 ${!isOpen && "mr-0"}`} />
-          {isOpen && <span>Home</span>}
-        </button>
-
-        <button
-          className={`flex items-center w-full text-white hover:bg-white hover:text-green-600 p-2 rounded ${
-            isOpen ? "justify-start" : "justify-center"
-          }`}
-        >
-          <FaInfoCircle className={`mr-3 ${!isOpen && "mr-0"}`} />
-          {isOpen && <span>About</span>}
-        </button>
-
-        <button
-          className={`flex items-center w-full text-white hover:bg-white hover:text-green-600 p-2 rounded ${
-            isOpen ? "justify-start" : "justify-center"
-          }`}
-        >
-          <FaServicestack className={`mr-3 ${!isOpen && "mr-0"}`} />
-          {isOpen && <span>Services</span>}
-        </button>
-
-        <button
-          className={`flex items-center w-full text-white hover:bg-white hover:text-green-600 p-2 rounded ${
-            isOpen ? "justify-start" : "justify-center"
-          }`}
-        >
-          <FaPhoneAlt className={`mr-3 ${!isOpen && "mr-0"}`} />
-          {isOpen && <span>Contact</span>}
-        </button>
+        {sidebarItems.map((item: any, index: number) => {
+          const Icon = item.icon;
+          return (
+            <Link className="cursor-pointer" href={item.href} key={index}>
+              <button
+                className={`flex items-center w-full text-white hover:bg-white hover:text-green-600 p-2 rounded mb-2 cursor-pointer ${
+                  isOpen ? "justify-start" : "justify-center"
+                }`}
+              >
+                <Icon className={`mr-3 ${!isOpen && "mr-0"}`} />
+                {isOpen && <span>{item.label}</span>}
+              </button>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
