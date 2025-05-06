@@ -4,7 +4,7 @@
   "fullname": "Họ và tên",
   "email": "Email",
   "password": "Mật khẩu",
-  "confirmPassword": "Nhập lại mật khẩu",
+  "confirmPassword": "Xác nhận mật khẩu",
   "submit": "Đăng ký",
   "signupWithGoogle": "Google",
   "signupWithFacebook": "Facebook",
@@ -13,5 +13,13 @@
   "alreadyHaveAccount": "Đã có tài khoản?",
   "signin": "Đăng nhập",
   "welcomeMessage": "Chào mừng bạn đến với trang web của chúng tôi!",
-  "notFoundMessage": "Không tìm thấy trang."
+  "notFoundMessage": "Rất tiếc! Trang không tìm thấy.",
+  "signupSuccess": "Đăng ký thành công!",
+  "signupFailed": "Đăng ký thất bại!",
+  "passwordMismatch": "Mật khẩu không khớp.",
+  "signinSuccess": "Đăng nhập thành công!",
+  "signinFailed": "Đăng nhập thất bại!",
+  "signinWithGoogle": "Google",
+  "signinWithFacebook": "Facebook",
+  "dontHaveAccount": "Chưa có tài khoản?"
 }

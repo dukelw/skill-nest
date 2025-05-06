@@ -1,19 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TextInput, Label, Checkbox } from "flowbite-react";
+import { Label, Checkbox } from "flowbite-react";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
 import Link from "next/link";
 import LewisButton from "~/components/partial/LewisButton";
 import "../../../i18n/client";
 import { i18n } from "next-i18next";
+import LewisTextInput from "~/components/partial/LewisTextInput";
+import { toast } from "react-toastify";
+import { authService } from "~/services/authService";
+import { useRouter } from "next/navigation";
 
 export default function SignUp() {
   const { t } = useTranslation();
+  const router = useRouter();
 
   const [form, setForm] = useState({
-    fullname: "",
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -23,6 +29,37 @@ export default function SignUp() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      if (form.password !== form.confirmPassword) {
+        toast.error(t("passwordMismatch"));
+        return;
+      }
+
+      const res = await authService.signUp(
+        form.name,
+        form.email,
+        form.password
+      );
+
+      if (res) {
+        toast.success(t("signupSuccess"));
+        setForm({
+          name: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          remember: false,
+        });
+        router.push("/sign-in");
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || t("signupFailed"));
+    }
   };
 
   return (
@@ -55,11 +92,11 @@ export default function SignUp() {
 
         <form className="space-y-4">
           <div>
-            <Label htmlFor="fullname" />
-            <TextInput
-              id="fullname"
-              name="fullname"
-              value={form.fullname}
+            <Label htmlFor="name" />
+            <LewisTextInput
+              id="name"
+              name="name"
+              value={form.name}
               onChange={handleChange}
               placeholder={t("fullname")}
               required
@@ -67,7 +104,7 @@ export default function SignUp() {
           </div>
           <div>
             <Label htmlFor="email" />
-            <TextInput
+            <LewisTextInput
               id="email"
               name="email"
               value={form.email}
@@ -79,7 +116,7 @@ export default function SignUp() {
           </div>
           <div>
             <Label htmlFor="password" />
-            <TextInput
+            <LewisTextInput
               id="password"
               name="password"
               value={form.password}
@@ -91,7 +128,7 @@ export default function SignUp() {
           </div>
           <div>
             <Label htmlFor="confirmPassword" />
-            <TextInput
+            <LewisTextInput
               id="confirmPassword"
               name="confirmPassword"
               value={form.confirmPassword}
@@ -122,7 +159,7 @@ export default function SignUp() {
             </Link>
           </div>
 
-          <LewisButton lewisSize="full" type="submit">
+          <LewisButton onClick={handleSubmit} lewisSize="full" type="submit">
             {t("submit")}
           </LewisButton>
         </form>

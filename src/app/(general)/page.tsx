@@ -2,32 +2,32 @@
 
 import { useTranslation } from "react-i18next";
 import LewisButton from "~/components/partial/LewisButton";
+// import { useAuth } from "~/context/AuthContext";
+import { useAuthStore } from "~/store/authStore";
 
 export default function HomePage() {
   const { t } = useTranslation();
+  const { user } = useAuthStore();
+
+  if (!user) return <div>Please log in</div>;
 
   return (
-    <div>
+    <div suppressHydrationWarning>
       <h1>{t("home")}</h1>
       <p>{t("welcomeMessage")}</p>
-      <LewisButton lewisSize="small" href="/sign-up">
-        {t("signup")}
-      </LewisButton>
-      <LewisButton lewisSize="small" variant="outlined" href="/sign-up">
-        {t("signup")}
-      </LewisButton>
-      <LewisButton lewisSize="small" color="pink" href="/sign-up">
-        {t("signup")}
-      </LewisButton>
-      <LewisButton lewisSize="small" color="red" href="/sign-up">
-        {t("signup")}
-      </LewisButton>
-      <LewisButton lewisSize="small" color="orange" href="/sign-up">
-        {t("signup")}
-      </LewisButton>
-      <LewisButton lewisSize="small" color="yellow" href="/sign-up">
-        {t("signup")}
-      </LewisButton>
+      {["default", "outlined", "pink", "red", "orange", "yellow"].map(
+        (color) => (
+          <LewisButton
+            key={color}
+            lewisSize="small"
+            variant={color === "outlined" ? "outlined" : undefined}
+            color="green"
+            href="/sign-up"
+          >
+            {t("signup")}
+          </LewisButton>
+        )
+      )}
     </div>
   );
 }

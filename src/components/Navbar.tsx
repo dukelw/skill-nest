@@ -9,14 +9,29 @@ import {
 } from "flowbite-react";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
+import { authService } from "~/services/authService";
+import { FiMenu } from "react-icons/fi";
+// import { useAuth } from "~/context/AuthContext";
+import { useAuthStore } from "~/store/authStore";
+import { useRouter } from "next/navigation";
 
 const AppNavbar = () => {
   const { i18n } = useTranslation();
   const currentLang = i18n.language;
+  const router = useRouter();
 
   const handleChangeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
     localStorage.setItem("i18nextLng", lang);
+  };
+
+  const { user, setUser, setTokens } = useAuthStore();
+
+  const handleLogout = async () => {
+    await authService.logout();
+    setUser(null);
+    setTokens(null);
+    router.push("/sign-in");
   };
 
   return (
@@ -68,13 +83,40 @@ const AppNavbar = () => {
         </Dropdown>
         <NavbarToggle />
 
-        <Avatar
-          className="ml-2"
-          alt="User Avatar"
-          rounded
-          img="https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
-          placeholderInitials=""
-        />
+        {user ? (
+          <Dropdown
+            arrowIcon={false}
+            inline
+            label={
+              <Avatar
+                className="ml-2 cursor-pointer"
+                alt="User Avatar"
+                rounded
+                img={
+                  user.avatarUrl ||
+                  "https://cdn-icons-png.freepik.com/512/3607/3607444.png"
+                }
+                placeholderInitials="https://cdn-icons-png.freepik.com/512/3607/3607444.png"
+              />
+            }
+          >
+            <DropdownItem href="/profile">👤 Thông tin tài khoản</DropdownItem>
+            <DropdownItem onClick={handleLogout}>🚪 Đăng xuất</DropdownItem>
+          </Dropdown>
+        ) : (
+          <Dropdown
+            arrowIcon={false}
+            inline
+            label={
+              <span className="rounded-full flex items-center justify-center w-10 h-10 text-white bg-transparent hover:bg-white/10 transition-colors duration-200">
+                <FiMenu size={22} />
+              </span>
+            }
+          >
+            <DropdownItem href="/sign-in">🔑 Đăng nhập</DropdownItem>
+            <DropdownItem href="/sign-up">📝 Đăng ký</DropdownItem>
+          </Dropdown>
+        )}
       </div>
     </Navbar>
   );

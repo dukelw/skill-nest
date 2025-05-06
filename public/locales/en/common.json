@@ -13,5 +13,13 @@
   "alreadyHaveAccount": "Already have an account?",
   "signin": "Sign In",
   "welcomeMessage": "Welcome to our website!",
-  "notFoundMessage": "Oops! Page not found."
+  "notFoundMessage": "Oops! Page not found.",
+  "signupSuccess": "Sign up successful!",
+  "signupFailed": "Sign up failed!",
+  "passwordMismatch": "Passwords do not match.",
+  "signinSuccess": "Sign in successful!",
+  "signinFailed": "Sign in failed!",
+  "signinWithGoogle": "Google",
+  "signinWithFacebook": "Facebook",
+  "dontHaveAccount": "Don't have an account?"
 }
