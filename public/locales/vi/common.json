@@ -31,5 +31,11 @@
   "taskTab": "Bài tập",
   "reviewTab": "Lịch sử",
   "storageTab": "Lưu trữ",
-  "noCurrentClass": "Hiện bạn không tham gia lớp nào."
+  "teachingTab": "Giảng dạy",
+  "noCurrentClass": "Hiện bạn không tham gia lớp nào.",
+  "create": "Tạo",
+  "cancel": "Hủy",
+  "classroomName": "Tên lớp",
+  "classroomCode": "Mã lớp",
+  "thumbnailUrl": "Ảnh bìa"
 }

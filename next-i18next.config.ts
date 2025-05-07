@@ -1,7 +1,9 @@
-const config = {
-  defaultLocale: "en",
-  locales: ["en", "vi"],
-  localeDetection: false,
+export const nextI18nConfig = {
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en", "vi"],
+    localeDetection: false as const,
+  },
 };
 
-export default config;
+export default nextI18nConfig;

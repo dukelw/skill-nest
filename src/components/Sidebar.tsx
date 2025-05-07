@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { FaBars } from "react-icons/fa";
 import staticSidebarItems from "~/static/SideBarItem";
 
@@ -11,6 +12,7 @@ const Sidebar = ({
   toggleSidebar: () => void;
 }) => {
   const sidebarItems = staticSidebarItems();
+  const pathName = usePathname();
   return (
     <div
       className={`transition-all duration-300 ${
@@ -27,11 +29,16 @@ const Sidebar = ({
       <div className="space-y-4 p-4 flex-grow">
         {sidebarItems.map((item: any, index: number) => {
           const Icon = item.icon;
+          const isActive = pathName === item.href;
           return (
             <Link className="cursor-pointer" href={item.href} key={index}>
               <button
-                className={`flex items-center w-full text-white hover:bg-white hover:text-green-600 p-2 rounded mb-2 cursor-pointer ${
+                className={`flex items-center w-full p-2 rounded mb-2 cursor-pointer transition-colors duration-200 ${
                   isOpen ? "justify-start" : "justify-center"
+                } ${
+                  isActive
+                    ? "bg-white text-green-600"
+                    : "text-white hover:bg-white hover:text-green-600"
                 }`}
               >
                 <Icon className={`mr-3 ${!isOpen && "mr-0"}`} />

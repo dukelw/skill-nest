@@ -31,5 +31,11 @@
   "taskTab": "Tasks",
   "reviewTab": "Review",
   "storageTab": "Storage",
-  "noCurrentClass": "You do not have any class now"
+  "teachingTab": "Teaching",
+  "noCurrentClass": "You do not have any class now",
+  "create": "Create",
+  "cancel": "Cancel",
+  "classroomName": "Classroom name",
+  "classroomCode": "Classroom code",
+  "thumbnailUrl": "Thumbnail url"
 }

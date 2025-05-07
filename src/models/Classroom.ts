@@ -4,6 +4,7 @@ export default interface Classroom {
   id: number;
   code: string;
   name: string;
+  thumnail?: string;
   creatorId: number;
   createdAt: string; // Date in ISO string format
   updatedAt: string; // Date in ISO string format

@@ -1,20 +1,30 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import Classroom from "~/models/Classroom";
 
 type ClassroomState = {
-  classrooms: any;
-  createdClassroom: any;
-  setClassrooms: (classrooms: any) => void;
-  setCreatedClassroom: (classroom: any) => void;
+  classroom: Classroom | null;
+  teacherClassrooms: Classroom[] | null;
+  studentClassrooms: Classroom[] | null;
+  createdClassroom: Classroom | null;
+  setClassroom: (classroom: Classroom) => void;
+  setTeacherClassrooms: (classrooms: Classroom[]) => void;
+  setStudentClassrooms: (classrooms: Classroom[]) => void;
+  setCreatedClassroom: (classroom: Classroom) => void;
 };
 
 export const useClassroomStore = create<ClassroomState>()(
   persist(
     (set) => ({
-      classrooms: null,
+      classroom: null,
+      teacherClassrooms: null,
+      studentClassrooms: null,
       createdClassroom: null,
-      setClassrooms: (classrooms) => set({ classrooms }),
+      setClassroom: (classroom) => set({ classroom: classroom }),
+      setTeacherClassrooms: (classrooms) =>
+        set({ teacherClassrooms: classrooms }),
+      setStudentClassrooms: (classrooms) =>
+        set({ studentClassrooms: classrooms }),
       setCreatedClassroom: (classroom) => set({ createdClassroom: classroom }),
     }),
     { name: "classroom-storage" }
