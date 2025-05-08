@@ -1,3 +1,4 @@
+import Assignment from "./Assignment";
 import ClassroomMember from "./ClassroomMember";
 import Notification from "./Notification";
 
@@ -11,4 +12,5 @@ export default interface Classroom {
   updatedAt: string;
   members: ClassroomMember[];
   notifications: Notification[];
+  assignments: Assignment[];
 }
