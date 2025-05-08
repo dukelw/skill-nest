@@ -1,4 +1,5 @@
-import User from "./User"; // Import User Interface
+import ClassroomMember from "./ClassroomMember";
+import Notification from "./Notification";
 
 export default interface Classroom {
   id: number;
@@ -6,7 +7,8 @@ export default interface Classroom {
   name: string;
   thumnail?: string;
   creatorId: number;
-  createdAt: string; // Date in ISO string format
-  updatedAt: string; // Date in ISO string format
-  members: User[]; // Array of users (students, teachers) in this classroom
+  createdAt: string;
+  updatedAt: string;
+  members: ClassroomMember[];
+  notifications: Notification[];
 }

@@ -112,6 +112,10 @@
     background-color: var(--blue);
   }
 
+  .bg-light {
+    background-color: var(--light);
+  }
+
   .light {
     color: var(--light);
   }

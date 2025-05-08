@@ -12,16 +12,56 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useState } from "react";
 import RichTextEditor from "../editor/RichTextEditor";
 import LewisButton from "../partial/LewisButton";
+import { notificationService } from "~/services/notificationService";
+import { toast } from "react-toastify";
+import { classroomService } from "~/services/classroomService";
+import { useParams } from "next/navigation";
+import { useAuthStore } from "~/store/authStore";
 
 export default function Stream() {
-  const { classroom } = useClassroomStore();
+  const { classroom, setClassroom } = useClassroomStore();
+  const { user } = useAuthStore();
+  const { classroomId } = useParams();
   const [content, setContent] = useState("");
   const [openModal, setOpenModal] = useState(false);
-  const [selectedStudent, setSelectedStudent] = useState("Tất cả học viên");
+  const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([]);
+  const [selectedNotificationIds, setSelectedNotificationIds] = useState<
+    number[]
+  >([]);
 
-  const handleSelect = (student: string) => {
-    setSelectedStudent(student);
-    setOpenModal(false); // đóng modal sau khi chọn
+  const handleGetClassroomDetail = async () => {
+    const res = await classroomService.getDetail(Number(classroomId));
+    setClassroom(res);
+  };
+
+  const handlePostNotification = async () => {
+    if (!classroom) return;
+
+    const res = await notificationService.createNotification({
+      title: "Thông báo mới",
+      content,
+      classroomId: classroom.id,
+      recipientIds:
+        selectedStudentIds.length > 0 ? selectedStudentIds : undefined,
+    });
+
+    if (res) {
+      await handleGetClassroomDetail();
+      setContent("");
+      setSelectedStudentIds([]);
+      toast.success("Đã đăng thông báo 🎉");
+    }
+  };
+
+  const handleDeleteNotification = async () => {
+    try {
+      console.log("Sẽ xóa các thông báo có ID:", selectedNotificationIds);
+      await notificationService.deleteNotifications(selectedNotificationIds);
+      await handleGetClassroomDetail();
+      setSelectedNotificationIds([]);
+    } catch (err) {
+      console.error("Lỗi khi xóa thông báo:", err);
+    }
   };
 
   return (
@@ -31,17 +71,33 @@ export default function Stream() {
         <ModalHeader className="bg-green-500 text-white">
           Danh sách học viên
         </ModalHeader>
-        <ModalBody className="space-y-2">
-          {["Học viên A", "Học viên B", "Học viên C"].map((student) => (
-            <button
-              key={student}
-              onClick={() => handleSelect(student)}
-              className="w-full text-left px-3 py-2 rounded hover:bg-green-100"
+        <ModalBody className="space-y-2 max-h-[400px] overflow-y-auto">
+          {classroom?.members?.map((member) => (
+            <label
+              key={member.id}
+              className="flex items-center space-x-2 px-3 py-2 rounded hover:bg-green-100 cursor-pointer"
             >
-              {student}
-            </button>
+              <input
+                type="checkbox"
+                checked={selectedStudentIds.includes(member.user.id)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSelectedStudentIds([
+                      ...selectedStudentIds,
+                      member.user.id,
+                    ]);
+                  } else {
+                    setSelectedStudentIds(
+                      selectedStudentIds.filter((id) => id !== member.user.id)
+                    );
+                  }
+                }}
+              />
+              <span>{member.user.name}</span>
+            </label>
           ))}
         </ModalBody>
+
         <ModalFooter>
           <button
             onClick={() => setOpenModal(false)}
@@ -158,7 +214,10 @@ export default function Stream() {
               className="py-0"
               onClick={() => setOpenModal(true)}
             >
-              👥 {selectedStudent}
+              👥{" "}
+              {selectedStudentIds.length === 0
+                ? "Tất cả học viên"
+                : `${selectedStudentIds.length} học viên`}
             </LewisButton>
           </div>
 
@@ -187,11 +246,110 @@ export default function Stream() {
               <LewisButton lewisSize="small" color="red">
                 Cancel
               </LewisButton>
-              <LewisButton space={false} lewisSize="small">
+              <LewisButton
+                space={false}
+                lewisSize="small"
+                onClick={handlePostNotification}
+              >
                 Post
               </LewisButton>
             </div>
           </div>
+          <>
+            <h2 className="text-lg font-semibold">📢 Thông báo gần đây</h2>
+            <div className="w-full flex justify-between items-center">
+              {classroom?.creatorId === user.id && (
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    className="form-checkbox"
+                    checked={
+                      selectedNotificationIds.length ===
+                      classroom?.notifications.length
+                    }
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        const allIds = classroom?.notifications.map(
+                          (n) => n.id
+                        );
+                        setSelectedNotificationIds(allIds ?? []);
+                      } else {
+                        setSelectedNotificationIds([]);
+                      }
+                    }}
+                  />
+                  <span className="text-sm">Chọn tất cả</span>
+                </div>
+              )}
+              <span
+                onClick={handleDeleteNotification}
+                className="text-sm text-red-600 cursor-pointer"
+              >
+                Xóa
+              </span>
+            </div>
+
+            {classroom?.notifications
+              .slice()
+              .sort(
+                (a, b) =>
+                  new Date(b.createdAt).getTime() -
+                  new Date(a.createdAt).getTime()
+              )
+              .map((n) => {
+                // Kiểm tra xem người dùng có phải là người nhận thông báo này không
+                const isRecipient = n.recipients.some(
+                  (recipient) =>
+                    recipient.userId === user.id ||
+                    user.id === classroom.creatorId // currentUserId là id của người dùng hiện tại
+                );
+
+                if (!isRecipient) return null; // Nếu không phải người nhận, không hiển thị thông báo
+
+                return (
+                  <div
+                    key={n.id}
+                    className="border border-gray-200 p-4 rounded hover:shadow transition"
+                  >
+                    <div className="flex justify-between items-center"></div>
+                    <div className="w-full flex justify-between items-center">
+                      <h3 className="text-base font-semibold mb-1">
+                        {n.title}
+                      </h3>
+                      {/* Checkbox và nút xóa chỉ hiển thị nếu người tạo lớp */}
+                      {classroom?.creatorId === user.id && (
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            className="form-checkbox"
+                            checked={selectedNotificationIds.includes(n.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedNotificationIds((prev) => [
+                                  ...prev,
+                                  n.id,
+                                ]);
+                              } else {
+                                setSelectedNotificationIds((prev) =>
+                                  prev.filter((id) => id !== n.id)
+                                );
+                              }
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div
+                      className="prose text-sm text-gray-700"
+                      dangerouslySetInnerHTML={{ __html: n.content }}
+                    />
+                    <p className="text-xs text-gray-400 mt-2">
+                      Gửi lúc: {new Date(n.createdAt).toLocaleString("vi-VN")}
+                    </p>
+                  </div>
+                );
+              })}
+          </>
         </div>
       </div>
     </div>

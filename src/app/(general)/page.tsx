@@ -46,8 +46,6 @@ export default function HomePage() {
     }
   };
 
-  if (!user) return <div>Please log in</div>;
-
   return (
     <div
       style={{ minHeight: "calc(100vh - 80px)" }}

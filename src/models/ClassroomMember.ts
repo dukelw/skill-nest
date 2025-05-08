@@ -1,3 +1,4 @@
+import User from "./User";
 import { UserRole } from "./UserRole";
 
 export default interface ClassroomMember {
@@ -5,4 +6,5 @@ export default interface ClassroomMember {
   userId: number;
   classroomId: number;
   role: UserRole;
+  user: User;
 }

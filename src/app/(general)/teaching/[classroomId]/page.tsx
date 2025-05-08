@@ -25,6 +25,7 @@ export default function ClientClassroomDetail() {
           router.replace("/not-found");
           return;
         }
+        console.log("classroom data", res);
         setClassroom(res);
       } catch (error) {
         console.error("Error fetching classroom details:", error);
@@ -51,24 +52,6 @@ export default function ClientClassroomDetail() {
         <BreadcrumbItem href="/teaching">Teaching</BreadcrumbItem>
         <BreadcrumbItem>{classroom.name}</BreadcrumbItem>
       </Breadcrumb>
-      {/* <h1 className="text-3xl font-bold text-green-700">{classroom.name}</h1>
-      <p className="text-gray-600">
-        <strong>Class Code:</strong> {classroom.code}
-      </p>
-      <p className="text-gray-600">
-        <strong>Created at:</strong>{" "}
-        {new Date(classroom.createdAt).toLocaleDateString("en-GB")}
-      </p>
-      <Image
-        src={
-          classroom.thumnail ||
-          "https://cdn-media.sforum.vn/storage/app/media/Bookgrinder2/wuthering-waves-build-zani-9.jpg"
-        }
-        alt="Class Thumbnail"
-        width={600}
-        height={400}
-        className="w-full max-w-md rounded shadow"
-      /> */}
       {/* Tabs */}
       <Tabs
         theme={customFlowbiteTheme.tabs}

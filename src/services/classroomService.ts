@@ -41,4 +41,12 @@ export const classroomService = {
     const res: AxiosResponse = await api.post(`${API_URL}`, data);
     return res.data;
   },
+
+  async addStudents(classroomId: number, userIds: number[]) {
+    const res: AxiosResponse = await api.post(
+      `${API_URL}/${classroomId}/add-members`,
+      { userIds }
+    );
+    return res.data;
+  },
 };

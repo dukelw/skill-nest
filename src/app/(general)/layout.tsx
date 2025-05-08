@@ -18,14 +18,28 @@ export default function GeneralLayout({
   };
 
   return (
-    <div
-      lang={i18n.language}
-      className="overflow-hidden w-full font-sans bg-gray-50 flex"
-    >
-      <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} />
-      <div className="flex-1">
+    <div lang={i18n.language} className="w-full font-sans bg-gray-50 flex">
+      {/* Navbar cố định top */}
+      <div className={`fixed top-0 right-0 z-50 left-20`}>
         <Navbar />
-        <div className="ml-5 min-h-full">{children}</div>
+      </div>
+
+      <div className="flex pt-16 min-h-screen">
+        {/* Sidebar cố định trái */}
+        <div className="fixed top-0 left-0 z-40 h-[calc(100vh-64px)]">
+          <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} />
+        </div>
+
+        {/* Nội dung chính */}
+        <div
+          style={{
+            minWidth: isOpen ? "calc(100vw - 272px)" : "calc(100vw - 96px)",
+            marginLeft: isOpen ? "256px" : "80px",
+          }}
+          className="ml-5 min-h-full"
+        >
+          {children}
+        </div>
       </div>
     </div>
   );

@@ -6,7 +6,6 @@ import "./globals.css";
 import "../i18n/client";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
-import { AuthProvider } from "~/context/AuthContext";
 
 export default function RootLayout({
   children,
@@ -26,10 +25,8 @@ export default function RootLayout({
         <ThemeModeScript />
       </head>
       <body className="min-h-screen font-sans bg-gray-50 flex">
-        <AuthProvider>
-          <ToastContainer />
-          {children}
-        </AuthProvider>
+        <ToastContainer />
+        {children}
       </body>
     </html>
   );

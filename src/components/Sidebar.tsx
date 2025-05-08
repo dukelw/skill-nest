@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -17,7 +19,7 @@ const Sidebar = ({
     <div
       className={`transition-all duration-300 ${
         isOpen ? "w-64" : "w-20"
-      } bg-dark-green text-white flex flex-col h-full pt-4`}
+      } bg-dark-green text-white flex flex-col h-full pt-2.5 min-h-screen`}
     >
       <button
         onClick={toggleSidebar}
