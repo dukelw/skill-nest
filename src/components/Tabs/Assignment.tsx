@@ -7,7 +7,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from "flowbite-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { assignmentService } from "~/services/assignmentService";
 import { uploadService } from "~/services/uploadService"; // Import the uploadService
 import LewisTextInput from "../partial/LewisTextInput";
@@ -15,6 +15,7 @@ import { classroomService } from "~/services/classroomService";
 import { useClassroomStore } from "~/store/classroomStore";
 import { AssignmentType } from "~/models/AssignmentType";
 import LewisButton from "../partial/LewisButton";
+import { useAuthStore } from "~/store/authStore";
 
 export default function Assignment() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,6 +29,17 @@ export default function Assignment() {
   const [file, setFile] = useState<File | null>(null); // State to hold file
   const { classroomId } = useParams();
   const { classroom, setClassroom } = useClassroomStore();
+  const { user } = useAuthStore();
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState<
+    number | null
+  >(null);
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+  const [isConfirmAttempOpen, setIsConfirmAttempOpen] = useState(false);
+  const router = useRouter();
+
+  const handleGoToAttemp = (quizId: number) => {
+    router.push(`/quiz/${quizId}`);
+  };
 
   // Handle assignment type selection
   const handleTypeSelection = (type: "HOMEWORK" | "QUIZ" | "DOCUMENT") => {
@@ -89,12 +101,14 @@ export default function Assignment() {
       <div className="flex flex-col items-start">
         <div className="flex justify-between items-center w-full">
           <h2 className="text-xl font-semibold">Assignment</h2>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="rounded-full flex items-center justify-center w-10 h-10 text-green bg-transparent hover:bg-green-500/10 transition-colors duration-200"
-          >
-            <FaPlus />
-          </button>
+          {classroom?.creatorId === user.id && (
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="rounded-full flex items-center justify-center w-10 h-10 text-green bg-transparent hover:bg-green-500/10 transition-colors duration-200"
+            >
+              <FaPlus />
+            </button>
+          )}
         </div>
         <div className="w-full h-px bg-gray-700 my-4" />
       </div>
@@ -104,36 +118,40 @@ export default function Assignment() {
         {classroom?.assignments
           .sort(
             (a, b) =>
-              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+              new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
           ) // Sorting by createdAt
           .map((assignment) => (
             <div
               key={assignment.id}
-              className="p-4 border border-green-500 rounded-lg shadow-md"
+              className="grid grid-cols-12 p-4 border border-green-500 rounded-lg shadow-md"
             >
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold">{assignment.title}</h3>
-                {/* Badge for assignment type */}
-                <span
-                  className={`px-2 py-1 text-sm font-semibold rounded-md ${
-                    assignment.type === "HOMEWORK"
-                      ? "bg-orange text-white"
-                      : assignment.type === "QUIZ"
-                      ? "bg-yellow text-white"
-                      : "bg-purple text-white"
-                  }`}
-                >
-                  {assignment.type}
-                </span>
+              <div className="col-span-12">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold">{assignment.title}</h3>
+                  {/* Badge for assignment type */}
+                  <span
+                    className={`px-2 py-1 text-sm font-semibold rounded-md ${
+                      assignment.type === "HOMEWORK"
+                        ? "bg-orange text-white"
+                        : assignment.type === "QUIZ"
+                        ? "bg-yellow text-white"
+                        : "bg-green text-white"
+                    }`}
+                  >
+                    {assignment.type}
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between items-end">
+              <div className="col-span-8">
                 <div>
                   <p className="mt-2">{assignment.description}</p>
                   <p className="mt-2 text-sm text-gray-500">
                     Due Date: {new Date(assignment.dueDate).toLocaleString()}
                   </p>
                 </div>
-                <div className="flex justify-between items-center">
+              </div>
+              <div className="col-span-4 mt-4">
+                <div className="flex justify-end items-center">
                   {assignment.fileUrl && (
                     <a
                       href={assignment.fileUrl}
@@ -144,32 +162,66 @@ export default function Assignment() {
                       Attached
                     </a>
                   )}
-                  {assignment.type === AssignmentType.HOMEWORK && (
-                    <LewisButton
-                      className="ml-2"
-                      space={false}
-                      lewisSize="small"
-                    >
-                      Submit
-                    </LewisButton>
+                  {assignment.type === AssignmentType.HOMEWORK &&
+                    classroom.creatorId !== user.id && (
+                      <LewisButton
+                        className="ml-2"
+                        space={false}
+                        lewisSize="small"
+                      >
+                        Submit
+                      </LewisButton>
+                    )}
+                  {assignment.type === AssignmentType.QUIZ &&
+                    classroom.creatorId !== user.id && (
+                      <LewisButton
+                        className="ml-2"
+                        space={false}
+                        lewisSize="small"
+                        color="pink"
+                        onClick={() => {
+                          setSelectedAssignmentId(assignment.id);
+                          setIsConfirmAttempOpen(true);
+                        }}
+                      >
+                        Attemp
+                      </LewisButton>
+                    )}
+                  {assignment.type === AssignmentType.QUIZ &&
+                    classroom.creatorId === user.id && (
+                      <LewisButton
+                        className="ml-2"
+                        space={false}
+                        lewisSize="small"
+                        color="pink"
+                      >
+                        Review
+                      </LewisButton>
+                    )}
+                  {classroom.creatorId === user.id && (
+                    <>
+                      <LewisButton
+                        color="yellow"
+                        className="ml-2"
+                        space={false}
+                        lewisSize="small"
+                      >
+                        Edit
+                      </LewisButton>
+                      <LewisButton
+                        color="red"
+                        className="ml-2"
+                        space={false}
+                        lewisSize="small"
+                        onClick={() => {
+                          setSelectedAssignmentId(assignment.id);
+                          setIsConfirmDeleteOpen(true);
+                        }}
+                      >
+                        Delete
+                      </LewisButton>
+                    </>
                   )}
-                  <LewisButton
-                    color="yellow"
-                    className="ml-2"
-                    space={false}
-                    lewisSize="small"
-                  >
-                    Edit
-                  </LewisButton>
-                  <LewisButton
-                    color="red"
-                    className="ml-2"
-                    space={false}
-                    lewisSize="small"
-                    onClick={() => handleDelete(assignment.id)}
-                  >
-                    Delete
-                  </LewisButton>
                 </div>
               </div>
             </div>
@@ -262,6 +314,66 @@ export default function Assignment() {
               </Button>
             </>
           )}
+        </ModalFooter>
+      </Modal>
+
+      {/* MODAL DELETE */}
+      <Modal
+        show={isConfirmDeleteOpen}
+        onClose={() => setIsConfirmDeleteOpen(false)}
+      >
+        <ModalHeader className="bg-red-500 text-white">
+          Confirm Delete
+        </ModalHeader>
+        <ModalBody>
+          <p>Are you sure you want to delete this assignment?</p>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            className="bg-red-600"
+            onClick={async () => {
+              if (selectedAssignmentId !== null) {
+                await handleDelete(selectedAssignmentId);
+              }
+              setIsConfirmDeleteOpen(false);
+              setSelectedAssignmentId(null);
+            }}
+          >
+            Yes, Delete
+          </Button>
+          <Button color="gray" onClick={() => setIsConfirmDeleteOpen(false)}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
+
+      {/* MODAL ATTEMP */}
+      <Modal
+        show={isConfirmAttempOpen}
+        onClose={() => setIsConfirmAttempOpen(false)}
+      >
+        <ModalHeader className="bg-blue-500 text-white">
+          Confirm Attemp
+        </ModalHeader>
+        <ModalBody>
+          <p>Are you sure you want to attemp this assignment?</p>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            className="bg-blue-500"
+            onClick={async () => {
+              if (selectedAssignmentId !== null) {
+                handleGoToAttemp(selectedAssignmentId);
+              }
+              setIsConfirmAttempOpen(false);
+              setSelectedAssignmentId(null);
+            }}
+          >
+            Yes
+          </Button>
+          <Button color="gray" onClick={() => setIsConfirmAttempOpen(false)}>
+            Cancel
+          </Button>
         </ModalFooter>
       </Modal>
     </div>

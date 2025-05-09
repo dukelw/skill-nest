@@ -14,9 +14,11 @@ import useUserStore from "~/store/userStore";
 import { useState } from "react";
 import { classroomService } from "~/services/classroomService";
 import { useParams } from "next/navigation";
+import { useAuthStore } from "~/store/authStore";
 
 export default function People() {
   const { users } = useUserStore();
+  const { user } = useAuthStore();
   const { classroom, setClassroom } = useClassroomStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
@@ -59,12 +61,14 @@ export default function People() {
       <div className="flex flex-col items-start">
         <div className="flex justify-between items-center w-full">
           <h2 className="text-xl font-semibold">Teacher</h2>
-          <button
-            onClick={() => toggleModal("teacher")}
-            className="rounded-full flex items-center justify-center w-10 h-10 text-green bg-transparent hover:bg-green-500/10 transition-colors duration-200"
-          >
-            <FaPlus />
-          </button>
+          {classroom?.creatorId === user.id && (
+            <button
+              onClick={() => toggleModal("teacher")}
+              className="rounded-full flex items-center justify-center w-10 h-10 text-green bg-transparent hover:bg-green-500/10 transition-colors duration-200"
+            >
+              <FaPlus />
+            </button>
+          )}
         </div>
 
         <div className="w-full h-px bg-gray-700 my-4" />
@@ -89,12 +93,14 @@ export default function People() {
       <div className="flex flex-col items-start mt-6">
         <div className="flex justify-between items-center w-full">
           <h2 className="text-xl font-semibold">Student</h2>
-          <button
-            onClick={() => toggleModal("student")}
-            className="rounded-full flex items-center justify-center w-10 h-10 text-green bg-transparent hover:bg-green-500/10 transition-colors duration-200"
-          >
-            <FaPlus />
-          </button>
+          {classroom?.creatorId === user.id && (
+            <button
+              onClick={() => toggleModal("student")}
+              className="rounded-full flex items-center justify-center w-10 h-10 text-green bg-transparent hover:bg-green-500/10 transition-colors duration-200"
+            >
+              <FaPlus />
+            </button>
+          )}
         </div>
 
         <div className="w-full h-px bg-gray-700 my-4" />
@@ -129,7 +135,8 @@ export default function People() {
                   onChange={() => handleCheckboxChange(u.id)}
                 />
                 <Avatar img={u.avatar} rounded />
-                <span>{u.name}</span>
+                <span>{u?.name || "No Name"}</span>
+                <span className="text-gray-500">{`(${u.email})`}</span>
               </label>
             ))}
           </div>

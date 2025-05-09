@@ -18,7 +18,11 @@ export default function GeneralLayout({
   };
 
   return (
-    <div lang={i18n.language} className="w-full font-sans bg-gray-50 flex">
+    <div
+      suppressHydrationWarning
+      lang={i18n.language}
+      className="font-sans bg-gray-50 flex"
+    >
       {/* Navbar cố định top */}
       <div className={`fixed top-0 right-0 z-50 left-20`}>
         <Navbar />
@@ -33,10 +37,10 @@ export default function GeneralLayout({
         {/* Nội dung chính */}
         <div
           style={{
-            minWidth: isOpen ? "calc(100vw - 272px)" : "calc(100vw - 96px)",
+            width: isOpen ? "calc(100vw - 272px)" : "calc(100vw - 96px)",
             marginLeft: isOpen ? "256px" : "80px",
           }}
-          className="ml-5 min-h-full"
+          className="min-h-full overflow-x-hidden"
         >
           {children}
         </div>

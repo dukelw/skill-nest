@@ -5,6 +5,11 @@ import { AxiosResponse } from "axios";
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/assignments`;
 
 export const assignmentService = {
+  async getAssignmentById(quizId: number) {
+    const res: AxiosResponse = await api.get(`${API_URL}/${quizId}`);
+    return res.data;
+  },
+
   async createAssignment(data: {
     title: string;
     description?: string;

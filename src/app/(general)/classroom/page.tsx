@@ -13,16 +13,16 @@ import { useAuthStore } from "~/store/authStore";
 import { useClassroomStore } from "~/store/classroomStore";
 import Link from "next/link";
 
-export default function Teaching() {
-  const { teacherClassrooms, setTeacherClassrooms } = useClassroomStore();
+export default function Classroom() {
+  const { studentClassrooms, setStudentClassrooms } = useClassroomStore();
   const { user } = useAuthStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const handleGetTeacherClasses = async () => {
       if (!user?.id) return;
-      const response = await classroomService.getTeacherRole(user.id);
-      setTeacherClassrooms(response);
+      const response = await classroomService.getStudentRole(user.id);
+      setStudentClassrooms(response);
       setLoading(false);
     };
 
@@ -31,7 +31,7 @@ export default function Teaching() {
 
   if (!user) {
     return (
-      <p className="text-gray-500 p-4">Please sign in to see your teaching classroom.</p>
+      <p className="text-gray-500 p-4">Please sign in to see your classroom.</p>
     );
   }
 
@@ -43,9 +43,9 @@ export default function Teaching() {
     );
   }
 
-  if (!teacherClassrooms || teacherClassrooms.length === 0) {
+  if (!studentClassrooms || studentClassrooms.length === 0) {
     return (
-      <p className="text-gray-500 p-4">You have no teaching classrooms yet.</p>
+      <p className="text-gray-500 p-4">You have no student classrooms yet.</p>
     );
   }
 
@@ -53,11 +53,11 @@ export default function Teaching() {
     <div className="p-6 gap-4">
       <Breadcrumb aria-label="Breadcrumb" className="mb-4">
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
-        <BreadcrumbItem href="/teaching">Teaching</BreadcrumbItem>
+        <BreadcrumbItem href="/classroom">Classroom</BreadcrumbItem>
       </Breadcrumb>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {teacherClassrooms.map((classroom) => (
-          <Link href={`/teaching/${classroom.id}`} key={classroom.id}>
+        {studentClassrooms.map((classroom) => (
+          <Link href={`/classroom/${classroom.id}`} key={classroom.id}>
             <Card
               className="w-full hover:cursor-pointer transition-transform hover:scale-[1.02]"
               imgAlt={`${classroom.name} thumbnail`}

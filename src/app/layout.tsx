@@ -20,7 +20,7 @@ export default function RootLayout({
   }, [i18n]);
 
   return (
-    <html lang={i18n.language} suppressHydrationWarning>
+    <html className="w-full scroll-smooth" lang={i18n.language} suppressHydrationWarning>
       <head>
         <ThemeModeScript />
       </head>

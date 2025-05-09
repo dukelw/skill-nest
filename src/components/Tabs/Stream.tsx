@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import { classroomService } from "~/services/classroomService";
 import { useParams } from "next/navigation";
 import { useAuthStore } from "~/store/authStore";
+import Assignment from "~/models/Assignment";
 
 export default function Stream() {
   const { classroom, setClassroom } = useClassroomStore();
@@ -63,6 +64,14 @@ export default function Stream() {
       console.error("Lỗi khi xóa thông báo:", err);
     }
   };
+
+  const today = new Date();
+  const filteredAssignments = classroom?.assignments
+    .filter((a) => new Date(a.dueDate) > today && a.type !== "DOCUMENT")
+    .sort(
+      (a: Assignment, b: Assignment) =>
+        new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+    );
 
   return (
     <div className="space-y-6">
@@ -128,25 +137,27 @@ export default function Stream() {
         </div>
 
         {/* Change Thumbnail - Top Right */}
-        <div className="absolute top-4 right-4">
-          <Dropdown
-            label=""
-            renderTrigger={() => (
-              <button className="p-2 bg-white bg-opacity-80 rounded-full hover:bg-opacity-100 shadow">
-                <HiOutlineDotsVertical className="text-gray-700 w-5 h-5" />
-              </button>
-            )}
-            placement="bottom-end"
-            inline
-          >
-            <DropdownItem
-              className="w-max"
-              onClick={() => alert("Change thumbnail")}
+        {classroom?.creatorId === user.id && (
+          <div className="absolute top-4 right-4">
+            <Dropdown
+              label=""
+              renderTrigger={() => (
+                <button className="p-2 bg-white bg-opacity-80 rounded-full hover:bg-opacity-100 shadow">
+                  <HiOutlineDotsVertical className="text-gray-700 w-5 h-5" />
+                </button>
+              )}
+              placement="bottom-end"
+              inline
             >
-              Đổi ảnh lớp
-            </DropdownItem>
-          </Dropdown>
-        </div>
+              <DropdownItem
+                className="w-max"
+                onClick={() => alert("Change thumbnail")}
+              >
+                Đổi ảnh lớp
+              </DropdownItem>
+            </Dropdown>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-12 gap-4">
@@ -176,12 +187,16 @@ export default function Stream() {
                 >
                   Copy
                 </DropdownItem>
-                <DropdownItem onClick={() => alert("Change class code")}>
-                  Change
-                </DropdownItem>
-                <DropdownItem onClick={() => alert("Disable class code")}>
-                  Disable
-                </DropdownItem>
+                {classroom?.creatorId === user.id && (
+                  <div>
+                    <DropdownItem onClick={() => alert("Change class code")}>
+                      Change
+                    </DropdownItem>
+                    <DropdownItem onClick={() => alert("Disable class code")}>
+                      Disable
+                    </DropdownItem>
+                  </div>
+                )}
               </Dropdown>
             </div>
           </div>
@@ -192,72 +207,87 @@ export default function Stream() {
               Sắp đến hạn
             </h3>
             <ul className="space-y-2 text-sm text-gray-700">
-              <li>- Bài tập Toán (10/05)</li>
-              <li>- Bài viết Văn (12/05)</li>
+              {filteredAssignments?.map((a) => (
+                <li key={a.id}>
+                  - {a.title} (
+                  {new Date(a.dueDate).toLocaleString("vi-VN", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })}
+                  )
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
         {/* New Content - 9/12 */}
         <div className="col-span-9 p-6 bg-white rounded shadow space-y-4">
-          <h2 className="text-xl font-semibold">Tạo bài viết mới</h2>
+          {classroom?.creatorId === user.id && (
+            <>
+              <h2 className="text-xl font-semibold">Tạo bài viết mới</h2>
 
-          <div className="flex items-center space-x-2">
-            <input
-              value={classroom?.name}
-              readOnly
-              className="rounded px-2 py-2 bg-gray-100 cursor-default select-none outline-none"
-            />
+              <div className="flex items-center space-x-2">
+                <input
+                  value={classroom?.name}
+                  readOnly
+                  className="rounded px-2 py-2 bg-gray-100 cursor-default select-none outline-none"
+                />
 
-            <LewisButton
-              space={false}
-              className="py-0"
-              onClick={() => setOpenModal(true)}
-            >
-              👥{" "}
-              {selectedStudentIds.length === 0
-                ? "Tất cả học viên"
-                : `${selectedStudentIds.length} học viên`}
-            </LewisButton>
-          </div>
+                <LewisButton
+                  space={false}
+                  className="py-0"
+                  onClick={() => setOpenModal(true)}
+                >
+                  👥{" "}
+                  {selectedStudentIds.length === 0
+                    ? "Tất cả học viên"
+                    : `${selectedStudentIds.length} học viên`}
+                </LewisButton>
+              </div>
 
-          <div className="mx-auto mt-2">
-            <RichTextEditor content={content} onChange={setContent} />
+              <div className="mx-auto mt-2">
+                <RichTextEditor content={content} onChange={setContent} />
 
-            {content !== "" && (
-              <h2 className="text-xl font-bold mt-2">Preview:</h2>
-            )}
-            {content !== "" && (
-              <div
-                className="prose border border-green-500 p-3 mt-2"
-                dangerouslySetInnerHTML={{ __html: content }}
-              />
-            )}
-          </div>
+                {content !== "" && (
+                  <h2 className="text-xl font-bold mt-2">Preview:</h2>
+                )}
+                {content !== "" && (
+                  <div
+                    className="prose border border-green-500 p-3 mt-2"
+                    dangerouslySetInnerHTML={{ __html: content }}
+                  />
+                )}
+              </div>
 
-          {/* Footer actions */}
-          <div className="flex justify-between items-center pt-2">
-            <div className="flex space-x-3">
-              <button>📎</button>
-              <button>📷</button>
-              <button>🔗</button>
-            </div>
-            <div className="flex space-x-2">
-              <LewisButton lewisSize="small" color="red">
-                Cancel
-              </LewisButton>
-              <LewisButton
-                space={false}
-                lewisSize="small"
-                onClick={handlePostNotification}
-              >
-                Post
-              </LewisButton>
-            </div>
-          </div>
+              {/* Footer actions */}
+              <div className="flex justify-between items-center pt-2">
+                <div className="flex space-x-3">
+                  <button>📎</button>
+                  <button>📷</button>
+                  <button>🔗</button>
+                </div>
+                <div className="flex space-x-2">
+                  <LewisButton lewisSize="small" color="red">
+                    Cancel
+                  </LewisButton>
+                  <LewisButton
+                    space={false}
+                    lewisSize="small"
+                    onClick={handlePostNotification}
+                  >
+                    Post
+                  </LewisButton>
+                </div>
+              </div>
+            </>
+          )}
           <>
             <h2 className="text-lg font-semibold">📢 Thông báo gần đây</h2>
-            <div className="w-full flex justify-between items-center">
+            {classroom?.creatorId === user.id && <div className="w-full flex justify-between items-center">
               {classroom?.creatorId === user.id && (
                 <div className="flex items-center space-x-2">
                   <input
@@ -287,7 +317,7 @@ export default function Stream() {
               >
                 Xóa
               </span>
-            </div>
+            </div>}
 
             {classroom?.notifications
               .slice()

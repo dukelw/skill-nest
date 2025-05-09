@@ -27,15 +27,26 @@ export default function QuizCreatoryPage() {
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [questions, setQuestions] = useState([
-    { questionText: "", options: ["", "", "", ""], correctAnswer: "" },
+    {
+      questionText: "",
+      options: ["", "", "", ""],
+      correctAnswer: "",
+      showCorrectAnswer: false,
+    },
   ]);
+  const [showResult, setShowResult] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null); // State to hold file
 
   const handleAddQuestion = () => {
     setQuestions([
       ...questions,
-      { questionText: "", options: ["", "", "", ""], correctAnswer: "" },
+      {
+        questionText: "",
+        options: ["", "", "", ""],
+        correctAnswer: "",
+        showCorrectAnswer: showResult,
+      },
     ]);
   };
 
@@ -172,6 +183,12 @@ export default function QuizCreatoryPage() {
         </ModalFooter>
       </Modal>
       <h1 className="text-2xl font-bold">Create Quiz</h1>
+      <Button
+        color={showResult ? "success" : "gray"}
+        onClick={() => setShowResult(!showResult)}
+      >
+        {showResult ? "Show answer" : "Hide answer"}
+      </Button>
 
       <div className="space-y-6">
         {questions.map((q, i) => (

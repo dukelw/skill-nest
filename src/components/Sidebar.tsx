@@ -31,7 +31,10 @@ const Sidebar = ({
       <div className="space-y-4 p-4 flex-grow">
         {sidebarItems.map((item: any, index: number) => {
           const Icon = item.icon;
-          const isActive = pathName === item.href;
+          const isActive =
+            item.href === "/"
+              ? pathName === item.href
+              : pathName.startsWith(item.href);
           return (
             <Link className="cursor-pointer" href={item.href} key={index}>
               <button
