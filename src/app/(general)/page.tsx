@@ -95,11 +95,13 @@ export default function HomePage() {
               value={form.code}
               onChange={handleChange}
             />
-            <LewisTextInput
-              name="thumbnail"
+            <input
               placeholder={t("thumbnailUrl")}
+              name="thumbnail"
+              type="file"
               value={form.thumbnail}
               onChange={handleChange}
+              className="block w-full mt-4 text-sm file:bg-green-700 text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:bg-green file:text-white hover:file:bg-green-600"
             />
           </div>
         </ModalBody>

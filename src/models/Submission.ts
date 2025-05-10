@@ -9,4 +9,5 @@ export default interface Submission {
   user: User;
   assignment: Assignment;
   fileUrl: string;
+  grade: string;
 }

@@ -8,8 +8,8 @@ import { customFlowbiteTheme } from "~/lib/flowbite-theme";
 import Grade from "~/components/Tabs/Grade";
 import Stream from "~/components/Tabs/Stream";
 import People from "~/components/Tabs/People";
-import Assignment from "~/components/Tabs/Assignment";
 import { useClassroomStore } from "~/store/classroomStore";
+import Asset from "~/components/Tabs/Asset";
 
 export default function ClientClassroomDetail() {
   const [activeTab, setActiveTab] = useState("stream");
@@ -67,7 +67,7 @@ export default function ClientClassroomDetail() {
             title={tab.name}
           >
             {activeTab === "stream" && <Stream />}
-            {activeTab === "assignments" && <Assignment />}
+            {activeTab === "assignments" && <Asset />}
             {activeTab === "people" && <People />}
             {activeTab === "grades" && <Grade />}
           </TabItem>

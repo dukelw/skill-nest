@@ -16,10 +16,8 @@ import { useClassroomStore } from "~/store/classroomStore";
 import { AssignmentType } from "~/models/AssignmentType";
 import LewisButton from "../partial/LewisButton";
 import { useAuthStore } from "~/store/authStore";
-import { submissionService } from "~/services/submissionService";
-import Assignment from "~/models/Assignment";
 
-export default function Assignment() {
+export default function Asset() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showTypeSelection, setShowTypeSelection] = useState(true); // To toggle between type selection and form
   const [assignmentType, setAssignmentType] = useState<
@@ -37,31 +35,7 @@ export default function Assignment() {
   >(null);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isConfirmAttempOpen, setIsConfirmAttempOpen] = useState(false);
-  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const router = useRouter();
-  const [uploading, setUploading] = useState(false);
-
-  const handleSubmitHomework = async () => {
-    if (!file || selectedAssignmentId === null || !user) return;
-    try {
-      setUploading(true);
-      const fileUrl = await uploadService.uploadFile(file);
-      await submissionService.createSubmission({
-        assignmentId: selectedAssignmentId,
-        fileUrl,
-        userId: user.id,
-      });
-      handleGetClassroomDetail();
-      setUploading(false);
-      setIsSubmitModalOpen(false);
-      setFile(null);
-      setSelectedAssignmentId(null);
-      router.refresh();
-    } catch (err) {
-      console.error("Failed to submit", err);
-      setUploading(false);
-    }
-  };
 
   const handleGoToAttemp = (quizId: number) => {
     router.push(`/quiz/${quizId}`);
@@ -142,125 +116,116 @@ export default function Assignment() {
       {/* Display assignments */}
       <div className="space-y-4">
         {classroom?.assignments
-          .filter((c: Assignment) => c.type !== AssignmentType.DOCUMENT)
           .sort(
             (a, b) =>
               new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
-          )
-          .map((assignment) => {
-            const submission = assignment.submissions.find(
-              (s) => s.userId === user?.id
-            );
-            const isSubmitted = !!submission;
-
-            return (
-              <div
-                key={assignment.id}
-                className="grid grid-cols-12 rounded-lg shadow-md"
-              >
-                <div className="col-span-8 mr-4 p-6">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-semibold">
-                      {assignment.title}
-                    </h3>
-                    <span
-                      className={`px-2 py-1 text-sm font-semibold rounded-md ${
-                        assignment.type === "HOMEWORK"
-                          ? "bg-orange text-white"
-                          : assignment.type === "QUIZ"
-                          ? "bg-yellow text-white"
-                          : "bg-green text-white"
-                      }`}
-                    >
-                      {assignment.type}
-                    </span>
-                  </div>
+          ) // Sorting by createdAt
+          .map((assignment) => (
+            <div
+              key={assignment.id}
+              className="grid grid-cols-12 p-4 border border-green-500 rounded-lg shadow-md"
+            >
+              <div className="col-span-12">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold">{assignment.title}</h3>
+                  {/* Badge for assignment type */}
+                  <span
+                    className={`px-2 py-1 text-sm font-semibold rounded-md ${
+                      assignment.type === "HOMEWORK"
+                        ? "bg-orange text-white"
+                        : assignment.type === "QUIZ"
+                        ? "bg-yellow text-white"
+                        : "bg-green text-white"
+                    }`}
+                  >
+                    {assignment.type}
+                  </span>
+                </div>
+              </div>
+              <div className="col-span-8">
+                <div>
                   <p className="mt-2">{assignment.description}</p>
                   <p className="mt-2 text-sm text-gray-500">
                     Due Date: {new Date(assignment.dueDate).toLocaleString()}
                   </p>
-                  {isSubmitted && (
-                    <div className="mt-2 text-sm text-green-700">
-                      ✅ Submitted
-                      {submission.fileUrl && (
-                        <a
-                          href={
-                            assignment.type === AssignmentType.QUIZ
-                              ? `/result/${submission.id}`
-                              : `${submission.fileUrl}`
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ml-4 underline text-blue-600"
-                        >
-                          View File
-                        </a>
-                      )}
-                      <span className="ml-4 font-bold">
-                        Score:{" "}
-                        {submission.grade === null
-                          ? "Chưa có điểm"
-                          : submission.grade}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="col-span-4 px-6 bg-white border-l-2 border-l-green-500">
-                  <h4 className="text-center font-bold text-green m-6">
-                    Actions
-                  </h4>
-                  <div className="flex justify-end items-center">
-                    {assignment.fileUrl && (
-                      <a
-                        href={assignment.fileUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm inline-block bg-blue-600 hover:bg-blue-500 text-white py-2.5 px-4 rounded-md"
-                      >
-                        Attached
-                      </a>
-                    )}
-
-                    {/* Student - Homework */}
-                    {assignment.type === AssignmentType.HOMEWORK &&
-                      classroom.creatorId !== user?.id &&
-                      !submission?.grade && (
-                        <LewisButton
-                          className="ml-2"
-                          space={false}
-                          lewisSize="small"
-                          onClick={() => {
-                            setSelectedAssignmentId(assignment.id);
-                            setIsSubmitModalOpen(true);
-                          }}
-                        >
-                          {!isSubmitted ? "Upload" : "Re-Submit"}
-                        </LewisButton>
-                      )}
-
-                    {/* Student - Quiz */}
-                    {assignment.type === AssignmentType.QUIZ &&
-                      classroom.creatorId !== user?.id &&
-                      !isSubmitted && (
-                        <LewisButton
-                          className="ml-2"
-                          space={false}
-                          lewisSize="small"
-                          color="pink"
-                          onClick={() => {
-                            setSelectedAssignmentId(assignment.id);
-                            setIsConfirmAttempOpen(true);
-                          }}
-                        >
-                          Attempt
-                        </LewisButton>
-                      )}
-                  </div>
                 </div>
               </div>
-            );
-          })}
+              <div className="col-span-4 mt-4">
+                <div className="flex justify-end items-center">
+                  {assignment.fileUrl && (
+                    <a
+                      href={assignment.fileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm inline-block bg-blue-600 hover:bg-blue-500 text-white py-2.5 px-4 rounded-md"
+                    >
+                      Attached
+                    </a>
+                  )}
+                  {assignment.type === AssignmentType.HOMEWORK &&
+                    classroom.creatorId !== user.id && (
+                      <LewisButton
+                        className="ml-2"
+                        space={false}
+                        lewisSize="small"
+                      >
+                        Submit
+                      </LewisButton>
+                    )}
+                  {assignment.type === AssignmentType.QUIZ &&
+                    classroom.creatorId !== user.id && (
+                      <LewisButton
+                        className="ml-2"
+                        space={false}
+                        lewisSize="small"
+                        color="pink"
+                        onClick={() => {
+                          setSelectedAssignmentId(assignment.id);
+                          setIsConfirmAttempOpen(true);
+                        }}
+                      >
+                        Attemp
+                      </LewisButton>
+                    )}
+                  {assignment.type === AssignmentType.QUIZ &&
+                    classroom.creatorId === user.id && (
+                      <LewisButton
+                        className="ml-2"
+                        space={false}
+                        lewisSize="small"
+                        color="pink"
+                      >
+                        Review
+                      </LewisButton>
+                    )}
+                  {classroom.creatorId === user.id && (
+                    <>
+                      <LewisButton
+                        color="yellow"
+                        className="ml-2"
+                        space={false}
+                        lewisSize="small"
+                      >
+                        Edit
+                      </LewisButton>
+                      <LewisButton
+                        color="red"
+                        className="ml-2"
+                        space={false}
+                        lewisSize="small"
+                        onClick={() => {
+                          setSelectedAssignmentId(assignment.id);
+                          setIsConfirmDeleteOpen(true);
+                        }}
+                      >
+                        Delete
+                      </LewisButton>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
       </div>
 
       {/* MODAL ADD ASSIGNMENT */}
@@ -325,10 +290,10 @@ export default function Assignment() {
               {/* File Upload */}
               <div className="mb-4">
                 <label className="block text-sm font-medium">Upload File</label>
-                <input
+                <LewisTextInput
                   type="file"
                   onChange={handleFileChange}
-                  className="block w-full mt-4 text-sm file:bg-green-700 text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:bg-green file:text-white hover:file:bg-green-600"
+                  className="block w-full mt-2"
                 />
               </div>
             </div>
@@ -407,38 +372,6 @@ export default function Assignment() {
             Yes
           </Button>
           <Button color="gray" onClick={() => setIsConfirmAttempOpen(false)}>
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
-
-      {/* MODAL - SUBMIT HOMEWORK */}
-      <Modal
-        show={isSubmitModalOpen}
-        onClose={() => {
-          setIsSubmitModalOpen(false);
-          setFile(null);
-        }}
-      >
-        <ModalHeader className="bg-green text-white">
-          Submit Homework
-        </ModalHeader>
-        <ModalBody>
-          <input
-            type="file"
-            onChange={handleFileChange}
-            className="block w-full mt-4 text-sm file:bg-green-700 text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:bg-green file:text-white hover:file:bg-green-600"
-          />
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            className="bg-green"
-            onClick={handleSubmitHomework}
-            disabled={!file || uploading}
-          >
-            {uploading ? "Uploading..." : "Submit"}
-          </Button>
-          <Button color="gray" onClick={() => setIsSubmitModalOpen(false)}>
             Cancel
           </Button>
         </ModalFooter>

@@ -26,4 +26,9 @@ export const submissionService = {
     const res: AxiosResponse = await api.post(`${API_URL}`, data);
     return res.data;
   },
+
+  async gradeSubmission(data: { id: number; grade: number }) {
+    const res: AxiosResponse = await api.put(`${API_URL}`, data);
+    return res.data;
+  },
 };

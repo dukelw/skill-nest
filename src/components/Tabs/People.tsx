@@ -11,13 +11,14 @@ import {
 import { useClassroomStore } from "~/store/classroomStore";
 import User from "~/models/User";
 import useUserStore from "~/store/userStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { classroomService } from "~/services/classroomService";
 import { useParams } from "next/navigation";
 import { useAuthStore } from "~/store/authStore";
+import { userService } from "~/services/userService";
 
 export default function People() {
-  const { users } = useUserStore();
+  const { users, setUsers } = useUserStore();
   const { user } = useAuthStore();
   const { classroom, setClassroom } = useClassroomStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -55,6 +56,15 @@ export default function People() {
     }
   };
 
+  const handleGetUser = async () => {
+    const res = await userService.getAll();
+    setUsers(res);
+  };
+
+  useEffect(() => {
+    handleGetUser();
+  }, []);
+
   return (
     <div>
       {/* TEACHER */}
@@ -84,7 +94,9 @@ export default function People() {
                 }
                 rounded
               />
-              <span className="text-color">{m?.user?.name || "Guest"}</span>
+              <span className="text-color">
+                {m?.user?.name + " (" + m.user.email + ")" || "Guest"}
+              </span>
             </div>
           ))}
       </div>
@@ -116,7 +128,9 @@ export default function People() {
                 }
                 rounded
               />
-              <span className="text-color">{m.user?.name || "Guest"}</span>
+              <span className="text-color">
+                {m.user?.name + " (" + m.user.email + ")" || "Guest"}
+              </span>
             </div>
           ))}
       </div>

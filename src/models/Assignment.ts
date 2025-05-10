@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AssignmentType } from "./AssignmentType";
+import Submission from "./Submission";
 
 export default interface Assignment {
   id: number;
@@ -12,6 +13,6 @@ export default interface Assignment {
   title: string;
   type: AssignmentType;
   comments: any[];
-  submissions: any[];
+  submissions: Submission[];
   questions: any[];
 }

@@ -19,14 +19,14 @@ export default function Classroom() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const handleGetTeacherClasses = async () => {
+    const handleGetStudentClasses = async () => {
       if (!user?.id) return;
       const response = await classroomService.getStudentRole(user.id);
       setStudentClassrooms(response);
       setLoading(false);
     };
 
-    handleGetTeacherClasses();
+    handleGetStudentClasses();
   }, [user?.id]);
 
   if (!user) {

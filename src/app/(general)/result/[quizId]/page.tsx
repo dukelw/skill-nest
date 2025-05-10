@@ -1,20 +1,31 @@
 "use client";
 
 import { Button } from "flowbite-react";
+import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { submissionService } from "~/services/submissionService";
 import { useSubmissionStore } from "~/store/submissionStore";
 
 export default function Quiz() {
   const [answers, setAnswers] = useState<{ [questionId: number]: string }>({});
-  const { submission } = useSubmissionStore();
+  const { submission, setSubmission } = useSubmissionStore();
   const [score, setScore] = useState(0);
 
+  const { quizId } = useParams();
   const alphaAnswers = ["A", "B", "C", "D"];
-
   const user = submission?.user;
 
   useEffect(() => {
+    const handleGetSubmission = async () => {
+      const res = await submissionService.getSubmissionById(Number(quizId));
+      setSubmission(res);
+    };
+    handleGetSubmission();
+  }, []);
+
+  useEffect(() => {
     if (!submission) return;
+    console.log(submission);
 
     const currentAnswers = submission.fileUrl;
     const currentAnswersArray = currentAnswers?.split(";");

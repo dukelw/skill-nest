@@ -1,6 +1,7 @@
 import Assignment from "./Assignment";
 import ClassroomMember from "./ClassroomMember";
 import Notification from "./Notification";
+import Submission from "./Submission";
 
 export default interface Classroom {
   id: number;
@@ -13,4 +14,5 @@ export default interface Classroom {
   members: ClassroomMember[];
   notifications: Notification[];
   assignments: Assignment[];
+  submissions: Submission[];
 }
