@@ -38,5 +38,7 @@
   "cancel": "Hủy",
   "classroomName": "Tên lớp",
   "classroomCode": "Mã lớp",
-  "thumbnailUrl": "Ảnh bìa"
+  "thumbnailUrl": "Ảnh bìa",
+  "classroomAsTeacher": "Lớp đang dạy",
+  "classroomAsStudent": "Lớp đang học"
 }

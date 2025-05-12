@@ -31,6 +31,13 @@ export const classroomService = {
     return res.data;
   },
 
+  async getRequest(classroomId: number) {
+    const res: AxiosResponse = await api.get(
+      `${API_URL}/request/${classroomId}`
+    );
+    return res.data;
+  },
+
   async create(data: {
     name: string;
     code: string;
@@ -47,6 +54,37 @@ export const classroomService = {
       `${API_URL}/${classroomId}/add-members`,
       { userIds }
     );
+    return res.data;
+  },
+
+  async requestToJoinClass(userId: number, code: string) {
+    const res: AxiosResponse = await api.post(`${API_URL}/request`, {
+      userId,
+      code,
+    });
+    return res.data;
+  },
+
+  async update(
+    classroomId: number,
+    data: { code?: string; thumbnail?: string }
+  ) {
+    const res: AxiosResponse = await api.patch(
+      `${API_URL}/${classroomId}`,
+      data
+    );
+    return res.data;
+  },
+
+  async reject(classroomId: number, userId: number) {
+    const res: AxiosResponse = await api.request({
+      url: `${API_URL}/request`,
+      method: "DELETE",
+      data: {
+        classroomId,
+        userId,
+      },
+    });
     return res.data;
   },
 };

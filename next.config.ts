@@ -7,8 +7,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "cdn-media.sforum.vn",
-        pathname: "/storage/app/media/**",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
       },
     ],
   },

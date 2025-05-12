@@ -19,7 +19,7 @@ import { useAuthStore } from "~/store/authStore";
 import { submissionService } from "~/services/submissionService";
 import Assignment from "~/models/Assignment";
 
-export default function Assignment() {
+export default function Assignments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showTypeSelection, setShowTypeSelection] = useState(true); // To toggle between type selection and form
   const [assignmentType, setAssignmentType] = useState<

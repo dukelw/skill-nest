@@ -12,6 +12,7 @@ import { classroomService } from "~/services/classroomService";
 import { useAuthStore } from "~/store/authStore";
 import { useClassroomStore } from "~/store/classroomStore";
 import Link from "next/link";
+import { Users } from "lucide-react";
 
 export default function Classroom() {
   const { studentClassrooms, setStudentClassrooms } = useClassroomStore();
@@ -62,16 +63,22 @@ export default function Classroom() {
               className="w-full hover:cursor-pointer transition-transform hover:scale-[1.02]"
               imgAlt={`${classroom.name} thumbnail`}
               imgSrc={
-                classroom.thumnail ||
-                "https://cdn-media.sforum.vn/storage/app/media/Bookgrinder2/wuthering-waves-build-zani-9.jpg"
+                classroom.thumbnail ||
+                "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg"
               }
             >
               <div className="flex items-center justify-between">
                 <h5 className="text-xl font-semibold text-green-600 dark:text-green-600 truncate">
                   {classroom.name}
                 </h5>
-                <Badge color="info" className="ml-2">
-                  {classroom.members?.length || 0} members
+                <Badge
+                  color="info"
+                  className="ml-2 inline-flex items-center gap-1"
+                >
+                  <Users size={14} className="inline-block" />
+                  <span className="inline-block ml-1">
+                    {classroom.members?.length || 0}
+                  </span>
                 </Badge>
               </div>
 

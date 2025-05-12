@@ -38,5 +38,7 @@
   "cancel": "Cancel",
   "classroomName": "Classroom name",
   "classroomCode": "Classroom code",
-  "thumbnailUrl": "Thumbnail url"
+  "thumbnailUrl": "Thumbnail url",
+  "classroomAsTeacher": "Teaching classes",
+  "classroomAsStudent": "Student classes"
 }

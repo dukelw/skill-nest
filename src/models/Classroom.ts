@@ -7,7 +7,7 @@ export default interface Classroom {
   id: number;
   code: string;
   name: string;
-  thumnail?: string;
+  thumbnail?: string;
   creatorId: number;
   createdAt: string;
   updatedAt: string;

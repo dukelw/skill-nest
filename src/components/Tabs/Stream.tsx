@@ -18,17 +18,24 @@ import { classroomService } from "~/services/classroomService";
 import { useParams } from "next/navigation";
 import { useAuthStore } from "~/store/authStore";
 import Assignment from "~/models/Assignment";
+import LewisTextInput from "../partial/LewisTextInput";
+import { uploadService } from "~/services/uploadService";
 
 export default function Stream() {
   const { classroom, setClassroom } = useClassroomStore();
   const { user } = useAuthStore();
   const { classroomId } = useParams();
   const [content, setContent] = useState("");
-  const [openModal, setOpenModal] = useState(false);
   const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([]);
   const [selectedNotificationIds, setSelectedNotificationIds] = useState<
     number[]
   >([]);
+  const [file, setFile] = useState<File | null>(null); // State to hold file
+  const [code, setCode] = useState<string | undefined>(classroom?.code); // State to hold file
+  const [modalType, setModalType] = useState<
+    "student" | "code" | "avatar" | null
+  >(null);
+  const openModal = modalType !== null;
 
   const handleGetClassroomDetail = async () => {
     const res = await classroomService.getDetail(Number(classroomId));
@@ -73,57 +80,133 @@ export default function Stream() {
         new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
     );
 
+  // Handle file input change
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]); // Set the selected file
+    }
+  };
+
+  const handleChange = async () => {
+    if (modalType === "avatar") {
+      let fileUrl = "";
+
+      if (file) {
+        fileUrl = await uploadService.uploadFile(file);
+        await classroomService.update(classroom!.id, { thumbnail: fileUrl });
+      }
+    } else if (modalType === "code") {
+      await classroomService.update(classroom!.id, { code });
+    }
+    handleGetClassroomDetail();
+    setModalType(null);
+  };
+
   return (
     <div className="space-y-6">
       {/* Modal Flowbite */}
-      <Modal show={openModal} onClose={() => setOpenModal(false)}>
-        <ModalHeader className="bg-green-500 text-white">
-          Danh sách học viên
-        </ModalHeader>
-        <ModalBody className="space-y-2 max-h-[400px] overflow-y-auto">
-          {classroom?.members?.map((member) => (
-            <label
-              key={member.id}
-              className="flex items-center space-x-2 px-3 py-2 rounded hover:bg-green-100 cursor-pointer"
-            >
-              <input
-                type="checkbox"
-                checked={selectedStudentIds.includes(member.user.id)}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setSelectedStudentIds([
-                      ...selectedStudentIds,
-                      member.user.id,
-                    ]);
-                  } else {
-                    setSelectedStudentIds(
-                      selectedStudentIds.filter((id) => id !== member.user.id)
-                    );
-                  }
-                }}
-              />
-              <span>{member.user.name}</span>
-            </label>
-          ))}
-        </ModalBody>
+      <Modal show={openModal} onClose={() => setModalType(null)}>
+        {modalType === "student" && (
+          <>
+            <ModalHeader className="bg-green-500 text-white">
+              Danh sách học viên
+            </ModalHeader>
+            <ModalBody>
+              {classroom?.members?.map((member) => (
+                <label
+                  key={member.id}
+                  className="flex items-center space-x-2 px-3 py-2 rounded hover:bg-green-100 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedStudentIds.includes(member.user.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedStudentIds([
+                          ...selectedStudentIds,
+                          member.user.id,
+                        ]);
+                      } else {
+                        setSelectedStudentIds(
+                          selectedStudentIds.filter(
+                            (id) => id !== member.user.id
+                          )
+                        );
+                      }
+                    }}
+                  />
+                  <span>{member.user.name}</span>
+                </label>
+              ))}
+            </ModalBody>
+            <ModalFooter>
+              <button onClick={() => setModalType(null)}>Đóng</button>
+            </ModalFooter>
+          </>
+        )}
 
-        <ModalFooter>
-          <button
-            onClick={() => setOpenModal(false)}
-            className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
-          >
-            Đóng
-          </button>
-        </ModalFooter>
+        {modalType === "code" && (
+          <>
+            <ModalHeader className="bg-green-500 text-white">
+              Đổi mã lớp
+            </ModalHeader>
+            <ModalBody>
+              <LewisTextInput
+                type="text"
+                placeholder="Nhập mã lớp mới"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+              />
+            </ModalBody>
+            <ModalFooter>
+              <LewisButton
+                color="red"
+                lewisSize="small"
+                onClick={() => setModalType(null)}
+              >
+                Hủy
+              </LewisButton>
+              <LewisButton onClick={handleChange}>Lưu</LewisButton>
+            </ModalFooter>
+          </>
+        )}
+
+        {modalType === "avatar" && (
+          <>
+            <ModalHeader className="bg-green-500 text-white">
+              Đổi ảnh lớp
+            </ModalHeader>
+            <ModalBody>
+              <input
+                placeholder={"Thumbnail"}
+                name="thumbnail"
+                type="file"
+                onChange={handleFileChange}
+                className="block w-full mt-4 text-sm file:bg-green-700 text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:bg-green file:text-white hover:file:bg-green-600"
+              />
+            </ModalBody>
+            <ModalFooter>
+              <LewisButton
+                color="red"
+                lewisSize="small"
+                onClick={() => setModalType(null)}
+              >
+                Hủy
+              </LewisButton>
+              <LewisButton onClick={handleChange}>Cập nhật</LewisButton>
+            </ModalFooter>
+          </>
+        )}
       </Modal>
+
       {/* Thumbnail */}
       <div className="w-full h-[320px] relative rounded overflow-hidden shadow">
         {/* Background Image */}
         <Image
           alt="Thumbnail"
           src={
-            classroom?.thumnail ||
-            "https://cdn-media.sforum.vn/storage/app/media/Bookgrinder2/wuthering-waves-build-zani-9.jpg"
+            classroom?.thumbnail ||
+            "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg"
           }
           layout="fill"
           objectFit="cover"
@@ -151,7 +234,7 @@ export default function Stream() {
             >
               <DropdownItem
                 className="w-max"
-                onClick={() => alert("Change thumbnail")}
+                onClick={() => setModalType("avatar")}
               >
                 Đổi ảnh lớp
               </DropdownItem>
@@ -189,11 +272,13 @@ export default function Stream() {
                 </DropdownItem>
                 {classroom?.creatorId === user.id && (
                   <div>
-                    <DropdownItem onClick={() => alert("Change class code")}>
+                    <DropdownItem
+                      onClick={() => {
+                        setCode(classroom?.code);
+                        setModalType("code");
+                      }}
+                    >
                       Change
-                    </DropdownItem>
-                    <DropdownItem onClick={() => alert("Disable class code")}>
-                      Disable
                     </DropdownItem>
                   </div>
                 )}
@@ -240,7 +325,7 @@ export default function Stream() {
                 <LewisButton
                   space={false}
                   className="py-0"
-                  onClick={() => setOpenModal(true)}
+                  onClick={() => setModalType("student")}
                 >
                   👥{" "}
                   {selectedStudentIds.length === 0
@@ -287,37 +372,39 @@ export default function Stream() {
           )}
           <>
             <h2 className="text-lg font-semibold">📢 Thông báo gần đây</h2>
-            {classroom?.creatorId === user.id && <div className="w-full flex justify-between items-center">
-              {classroom?.creatorId === user.id && (
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    className="form-checkbox"
-                    checked={
-                      selectedNotificationIds.length ===
-                      classroom?.notifications.length
-                    }
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        const allIds = classroom?.notifications.map(
-                          (n) => n.id
-                        );
-                        setSelectedNotificationIds(allIds ?? []);
-                      } else {
-                        setSelectedNotificationIds([]);
+            {classroom?.creatorId === user.id && (
+              <div className="w-full flex justify-between items-center">
+                {classroom?.creatorId === user.id && (
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      className="form-checkbox"
+                      checked={
+                        selectedNotificationIds.length ===
+                        classroom?.notifications.length
                       }
-                    }}
-                  />
-                  <span className="text-sm">Chọn tất cả</span>
-                </div>
-              )}
-              <span
-                onClick={handleDeleteNotification}
-                className="text-sm text-red-600 cursor-pointer"
-              >
-                Xóa
-              </span>
-            </div>}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          const allIds = classroom?.notifications.map(
+                            (n) => n.id
+                          );
+                          setSelectedNotificationIds(allIds ?? []);
+                        } else {
+                          setSelectedNotificationIds([]);
+                        }
+                      }}
+                    />
+                    <span className="text-sm">Chọn tất cả</span>
+                  </div>
+                )}
+                <span
+                  onClick={handleDeleteNotification}
+                  className="text-sm text-red-600 cursor-pointer"
+                >
+                  Xóa
+                </span>
+              </div>
+            )}
 
             {classroom?.notifications
               .slice()
