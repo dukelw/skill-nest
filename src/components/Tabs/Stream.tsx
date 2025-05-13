@@ -13,13 +13,13 @@ import { useState } from "react";
 import RichTextEditor from "../editor/RichTextEditor";
 import LewisButton from "../partial/LewisButton";
 import { notificationService } from "~/services/notificationService";
-import { toast } from "react-toastify";
 import { classroomService } from "~/services/classroomService";
 import { useParams } from "next/navigation";
 import { useAuthStore } from "~/store/authStore";
 import Assignment from "~/models/Assignment";
 import LewisTextInput from "../partial/LewisTextInput";
 import { uploadService } from "~/services/uploadService";
+import useSocket from "~/hooks/useSocket";
 
 export default function Stream() {
   const { classroom, setClassroom } = useClassroomStore();
@@ -36,6 +36,7 @@ export default function Stream() {
     "student" | "code" | "avatar" | null
   >(null);
   const openModal = modalType !== null;
+  const socket = useSocket();
 
   const handleGetClassroomDetail = async () => {
     const res = await classroomService.getDetail(Number(classroomId));
@@ -54,16 +55,27 @@ export default function Stream() {
     });
 
     if (res) {
+      const memberIds = classroom.members
+        .filter((member) => member.userId !== user.id)
+        .map((member) => member.userId);
+      const plainContent = content.replace(/<[^>]+>/g, "");
+
+      socket?.emit("createAnnouncement", {
+        title: "Thông báo lớp học",
+        content: `Lớp học "${classroom.name}" có thông báo mới: ${plainContent}`,
+        senderId: user.id,
+        href: `/teaching/${classroom.id}`,
+        userIds: selectedStudentIds.length > 0 ? selectedStudentIds : memberIds,
+      });
+
       await handleGetClassroomDetail();
       setContent("");
       setSelectedStudentIds([]);
-      toast.success("Đã đăng thông báo 🎉");
     }
   };
 
   const handleDeleteNotification = async () => {
     try {
-      console.log("Sẽ xóa các thông báo có ID:", selectedNotificationIds);
       await notificationService.deleteNotifications(selectedNotificationIds);
       await handleGetClassroomDetail();
       setSelectedNotificationIds([]);
@@ -349,12 +361,7 @@ export default function Stream() {
               </div>
 
               {/* Footer actions */}
-              <div className="flex justify-between items-center pt-2">
-                <div className="flex space-x-3">
-                  <button>📎</button>
-                  <button>📷</button>
-                  <button>🔗</button>
-                </div>
+              <div className="flex justify-end items-center pt-2">
                 <div className="flex space-x-2">
                   <LewisButton lewisSize="small" color="red">
                     Cancel

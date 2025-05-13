@@ -10,20 +10,23 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Badge,
 } from "flowbite-react";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import { authService } from "~/services/authService";
-import { FiMenu } from "react-icons/fi";
+import { FiBell, FiMenu } from "react-icons/fi";
 // import { useAuth } from "~/context/AuthContext";
 import { useAuthStore } from "~/store/authStore";
 import { useRouter } from "next/navigation";
 import LewisButton from "./partial/LewisButton";
 import LewisTextInput from "./partial/LewisTextInput";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { classroomService } from "~/services/classroomService";
 import { toast } from "react-toastify";
 import { uploadService } from "~/services/uploadService";
+import { AnnouncementReceiver } from "~/models/AnnouncementReceiver";
+import useUserAnnouncements from "~/hooks/useUserAnnouncements";
 
 const AppNavbar = () => {
   const { i18n, t } = useTranslation();
@@ -38,6 +41,18 @@ const AppNavbar = () => {
     code: "",
     thumbnail: "",
   });
+  const {
+    announcements,
+    markAsRead,
+    deleteAnnouncement,
+    markAllAsRead,
+    deleteAll,
+  } = useUserAnnouncements();
+
+  const [showNotificationDropdown, setShowNotificationDropdown] =
+    useState(false);
+  const notificationRef = useRef<HTMLDivElement | null>(null);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -90,6 +105,20 @@ const AppNavbar = () => {
     router.push("/sign-in");
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target as Node)
+      ) {
+        setShowNotificationDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <Navbar className="bg-dark-green" fluid>
       <div className="flex items-center space-x-2">
@@ -138,6 +167,148 @@ const AppNavbar = () => {
             🇻🇳 Tiếng Việt
           </DropdownItem>
         </Dropdown>
+        <div
+          className="relative mx-2 cursor-pointer flex items-center"
+          onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
+          ref={notificationRef}
+        >
+          <FiBell className="text-white" size={24} />
+          {announcements?.length > 0 && (
+            <Badge
+              size="xs"
+              className="absolute top-0 right-0 -mt-1 -mr-1 rounded-full px-[6px] py-[2px] text-[10px] font-semibold border-2 border-red z-10 bg-red-600 text-white hover:!text-green-500"
+            >
+              {
+                announcements?.filter((a: AnnouncementReceiver) => !a?.isRead)
+                  .length
+              }
+            </Badge>
+          )}
+
+          {showNotificationDropdown && (
+            <div className="absolute right-0 top-full mt-2 w-100 bg-white rounded shadow-lg z-50 text-black">
+              <div className="flex items-center justify-between px-4 py-2 border-b font-semibold bg-green text-white">
+                🔔 {t("notifications")}
+                {/* Hành động */}
+                <div className="flex items-center gap-1 ml-2">
+                  <button
+                    className="cursor-pointer text-white-500 text-xs hover:underline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      markAllAsRead();
+                    }}
+                  >
+                    {t("markAllAsRead")}
+                  </button>
+
+                  <button
+                    className="cursor-pointer text-red-600 text-xs hover:underline ml-1"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteAll();
+                    }}
+                  >
+                    {t("deleteAll")}
+                  </button>
+                </div>
+              </div>
+              <ul className="max-h-60 overflow-y-auto">
+                {announcements?.length > 0 ? (
+                  announcements
+                    ?.sort(
+                      (a, b) =>
+                        new Date(b?.announcement?.createdAt).getTime() -
+                        new Date(a?.announcement?.createdAt).getTime()
+                    )
+                    ?.map((a: AnnouncementReceiver, index) => (
+                      <li
+                        key={index}
+                        className={`flex items-start px-4 py-2 gap-2 border-b text-sm cursor-pointer hover:bg-gray-100 ${
+                          a?.isRead ? "opacity-60" : ""
+                        }`}
+                        onClick={() => {
+                          router.push(
+                            `${process.env.NEXT_PUBLIC_CLIENT_URL}${a?.announcement?.href}` ||
+                              ""
+                          );
+                          setShowNotificationDropdown(false);
+                        }}
+                      >
+                        {/* Avatar */}
+                        <Avatar
+                          img={
+                            a?.user?.avatar ||
+                            "https://cdn-icons-png.freepik.com/512/3607/3607444.png"
+                          }
+                          rounded
+                          size="sm"
+                          alt="avatar"
+                        ></Avatar>
+
+                        {/* Nội dung */}
+                        <div className="flex-1">
+                          <p className="text-green font-bold">
+                            {a?.announcement?.title}
+                          </p>
+                          <p className="text-gray-800">
+                            {a?.announcement?.content}
+                          </p>
+                          <div className="text-xs text-gray-500 mt-1">
+                            {(() => {
+                              const createdAt = a?.announcement?.createdAt;
+                              return createdAt && !isNaN(Date.parse(createdAt))
+                                ? new Date(createdAt).toLocaleString()
+                                : "Không rõ thời gian";
+                            })()}
+                          </div>
+                        </div>
+
+                        {/* Hành động */}
+                        <div className="flex flex-col items-end gap-1 ml-2">
+                          {/* Đánh dấu đã đọc */}
+                          {!a?.isRead && (
+                            <button
+                              className="cursor-pointer text-blue-500 text-xs hover:underline"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                markAsRead(a?.id);
+                              }}
+                            >
+                              {t("markAsRead")}
+                            </button>
+                          )}
+
+                          {/* Xóa */}
+                          <button
+                            className="cursor-pointer text-red-500 text-xs hover:underline"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteAnnouncement(a?.id);
+                            }}
+                          >
+                            {t("delete")}
+                          </button>
+                        </div>
+                      </li>
+                    ))
+                ) : (
+                  <p className="text-center text-sm p-6">No announcement</p>
+                )}
+              </ul>
+
+              <div
+                className="text-center text-green-600 text-sm py-2 hover:underline cursor-pointer"
+                onClick={() => {
+                  router.push("/notifications");
+                  setShowNotificationDropdown(false);
+                }}
+              >
+                {t("viewAll")}
+              </div>
+            </div>
+          )}
+        </div>
+
         <NavbarToggle />
 
         {user ? (
@@ -150,7 +321,7 @@ const AppNavbar = () => {
                 alt="User Avatar"
                 rounded
                 img={
-                  user.avatarUrl ||
+                  user?.avatarUrl ||
                   "https://cdn-icons-png.freepik.com/512/3607/3607444.png"
                 }
                 placeholderInitials="https://cdn-icons-png.freepik.com/512/3607/3607444.png"

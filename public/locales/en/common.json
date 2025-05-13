@@ -40,5 +40,12 @@
   "classroomCode": "Classroom code",
   "thumbnailUrl": "Thumbnail url",
   "classroomAsTeacher": "Teaching classes",
-  "classroomAsStudent": "Student classes"
+  "classroomAsStudent": "Student classes",
+  "notifications": "Notifications",
+  "notification": "Notification",
+  "viewAll": "View all",
+  "delete": "Delete",
+  "deleteAll": "Delete all",
+  "markAsRead": "Read",
+  "markAllAsRead": "Read all"
 }

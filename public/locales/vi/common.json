@@ -40,5 +40,12 @@
   "classroomCode": "Mã lớp",
   "thumbnailUrl": "Ảnh bìa",
   "classroomAsTeacher": "Lớp đang dạy",
-  "classroomAsStudent": "Lớp đang học"
+  "classroomAsStudent": "Lớp đang học",
+  "notifications": "Thông báo",
+  "notification": "Thông báo",
+  "viewAll": "Xem tất cả",
+  "delete": "Xóa",
+  "deleteAll": "Xóa tất cả",
+  "markAsRead": "Đã đọc",
+  "markAllAsRead": "Đã đọc tất cả"
 }
