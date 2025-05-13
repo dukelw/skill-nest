@@ -1,6 +1,8 @@
-import { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import {
+  Avatar,
   Button,
   Modal,
   ModalBody,
@@ -16,6 +18,9 @@ import { useClassroomStore } from "~/store/classroomStore";
 import { AssignmentType } from "~/models/AssignmentType";
 import LewisButton from "../partial/LewisButton";
 import { useAuthStore } from "~/store/authStore";
+import useComments from "~/hooks/useComments";
+import useSocket from "~/hooks/useSocket";
+import Comment from "~/models/Comment";
 
 export default function Asset() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,6 +40,23 @@ export default function Asset() {
   >(null);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isConfirmAttempOpen, setIsConfirmAttempOpen] = useState(false);
+  const [visibleCommentBox, setVisibleCommentBox] = useState<number | null>(
+    null
+  );
+  const [newComment, setNewComment] = useState<string>("");
+  const { createComment, deleteComment, updateComment } = useComments(
+    Number(classroomId)
+  );
+  const [edit, isEdit] = useState<boolean>(false);
+  const [replyInfo, setReplyInfo] = useState<{
+    id: number | undefined;
+    email: string | null;
+    userId: number;
+  }>({ id: undefined, email: null, userId: -1 });
+
+  const toggleCommentBox = (id: number) => {
+    setVisibleCommentBox((prev) => (prev === id ? null : id));
+  };
   const router = useRouter();
 
   const handleGoToAttemp = (quizId: number) => {
@@ -96,6 +118,90 @@ export default function Asset() {
     }
   };
 
+  const handleReplyClick = (id: number, email: string, userId: number) => {
+    setReplyInfo({ id, email, userId });
+  };
+
+  const handleCreateComment = async (assignmentId: number) => {
+    if (!newComment.trim() || !user) return;
+
+    try {
+      if (edit && replyInfo.id) {
+        updateComment({
+          id: replyInfo.id,
+          content: newComment,
+          userId: user.id,
+          classroomId: Number(classroomId),
+        });
+      } else {
+        createComment({
+          content: newComment,
+          assignmentId,
+          userId: user.id,
+          classroomId: Number(classroomId),
+          parentId: replyInfo.id,
+        });
+
+        const userIds = [];
+        if (typeof replyInfo.userId === "number" && replyInfo.userId !== -1) {
+          userIds.push(replyInfo.userId);
+        }
+
+        if (
+          classroom?.creatorId !== user.id &&
+          typeof classroom?.creatorId === "number"
+        ) {
+          userIds.push(classroom.creatorId);
+        }
+
+        socket?.emit("createAnnouncement", {
+          title: "Bình luận mới",
+          content: `Lớp học "${classroom?.name}" có bình luận mới: ${newComment}`,
+          senderId: user.id,
+          href: `/teaching/${classroom?.id}`,
+          userIds,
+        });
+      }
+
+      setNewComment("");
+      setReplyInfo({ id: undefined, email: null, userId: -1 });
+      isEdit(false);
+    } catch (error) {
+      console.error("Failed to post comment", error);
+    }
+  };
+
+  const findRootCommentId = (comments: any[], comment: Comment) => {
+    let current = comment;
+    while (current.parentId) {
+      current = comments.find((c) => c.id === current.parentId);
+    }
+    return current?.id;
+  };
+
+  const socket = useSocket();
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.emit("joinAssignmentRoom", Number(classroomId));
+
+    const onCommentChange = async () => {
+      await handleGetClassroomDetail();
+    };
+
+    socket.on("commentChange", onCommentChange);
+    return () => {
+      socket.off("commentChange", onCommentChange);
+    };
+  }, [socket]);
+
+  const handleEditComment = (comment: Comment) => {
+    setReplyInfo({ id: comment.id, email: null, userId: -1 });
+    setNewComment(comment.content);
+    isEdit(true);
+  };
+
   return (
     <div>
       <div className="flex flex-col items-start">
@@ -145,9 +251,215 @@ export default function Asset() {
               <div className="col-span-8">
                 <div>
                   <p className="mt-2">{assignment.description}</p>
-                  <p className="mt-2 text-sm text-gray-500">
-                    Due Date: {new Date(assignment.dueDate).toLocaleString()}
-                  </p>
+                  <div className="flex items-center justify-between mt-2">
+                    <p className="mt-2 text-sm text-gray-500">
+                      Due Date: {new Date(assignment.dueDate).toLocaleString()}
+                    </p>
+                    <button
+                      onClick={() => toggleCommentBox(assignment.id)}
+                      className="text-blue-600 hover:underline text-sm"
+                    >
+                      💬 {assignment.comments.length} Comments
+                    </button>
+                  </div>
+                  {visibleCommentBox === assignment.id && (
+                    <div className="mt-2">
+                      {/* Danh sách comment gốc */}
+                      <div className="mt-4 space-y-3">
+                        {assignment.comments
+                          .filter((c) => !c.parentId) // comment cấp 1
+                          .map((comment) => {
+                            const replies = assignment.comments.filter(
+                              (r) =>
+                                findRootCommentId(assignment.comments, r) ===
+                                  comment.id && r.parentId
+                            );
+
+                            return (
+                              <div
+                                key={comment.id}
+                                className="flex items-start space-x-2"
+                              >
+                                {/* Avatar người comment gốc */}
+                                <Avatar
+                                  rounded
+                                  img={comment.user.avatar}
+                                  className="w-8 h-8 rounded-full"
+                                />
+                                <div className="flex-1 ml-1">
+                                  <div className="text-sm font-semibold text-green-700">
+                                    {comment.user.name}
+                                    <span className="ml-1 text-xs font-light text-gray-400">
+                                      ({comment.user.email})
+                                    </span>
+                                  </div>
+                                  <div className="text-sm text-gray-700">
+                                    {comment.content}
+                                  </div>
+                                  <div className="text-xs text-gray-400">
+                                    {new Date(
+                                      comment.createdAt
+                                    ).toLocaleString()}
+                                  </div>
+                                  <button
+                                    onClick={() =>
+                                      handleReplyClick(
+                                        comment.id,
+                                        comment.user.email,
+                                        comment.user.id
+                                      )
+                                    }
+                                    className="cursor-pointer text-blue-500 text-xs hover:underline mt-1"
+                                  >
+                                    Trả lời
+                                  </button>
+                                  {comment.user.id === user.id && (
+                                    <button
+                                      onClick={() => handleEditComment(comment)}
+                                      className="cursor-pointer ml-4 text-yellow-500 text-xs hover:underline mt-1"
+                                    >
+                                      Sửa
+                                    </button>
+                                  )}
+                                  {comment.user.id === user.id && (
+                                    <button
+                                      onClick={() =>
+                                        deleteComment({
+                                          id: comment.id,
+                                          userId: user.id,
+                                          classroomId: Number(classroomId),
+                                        })
+                                      }
+                                      className="cursor-pointer ml-4 text-red-500 text-xs hover:underline mt-1"
+                                    >
+                                      Xóa
+                                    </button>
+                                  )}
+
+                                  {/* Danh sách reply cấp 2 (bao gồm từ cấp 2 trở đi gộp chung) */}
+                                  {replies.map((reply) => {
+                                    const parentComment =
+                                      assignment.comments.find(
+                                        (c) => c.id === reply.parentId
+                                      );
+
+                                    return (
+                                      <div
+                                        key={reply.id}
+                                        className="flex items-start space-x-2 mt-3 ml-6 pl-2 border-gray-300"
+                                      >
+                                        <Avatar
+                                          rounded
+                                          img={reply.user.avatar}
+                                          className="w-6 h-6 rounded-full"
+                                        />
+                                        <div className="ml-2">
+                                          <div className="text-sm font-semibold text-green-700">
+                                            {reply.user.name}
+                                            <span className="ml-1 text-xs font-light text-gray-400">
+                                              ({reply.user.email})
+                                            </span>
+                                          </div>
+                                          <div className="text-xs text-gray-700">
+                                            <span className="text-gray-500 mr-1">
+                                              Trả lời @
+                                              {parentComment?.user.email}
+                                            </span>
+                                            {reply.content}
+                                          </div>
+                                          <div className="text-[10px] text-gray-400">
+                                            {new Date(
+                                              reply.createdAt
+                                            ).toLocaleString()}
+                                          </div>
+                                          <button
+                                            onClick={() =>
+                                              handleReplyClick(
+                                                reply.id,
+                                                reply.user.email,
+                                                reply.user.id
+                                              )
+                                            }
+                                            className="text-blue-500 text-xs hover:underline mt-1"
+                                          >
+                                            Trả lời
+                                          </button>
+                                          {reply.user.id === user.id && (
+                                            <button
+                                              onClick={() =>
+                                                handleEditComment(reply)
+                                              }
+                                              className="cursor-pointer ml-4 text-yellow-500 text-xs hover:underline mt-1"
+                                            >
+                                              Sửa
+                                            </button>
+                                          )}
+                                          {reply.user.id === user.id && (
+                                            <button
+                                              onClick={() =>
+                                                deleteComment({
+                                                  id: reply.id,
+                                                  userId: user.id,
+                                                  classroomId:
+                                                    Number(classroomId),
+                                                })
+                                              }
+                                              className="cursor-pointer ml-4 text-red-500 text-xs hover:underline mt-1"
+                                            >
+                                              Xóa
+                                            </button>
+                                          )}
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
+
+                      {/* Ô nhập comment */}
+                      <div className="mt-4">
+                        {replyInfo.email && (
+                          <div className="text-xs text-gray-500 mb-1">
+                            Trả lời @{replyInfo.email}
+                          </div>
+                        )}
+                        <textarea
+                          className="w-full border border-green-500 rounded-md p-2 text-sm"
+                          rows={2}
+                          placeholder="Viết bình luận..."
+                          value={newComment}
+                          onChange={(e) => setNewComment(e.target.value)}
+                        />
+                        <div className="flex justify-end mt-2">
+                          <button
+                            onClick={() => handleCreateComment(assignment.id)}
+                            className="bg-green text-white px-4 py-2 rounded-md text-sm hover:bg-green-600"
+                          >
+                            {edit ? "Cập nhật" : "Gửi"}
+                          </button>
+                          {edit && (
+                            <button
+                              onClick={() => {
+                                setNewComment("");
+                                setReplyInfo({
+                                  id: undefined,
+                                  email: null,
+                                  userId: -1,
+                                });
+                                isEdit(false);
+                              }}
+                              className="bg-red text-white px-4 py-2 ml-2 rounded-md text-sm hover:bg-red-600"
+                            >
+                              Huỷ chỉnh sửa
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-span-4 mt-4">

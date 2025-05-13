@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AssignmentType } from "./AssignmentType";
+import Comment from "./Comment";
 import Submission from "./Submission";
 
 export default interface Assignment {
@@ -12,7 +13,7 @@ export default interface Assignment {
   fileUrl: string;
   title: string;
   type: AssignmentType;
-  comments: any[];
+  comments: Comment[];
   submissions: Submission[];
   questions: any[];
 }
