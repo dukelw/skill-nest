@@ -77,7 +77,7 @@ export default function HomePage() {
       }
       const res = await classroomService.create({
         ...form,
-        creatorId: user.id,
+        creatorId: user!.id,
         thumbnail: fileUrl,
       });
       if (res) {
@@ -90,7 +90,7 @@ export default function HomePage() {
         router.replace("/teaching");
       }
     } else {
-      await classroomService.requestToJoinClass(user.id, joinCode);
+      await classroomService.requestToJoinClass(user!.id, joinCode);
       setModalType(null);
       toast.success(`Request to join classroom ${joinCode} successfully`);
     }

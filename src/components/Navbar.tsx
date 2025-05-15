@@ -76,7 +76,7 @@ const AppNavbar = () => {
       }
       const res = await classroomService.create({
         ...form,
-        creatorId: user.id,
+        creatorId: user!.id,
         thumbnail: fileUrl,
       });
       if (res) {
@@ -89,7 +89,7 @@ const AppNavbar = () => {
         router.replace("/teaching");
       }
     } else {
-      await classroomService.requestToJoinClass(user.id, joinCode);
+      await classroomService.requestToJoinClass(user!.id, joinCode);
       setModalType(null);
       toast.success(`Request to join classroom ${joinCode} successfully`);
     }
@@ -321,7 +321,7 @@ const AppNavbar = () => {
                 alt="User Avatar"
                 rounded
                 img={
-                  user?.avatarUrl ||
+                  user?.avatar ||
                   "https://cdn-icons-png.freepik.com/512/3607/3607444.png"
                 }
                 placeholderInitials="https://cdn-icons-png.freepik.com/512/3607/3607444.png"
@@ -330,6 +330,9 @@ const AppNavbar = () => {
           >
             <DropdownItem href="/profile">
               👤 {t("accountInformation")}
+            </DropdownItem>
+            <DropdownItem href="/password">
+              🔒 {t("changePassword")}
             </DropdownItem>
             <DropdownItem onClick={handleLogout}>🚪 {t("logout")}</DropdownItem>
           </Dropdown>
