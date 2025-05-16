@@ -66,5 +66,6 @@
   "changePasswordSuccess": "Password changed successfully!",
   "changePasswordFailed": "Password change failed.",
   "passwordNotMatch": "New password and confirmation do not match.",
-  "changingPassword": "Changing password..."
+  "changingPassword": "Changing password...",
+  "meetingTab": "Meeting"
 }

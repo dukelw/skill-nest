@@ -66,5 +66,6 @@
   "changePasswordSuccess": "Đổi mật khẩu thành công!",
   "changePasswordFailed": "Đổi mật khẩu thất bại.",
   "passwordNotMatch": "Mật khẩu mới và xác nhận không khớp.",
-  "changingPassword": "Đang đổi mật khẩu..."
+  "changingPassword": "Đang đổi mật khẩu...",
+  "meetingTab": "Họp online"
 }
