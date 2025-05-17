@@ -8,12 +8,14 @@ import ActionCard from "~/components/Meeting/ActionCard";
 import CallList from "~/components/Meeting/CallList";
 import MeetingModal from "~/components/Meeting/MeetingModal";
 import LewisButton from "~/components/partial/LewisButton";
+import { useGetCalls } from "~/hooks/useGetCalls";
 
 type ModalType = "new" | "join" | "schedule" | null;
 
 export default function MeetingPage() {
   const [openModal, setOpenModal] = useState<ModalType>(null);
   const router = useRouter();
+  const { nearestMeeting } = useGetCalls();
 
   return (
     <main className="p-6 space-y-6">
@@ -23,18 +25,47 @@ export default function MeetingPage() {
       </Breadcrumb>
 
       {/* Header */}
-      <section
-        className="bg-muted rounded-xl p-6 flex flex-col md:flex-row justify-between items-center gap-4 bg-cover bg-center"
-        style={{
-          backgroundImage: `url('https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg')`,
-        }}
-      >
-        <div className="bg-black/30 p-4 rounded-xl text-white">
-          <p className="text-sm">Upcoming Meeting at 12:30 PM</p>
-          <h1 className="text-4xl font-bold">12:04 PM</h1>
-          <p className="text-sm">Friday, 29 March 2024</p>
-        </div>
-      </section>
+      {nearestMeeting && (
+        <section
+          className="bg-muted rounded-xl p-6 flex flex-col md:flex-row justify-between items-center gap-4 bg-cover bg-center"
+          style={{
+            backgroundImage: `url('https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg')`,
+          }}
+        >
+          <div className="bg-black/30 p-4 rounded-xl text-white">
+            <p className="text-sm">
+              Upcoming Meeting at{" "}
+              {new Date(nearestMeeting.state.startsAt!).toLocaleTimeString(
+                "en-US",
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }
+              )}
+            </p>
+            <h1 className="text-4xl font-bold">
+              {new Date(nearestMeeting.state.startsAt!).toLocaleTimeString(
+                "en-US",
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }
+              )}
+            </h1>
+            <p className="text-sm">
+              {new Date(nearestMeeting.state.startsAt!).toLocaleDateString(
+                "en-US",
+                {
+                  weekday: "long",
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                }
+              )}
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* Quick Actions */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4">

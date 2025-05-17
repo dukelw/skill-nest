@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
 import { useAuthStore } from "~/store/authStore";
 
@@ -48,5 +48,20 @@ export const useGetCalls = () => {
     return startsAt && new Date(startsAt) > now;
   });
 
-  return { endedCalls, upcomingCalls, callRecordings: calls, isLoading };
+  const nearestMeeting = useMemo(() => {
+    if (!upcomingCalls) return null;
+    return [...upcomingCalls].sort(
+      (a, b) =>
+        new Date(a.state.startsAt!).getTime() -
+        new Date(b.state.startsAt!).getTime()
+    )[0];
+  }, [upcomingCalls]);
+
+  return {
+    endedCalls,
+    upcomingCalls,
+    callRecordings: calls,
+    isLoading,
+    nearestMeeting,
+  };
 };
