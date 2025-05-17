@@ -14,6 +14,7 @@ import { Users } from "lucide-react";
 import { Copy } from "lucide-react";
 
 import EndCallButton from "./EndCallButton";
+import Loader from "../partial/Loader";
 
 type CallLayoutType = "grid" | "speaker-left" | "speaker-right";
 
@@ -95,7 +96,7 @@ const MeetingRoom = ({ meetingId }: MeetingRoomProps) => {
 
   const callingState = useCallCallingState();
 
-  if (callingState !== CallingState.JOINED) return "Loading...";
+  if (callingState !== CallingState.JOINED) return <Loader />;
 
   return (
     <section

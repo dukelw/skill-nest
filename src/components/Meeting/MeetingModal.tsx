@@ -32,6 +32,10 @@ export default function MeetingModal({
   const client = useStreamVideoClient();
   const [values, setValues] = useState(initialValues);
   const [callDetail, setCallDetail] = useState<Call>();
+  const [showScheduleResult, setShowScheduleResult] = useState<null | string>(
+    null
+  );
+
   const router = useRouter();
 
   const handleStartMeeting = async () => {
@@ -41,8 +45,11 @@ export default function MeetingModal({
         toast.warning("Please select a date and time");
         return;
       }
-      const id = crypto.randomUUID();
-      const call = client.call("default", id);
+      const finalCode =
+        customCode.trim() !== ""
+          ? customCode
+          : crypto.randomUUID().slice(0, 12);
+      const call = client.call("default", finalCode);
       if (!call) throw new Error("Failed to create meeting");
       const startsAt =
         values.dateTime.toISOString() || new Date(Date.now()).toISOString();
@@ -70,24 +77,60 @@ export default function MeetingModal({
   const handleJoinMeeting = async () => {
     const callType = "default";
 
-    const call = client?.call(callType, joinCode);
-    await call?.join();
+    client?.call(callType, joinCode);
     setOpenModal(null);
     setJoinCode("");
     setOpenModal(null);
     router.push(`/meeting/${joinCode}`);
   };
 
-  const handleScheduleMeeting = () => {
-    console.log("Scheduled meeting:", {
-      code: scheduleCode,
-      date: scheduleDate,
-      time: scheduleTime,
-    });
-    setOpenModal(null);
-    setScheduleCode("");
-    setScheduleDate("");
-    setScheduleTime("");
+  const handleScheduleMeeting = async () => {
+    if (!client || !user) return;
+
+    try {
+      if (!scheduleDate || !scheduleTime) {
+        toast.warning("Please select date and time");
+        return;
+      }
+
+      const startsAt = new Date(`${scheduleDate}T${scheduleTime}`);
+      const finalCode =
+        scheduleCode.trim() !== ""
+          ? scheduleCode
+          : crypto.randomUUID().slice(0, 12);
+
+      const call = client.call("default", finalCode);
+      if (!call) throw new Error("Failed to create meeting");
+
+      await call.getOrCreate({
+        data: {
+          starts_at: startsAt.toISOString(),
+          custom: {
+            description: "Scheduled Meeting",
+          },
+        },
+      });
+
+      toast.success("Meeting Scheduled");
+      setOpenModal(null);
+      setScheduleCode("");
+      setScheduleDate("");
+      setScheduleTime("");
+      setShowScheduleResult(finalCode);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to schedule meeting");
+    }
+  };
+
+  const formatCode = (input: string) => {
+    const raw = input.replace(/[^A-Z0-9]/gi, "").toUpperCase();
+    return (
+      raw
+        .match(/.{1,4}/g)
+        ?.join("-")
+        .slice(0, 14) || ""
+    );
   };
 
   useEffect(() => {
@@ -143,7 +186,7 @@ export default function MeetingModal({
                 className="mt-1"
                 id="custom-code"
                 value={customCode}
-                onChange={(e) => setCustomCode(e.target.value.toUpperCase())}
+                onChange={(e) => setCustomCode(formatCode(e.target.value))}
                 placeholder="ABC1-DE2F-3GH4"
               />
               <LewisButton lewisSize="full" onClick={handleStartMeeting}>
@@ -200,7 +243,7 @@ export default function MeetingModal({
               className="mt-1"
               id="schedule-code"
               value={scheduleCode}
-              onChange={(e) => setScheduleCode(e.target.value.toUpperCase())}
+              onChange={(e) => setScheduleCode(formatCode(e.target.value))}
               placeholder="ABC1-DE2F-3GH4"
             />
           </div>
@@ -237,6 +280,31 @@ export default function MeetingModal({
             onClick={handleScheduleMeeting}
           >
             Schedule
+          </LewisButton>
+        </ModalBody>
+      </Modal>
+
+      <Modal
+        show={showScheduleResult !== null}
+        onClose={() => setShowScheduleResult(null)}
+      >
+        <ModalHeader className="bg-green-500 text-white">
+          Meeting Scheduled Successfully
+        </ModalHeader>
+        <ModalBody className="space-y-4">
+          <div className="text-center">
+            <p className="mb-2">Your meeting code:</p>
+            <div className="font-bold text-lg">{showScheduleResult}</div>
+          </div>
+          <LewisButton
+            space={false}
+            lewisSize="full"
+            onClick={() => {
+              navigator.clipboard.writeText(showScheduleResult!);
+              toast.success("Code copied to clipboard");
+            }}
+          >
+            Copy Code
           </LewisButton>
         </ModalBody>
       </Modal>

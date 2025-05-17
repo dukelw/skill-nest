@@ -5,7 +5,7 @@ import { CalendarPlus, PlayCircle, Plus, VideoIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ActionCard from "~/components/Meeting/ActionCard";
-import MeetingCard from "~/components/Meeting/MeetingCard";
+import CallList from "~/components/Meeting/CallList";
 import MeetingModal from "~/components/Meeting/MeetingModal";
 import LewisButton from "~/components/partial/LewisButton";
 
@@ -64,6 +64,9 @@ export default function MeetingPage() {
           description="Meeting recordings"
           icon={<PlayCircle className="text-white" size={24} />}
           bg="bg-yellow-500"
+          onClick={() => {
+            router.push("/meeting-record");
+          }}
         />
       </section>
 
@@ -71,20 +74,11 @@ export default function MeetingPage() {
       <section className="space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-semibold">Todays Upcoming Meetings</h2>
-          <LewisButton space={false} lewisSize="small">
+          <LewisButton href="/meeting-schedule" space={false} lewisSize="small">
             See all
           </LewisButton>
         </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          <MeetingCard
-            title="Team Sync: Sprint Planning & Updates"
-            date="March 15, 2024 - 10:00 AM"
-          />
-          <MeetingCard
-            title="Project Pulse Check: Weekly Standup"
-            date="March 15, 2024 - 10:00 AM"
-          />
-        </div>
+        <CallList type="upcoming" />
       </section>
 
       <MeetingModal

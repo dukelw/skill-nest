@@ -9,6 +9,7 @@ import People from "~/components/Tabs/People";
 import Assignment from "~/components/Tabs/Assignment";
 import { useClassroomStore } from "~/store/classroomStore";
 import Stream from "~/components/Tabs/Stream";
+import Loader from "~/components/partial/Loader";
 
 export default function StudentClassroomDetail() {
   const [activeTab, setActiveTab] = useState("stream");
@@ -35,7 +36,7 @@ export default function StudentClassroomDetail() {
     if (classroomId) fetchClassroom();
   }, [classroomId, router]);
 
-  if (!classroom) return <p className="p-4">Loading...</p>;
+  if (!classroom) return <Loader />;
 
   const tabs = [
     { name: "Bảng tin", key: "stream" },

@@ -45,15 +45,18 @@ const MeetingSetup = ({
     }
   }, [isMicCamToggled, call.camera, call.microphone]);
 
-  if (callTimeNotArrived) {
-    toast.error(
-      `Your Meeting has not started yet. It is scheduled for ${callStartsAt.toLocaleString()}`
-    );
-    return null;
-  }
+  useEffect(() => {
+    if (callTimeNotArrived) {
+      toast.error(
+        `Your Meeting has not started yet. It is scheduled for ${callStartsAt?.toLocaleString()}`
+      );
+    }
+    if (callHasEnded) {
+      toast.error("Meeting has ended");
+    }
+  }, [callTimeNotArrived, callHasEnded, callStartsAt]);
 
-  if (callHasEnded) {
-    toast.error("Meeting has ended");
+  if (callTimeNotArrived || callHasEnded) {
     return null;
   }
 

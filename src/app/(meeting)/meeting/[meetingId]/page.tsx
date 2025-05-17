@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import MeetingSetup from "~/components/Meeting/MeetingSetup";
 import MeetingRoom from "~/components/Meeting/MeetingRoom";
 import { useGetCallById } from "~/hooks/useGetCallById";
+import Loader from "~/components/partial/Loader";
 
 const MeetingPage = () => {
   const { meetingId } = useParams();
@@ -17,7 +18,7 @@ const MeetingPage = () => {
   const { call, isCallLoading } = useGetCallById(id);
   const [isSetupComplete, setIsSetupComplete] = useState(false);
 
-  if (isCallLoading) return "Loading...";
+  if (isCallLoading) return <Loader />;
 
   if (!call)
     return (

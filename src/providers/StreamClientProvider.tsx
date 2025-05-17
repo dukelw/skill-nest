@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { StreamVideoClient, StreamVideo } from "@stream-io/video-react-sdk";
 
 import { useAuthStore } from "~/store/authStore";
+import Loader from "~/components/partial/Loader";
 
 const fetchToken = async (userId: string) => {
   const res = await fetch(`/api/stream/token?userId=${userId}`);
@@ -39,7 +40,7 @@ const StreamVideoProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [user]);
 
-  if (!videoClient) return <>Loading...</>;
+  if (!videoClient) return <Loader />;
 
   return <StreamVideo client={videoClient}>{children}</StreamVideo>;
 };
