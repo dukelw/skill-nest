@@ -114,7 +114,7 @@ export default function HomePage() {
   }
 
   const renderClassCards = (classes: Classroom[], prefix: string) =>
-    classes.map((classroom) => (
+    classes?.map((classroom) => (
       <Link href={`/${prefix}/${classroom.id}`} key={classroom.id}>
         <Card
           className="w-full hover:cursor-pointer transition-transform hover:scale-[1.02]"

@@ -61,7 +61,7 @@ export default function ClientClassroomDetail() {
           setActiveTab(tabs[tabIndex].key);
         }}
       >
-        {tabs.map((tab) => (
+        {tabs?.map((tab) => (
           <TabItem
             active={activeTab === tab.key}
             key={tab.key}

@@ -35,7 +35,7 @@ export default function Quiz() {
 
   const handleSubmit = async () => {
     const unanswered =
-      assignment?.questions.filter((q) => !answers[q.id]).map((q) => q.id) ||
+      assignment?.questions.filter((q) => !answers[q.id])?.map((q) => q.id) ||
       [];
 
     if (unanswered.length > 0) {
@@ -55,7 +55,7 @@ export default function Quiz() {
     if (!assignment?.id) return;
 
     const answerString = Object.entries(answers)
-      .map(([qid, ans]) => `${qid}:${ans}`)
+      ?.map(([qid, ans]) => `${qid}:${ans}`)
       .join(";");
 
     await submissionService.createSubmission({
@@ -111,7 +111,7 @@ export default function Quiz() {
               </p>
 
               <div className="space-y-2">
-                {q.options.map((opt: string, i: number) => (
+                {q.options?.map((opt: string, i: number) => (
                   <label key={i} className="flex items-center gap-2">
                     <input
                       type="radio"

@@ -29,7 +29,7 @@ const Sidebar = ({
       </button>
 
       <div className="space-y-4 p-4 flex-grow">
-        {sidebarItems.map((item: any, index: number) => {
+        {sidebarItems?.map((item: any, index: number) => {
           const Icon = item.icon;
           const isActive =
             item.href === "/"

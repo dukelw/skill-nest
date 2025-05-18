@@ -242,7 +242,7 @@ export default function Assignments() {
             (a, b) =>
               new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
           )
-          .map((assignment) => {
+          ?.map((assignment) => {
             const submission = assignment.submissions.find(
               (s) => s.userId === user?.id
             );
@@ -288,7 +288,7 @@ export default function Assignments() {
                       <div className="mt-4 space-y-3">
                         {assignment.comments
                           .filter((c) => !c.parentId) // comment cấp 1
-                          .map((comment) => {
+                          ?.map((comment) => {
                             const replies = assignment.comments.filter(
                               (r) =>
                                 findRootCommentId(assignment.comments, r) ===
@@ -357,7 +357,7 @@ export default function Assignments() {
                                   )}
 
                                   {/* Danh sách reply cấp 2 (bao gồm từ cấp 2 trở đi gộp chung) */}
-                                  {replies.map((reply) => {
+                                  {replies?.map((reply) => {
                                     const parentComment =
                                       assignment.comments.find(
                                         (c) => c.id === reply.parentId
@@ -371,9 +371,9 @@ export default function Assignments() {
                                         <Avatar
                                           rounded
                                           img={reply.user.avatar}
-                                          className="w-6 h-6 rounded-full"
+                                          className="w-10 h-10 rounded-full"
                                         />
-                                        <div className="ml-2">
+                                        <div>
                                           <div className="text-sm font-semibold text-green-700">
                                             {reply.user.name}
                                             <span className="ml-1 text-xs font-light text-gray-400">

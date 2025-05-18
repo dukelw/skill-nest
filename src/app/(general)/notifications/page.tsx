@@ -47,7 +47,7 @@ export default function NotificationPage() {
 
       {paginatedAnnouncements.length > 0 ? (
         <ul className="space-y-4">
-          {paginatedAnnouncements.map((a) => (
+          {paginatedAnnouncements?.map((a) => (
             <li
               key={a.id}
               className={`flex gap-4 p-4 rounded-md shadow-sm hover:bg-gray-100 transition ${

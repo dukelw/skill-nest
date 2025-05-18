@@ -57,7 +57,7 @@ export default function Classroom() {
         <BreadcrumbItem href="/classroom">Classroom</BreadcrumbItem>
       </Breadcrumb>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {studentClassrooms.map((classroom) => (
+        {studentClassrooms?.map((classroom) => (
           <Link href={`/classroom/${classroom.id}`} key={classroom.id}>
             <Card
               className="w-full hover:cursor-pointer transition-transform hover:scale-[1.02]"

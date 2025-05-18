@@ -56,7 +56,7 @@ export default function QuizCreatoryPage() {
     value: any
   ) => {
     setQuestions((prev) =>
-      prev.map((q, i) =>
+      prev?.map((q, i) =>
         i === index
           ? {
               ...q,
@@ -191,7 +191,7 @@ export default function QuizCreatoryPage() {
       </Button>
 
       <div className="space-y-6">
-        {questions.map((q, i) => (
+        {questions?.map((q, i) => (
           <div
             key={i}
             className="p-4 border border-green-500 rounded space-y-2"
@@ -203,7 +203,7 @@ export default function QuizCreatoryPage() {
                 handleQuestionChange(i, "questionText", e.target.value)
               }
             />
-            {["A", "B", "C", "D"].map((label, j) => (
+            {["A", "B", "C", "D"]?.map((label, j) => (
               <div key={j} className="flex items-center gap-2">
                 <input
                   type="radio"

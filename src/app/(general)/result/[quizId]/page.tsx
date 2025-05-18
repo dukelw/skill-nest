@@ -96,7 +96,7 @@ export default function Quiz() {
               </p>
 
               <div className="space-y-2">
-                {q.options.map((opt: string, i: number) => (
+                {q.options?.map((opt: string, i: number) => (
                   <label key={i} className="flex items-center gap-2">
                     <input
                       type="radio"

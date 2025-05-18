@@ -43,7 +43,7 @@ export default function Grade() {
       grade,
     });
 
-    const updatedSubmissions = submissions.map((s) =>
+    const updatedSubmissions = submissions?.map((s) =>
       s?.id === submission?.id ? { ...s, grade: grade.toString() } : s
     );
     setSubmissions(updatedSubmissions);
@@ -82,7 +82,7 @@ export default function Grade() {
             (a, b) =>
               new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
           ) // Sorting by createdAt
-          .map((assignment) => {
+          ?.map((assignment) => {
             const submissionCount = assignment?.submissions?.filter(
               (s: Submission) => s.assignmentId === assignment?.id
             ).length;
@@ -182,7 +182,7 @@ export default function Grade() {
             <p>Chưa có bài nộp nào.</p>
           ) : (
             <ul className="space-y-2 mb-4">
-              {submissions.map((s: Submission) => {
+              {submissions?.map((s: Submission) => {
                 const submittedTime = new Date(s.submittedAt);
                 const deadline = new Date(s.assignment.dueDate);
                 const isLate = submittedTime > deadline;
@@ -278,7 +278,7 @@ export default function Grade() {
                   m.role === "STUDENT" &&
                   !submissions.some((s: Submission) => s.userId === m.userId)
               )
-              .map((m) => (
+              ?.map((m) => (
                 <li key={m.userId} className="text-gray-600">
                   {m.user?.name + " (" + m.user.email + ")" ||
                     `Sinh viên ${m.userId}`}

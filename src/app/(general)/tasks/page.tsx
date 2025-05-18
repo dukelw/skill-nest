@@ -115,7 +115,7 @@ export default function Tasks() {
                 (a, b) =>
                   new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
               )
-              .map((assignment) => {
+              ?.map((assignment) => {
                 const submission = assignment.submissions.find(
                   (s) => s.userId === user?.id
                 );

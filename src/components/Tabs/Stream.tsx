@@ -20,6 +20,11 @@ import Assignment from "~/models/Assignment";
 import LewisTextInput from "../partial/LewisTextInput";
 import { uploadService } from "~/services/uploadService";
 import useSocket from "~/hooks/useSocket";
+import MeetingModal from "../Meeting/MeetingModal";
+import { Video } from "lucide-react";
+import { FaVideo } from "react-icons/fa";
+
+type ModalType = "new" | "join" | "schedule" | null;
 
 export default function Stream() {
   const { classroom, setClassroom } = useClassroomStore();
@@ -37,6 +42,7 @@ export default function Stream() {
   >(null);
   const openModal = modalType !== null;
   const socket = useSocket();
+  const [openMeetingModal, setOpenMeetingModal] = useState<ModalType>(null);
 
   const handleGetClassroomDetail = async () => {
     const res = await classroomService.getDetail(Number(classroomId));
@@ -57,7 +63,7 @@ export default function Stream() {
     if (res) {
       const memberIds = classroom.members
         .filter((member) => member.userId !== user.id)
-        .map((member) => member.userId);
+        ?.map((member) => member.userId);
       const plainContent = content.replace(/<[^>]+>/g, "");
 
       socket?.emit("createAnnouncement", {
@@ -211,6 +217,12 @@ export default function Stream() {
         )}
       </Modal>
 
+      {/* Meeting Modal */}
+      <MeetingModal
+        openModal={openMeetingModal}
+        setOpenModal={setOpenMeetingModal}
+      />
+
       {/* Thumbnail */}
       <div className="w-full h-[320px] relative rounded overflow-hidden shadow">
         {/* Background Image */}
@@ -295,6 +307,39 @@ export default function Stream() {
                   </div>
                 )}
               </Dropdown>
+            </div>
+          </div>
+          <div className="bg-gray-50 p-4 rounded shadow">
+            <div className="w-full">
+              <p className="text-gray-500 text-sm">Meeting</p>
+              <div className="w-full flex items-center justify-between mt-2">
+                {classroom?.creatorId === user?.id ? (
+                  <div className="w-full flex items-center justify-around">
+                    <LewisButton
+                      lewisSize="small"
+                      space={false}
+                      onClick={() => setOpenMeetingModal("new")}
+                    >
+                      New
+                    </LewisButton>
+                    <LewisButton
+                      lewisSize="small"
+                      space={false}
+                      onClick={() => setOpenMeetingModal("schedule")}
+                    >
+                      Schedule
+                    </LewisButton>
+                  </div>
+                ) : (
+                  <LewisButton
+                    lewisSize="full"
+                    space={false}
+                    onClick={() => setOpenMeetingModal("join")}
+                  >
+                    Join
+                  </LewisButton>
+                )}
+              </div>
             </div>
           </div>
 
@@ -392,7 +437,7 @@ export default function Stream() {
                       }
                       onChange={(e) => {
                         if (e.target.checked) {
-                          const allIds = classroom?.notifications.map(
+                          const allIds = classroom?.notifications?.map(
                             (n) => n.id
                           );
                           setSelectedNotificationIds(allIds ?? []);
@@ -420,7 +465,7 @@ export default function Stream() {
                   new Date(b.createdAt).getTime() -
                   new Date(a.createdAt).getTime()
               )
-              .map((n) => {
+              ?.map((n) => {
                 // Kiểm tra xem người dùng có phải là người nhận thông báo này không
                 const isRecipient = n.recipients.some(
                   (recipient) =>

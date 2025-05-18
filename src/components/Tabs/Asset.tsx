@@ -226,7 +226,7 @@ export default function Asset() {
             (a, b) =>
               new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
           ) // Sorting by createdAt
-          .map((assignment) => (
+          ?.map((assignment) => (
             <div
               key={assignment.id}
               className="grid grid-cols-12 p-4 border border-green-500 rounded-lg shadow-md"
@@ -268,7 +268,7 @@ export default function Asset() {
                       <div className="mt-4 space-y-3">
                         {assignment.comments
                           .filter((c) => !c.parentId) // comment cấp 1
-                          .map((comment) => {
+                          ?.map((comment) => {
                             const replies = assignment.comments.filter(
                               (r) =>
                                 findRootCommentId(assignment.comments, r) ===
@@ -337,7 +337,7 @@ export default function Asset() {
                                   )}
 
                                   {/* Danh sách reply cấp 2 (bao gồm từ cấp 2 trở đi gộp chung) */}
-                                  {replies.map((reply) => {
+                                  {replies?.map((reply) => {
                                     const parentComment =
                                       assignment.comments.find(
                                         (c) => c.id === reply.parentId
@@ -351,9 +351,9 @@ export default function Asset() {
                                         <Avatar
                                           rounded
                                           img={reply.user.avatar}
-                                          className="w-6 h-6 rounded-full"
+                                          className="w-10 h-10 rounded-full"
                                         />
-                                        <div className="ml-2">
+                                        <div>
                                           <div className="text-sm font-semibold text-green-700">
                                             {reply.user.name}
                                             <span className="ml-1 text-xs font-light text-gray-400">

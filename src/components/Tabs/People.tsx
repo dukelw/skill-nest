@@ -162,7 +162,7 @@ export default function People() {
 
         {classroom?.members
           ?.filter((m) => m.role === "TEACHER")
-          .map((m, index) => (
+          ?.map((m, index) => (
             <div key={index} className="flex items-center space-x-4 mb-3">
               <Avatar
                 img={
@@ -196,7 +196,7 @@ export default function People() {
 
         {classroom?.members
           ?.filter((m) => m.role === "STUDENT")
-          .map((m, index) => (
+          ?.map((m, index) => (
             <div key={index} className="flex items-center space-x-4 mb-3">
               <Avatar
                 img={
@@ -219,7 +219,7 @@ export default function People() {
         </ModalHeader>
         <ModalBody>
           <div className="flex flex-col gap-2 max-h-80 overflow-y-auto">
-            {users.map((u: User) => (
+            {users?.map((u: User) => (
               <label key={u?.id} className="flex items-center gap-2 ml-1">
                 <Checkbox
                   checked={selectedUserIds.includes(u?.id)}
