@@ -25,11 +25,11 @@ const StreamVideoProvider = ({ children }: { children: ReactNode }) => {
     const client = new StreamVideoClient({
       apiKey: API_KEY,
       user: {
-        id: user.id.toString(),
+        id: user?.id.toString(),
         name: user.name || user.email,
         image: user.avatar,
       },
-      tokenProvider: () => fetchToken(user.id.toString()),
+      tokenProvider: () => fetchToken(user?.id.toString()),
     });
 
     setVideoClient(client);

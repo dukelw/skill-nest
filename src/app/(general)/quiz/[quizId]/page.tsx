@@ -60,7 +60,7 @@ export default function Quiz() {
 
     await submissionService.createSubmission({
       assignmentId: assignment.id,
-      userId: user.id,
+      userId: user?.id,
       fileUrl: answerString,
       grade,
     });

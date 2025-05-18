@@ -130,14 +130,14 @@ export default function Asset() {
         updateComment({
           id: replyInfo.id,
           content: newComment,
-          userId: user.id,
+          userId: user?.id,
           classroomId: Number(classroomId),
         });
       } else {
         createComment({
           content: newComment,
           assignmentId,
-          userId: user.id,
+          userId: user?.id,
           classroomId: Number(classroomId),
           parentId: replyInfo.id,
         });
@@ -148,7 +148,7 @@ export default function Asset() {
         }
 
         if (
-          classroom?.creatorId !== user.id &&
+          classroom?.creatorId !== user?.id &&
           typeof classroom?.creatorId === "number"
         ) {
           userIds.push(classroom.creatorId);
@@ -157,7 +157,7 @@ export default function Asset() {
         socket?.emit("createAnnouncement", {
           title: "Bình luận mới",
           content: `Lớp học "${classroom?.name}" có bình luận mới: ${newComment}`,
-          senderId: user.id,
+          senderId: user?.id,
           href: `/teaching/${classroom?.id}`,
           userIds,
         });
@@ -207,7 +207,7 @@ export default function Asset() {
       <div className="flex flex-col items-start">
         <div className="flex justify-between items-center w-full">
           <h2 className="text-xl font-semibold">Assignment</h2>
-          {classroom?.creatorId === user.id && (
+          {classroom?.creatorId === user?.id && (
             <button
               onClick={() => setIsModalOpen(true)}
               className="rounded-full flex items-center justify-center w-10 h-10 text-green bg-transparent hover:bg-green-500/10 transition-colors duration-200"
@@ -306,14 +306,14 @@ export default function Asset() {
                                       handleReplyClick(
                                         comment.id,
                                         comment.user.email,
-                                        comment.user.id
+                                        comment.user?.id
                                       )
                                     }
                                     className="cursor-pointer text-blue-500 text-xs hover:underline mt-1"
                                   >
                                     Trả lời
                                   </button>
-                                  {comment.user.id === user.id && (
+                                  {comment.user?.id === user?.id && (
                                     <button
                                       onClick={() => handleEditComment(comment)}
                                       className="cursor-pointer ml-4 text-yellow-500 text-xs hover:underline mt-1"
@@ -321,12 +321,12 @@ export default function Asset() {
                                       Sửa
                                     </button>
                                   )}
-                                  {comment.user.id === user.id && (
+                                  {comment.user?.id === user?.id && (
                                     <button
                                       onClick={() =>
                                         deleteComment({
                                           id: comment.id,
-                                          userId: user.id,
+                                          userId: user?.id,
                                           classroomId: Number(classroomId),
                                         })
                                       }
@@ -377,14 +377,14 @@ export default function Asset() {
                                               handleReplyClick(
                                                 reply.id,
                                                 reply.user.email,
-                                                reply.user.id
+                                                reply.user?.id
                                               )
                                             }
                                             className="text-blue-500 text-xs hover:underline mt-1"
                                           >
                                             Trả lời
                                           </button>
-                                          {reply.user.id === user.id && (
+                                          {reply.user?.id === user?.id && (
                                             <button
                                               onClick={() =>
                                                 handleEditComment(reply)
@@ -394,12 +394,12 @@ export default function Asset() {
                                               Sửa
                                             </button>
                                           )}
-                                          {reply.user.id === user.id && (
+                                          {reply.user?.id === user?.id && (
                                             <button
                                               onClick={() =>
                                                 deleteComment({
                                                   id: reply.id,
-                                                  userId: user.id,
+                                                  userId: user?.id,
                                                   classroomId:
                                                     Number(classroomId),
                                                 })
@@ -475,7 +475,7 @@ export default function Asset() {
                     </a>
                   )}
                   {assignment.type === AssignmentType.HOMEWORK &&
-                    classroom.creatorId !== user.id && (
+                    classroom.creatorId !== user?.id && (
                       <LewisButton
                         className="ml-2"
                         space={false}
@@ -485,7 +485,7 @@ export default function Asset() {
                       </LewisButton>
                     )}
                   {assignment.type === AssignmentType.QUIZ &&
-                    classroom.creatorId !== user.id && (
+                    classroom.creatorId !== user?.id && (
                       <LewisButton
                         className="ml-2"
                         space={false}
@@ -500,7 +500,7 @@ export default function Asset() {
                       </LewisButton>
                     )}
                   {assignment.type === AssignmentType.QUIZ &&
-                    classroom.creatorId === user.id && (
+                    classroom.creatorId === user?.id && (
                       <LewisButton
                         className="ml-2"
                         space={false}
@@ -510,7 +510,7 @@ export default function Asset() {
                         Review
                       </LewisButton>
                     )}
-                  {classroom.creatorId === user.id && (
+                  {classroom.creatorId === user?.id && (
                     <>
                       <LewisButton
                         color="yellow"

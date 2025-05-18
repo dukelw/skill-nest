@@ -22,7 +22,7 @@ export default function Teaching() {
   useEffect(() => {
     const handleGetTeacherClasses = async () => {
       if (!user?.id) return;
-      const response = await classroomService.getTeacherRole(user.id);
+      const response = await classroomService.getTeacherRole(user?.id);
       setTeacherClassrooms(response);
       setLoading(false);
     };

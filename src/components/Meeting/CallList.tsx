@@ -27,9 +27,11 @@ const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
   const getNoCallsMessage = () => {
     switch (type) {
       case "upcoming":
-        return "No Upcoming Calls";
+        return (
+          <p className="text-color text-xl font-semibold">No upcoming calls</p>
+        );
       case "recordings":
-        return "No Recordings";
+        <p className="text-color text-xl font-semibold">No recordings</p>;
       default:
         return "";
     }

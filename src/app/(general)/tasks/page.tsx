@@ -54,7 +54,7 @@ export default function Tasks() {
       await submissionService.createSubmission({
         assignmentId: selectedAssignmentId,
         fileUrl,
-        userId: user.id,
+        userId: user?.id,
       });
       handleGetStudentClasses();
       setUploading(false);
@@ -70,7 +70,7 @@ export default function Tasks() {
 
   const handleGetStudentClasses = async () => {
     if (!user?.id) return;
-    const response = await classroomService.getStudentRole(user.id);
+    const response = await classroomService.getStudentRole(user?.id);
     console.log(response);
     setStudentClassrooms(response);
     setLoading(false);

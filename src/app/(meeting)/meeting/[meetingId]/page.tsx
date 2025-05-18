@@ -30,7 +30,7 @@ const MeetingPage = () => {
   const notAllowed =
     call.type === "invited" &&
     (!user ||
-      !call.state.members.find((m) => m.user.id === user.id.toString()));
+      !call.state.members.find((m) => m.user?.id === user?.id.toString()));
 
   if (notAllowed) {
     toast.error("Your are not allow to attend this meeting");

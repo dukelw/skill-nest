@@ -13,11 +13,11 @@ export default function useUserAnnouncements() {
   useEffect(() => {
     if (!socket || !user?.id) return;
 
-    const room = `user_${user.id}`;
+    const room = `user_${user?.id}`;
     socket.emit("joinRoom", room);
-    socket.emit("getUserAnnouncements", user.id);
+    socket.emit("getUserAnnouncements", user?.id);
 
-    const refresh = () => socket.emit("getUserAnnouncements", user.id);
+    const refresh = () => socket.emit("getUserAnnouncements", user?.id);
 
     socket.on("userAnnouncements", setAnnouncements);
     socket.on("announcementCreated", refresh);
@@ -38,10 +38,10 @@ export default function useUserAnnouncements() {
 
   return {
     announcements,
-    refresh: () => socket?.emit("getUserAnnouncements", user.id),
+    refresh: () => socket?.emit("getUserAnnouncements", user?.id),
     markAsRead: (id: number) => socket?.emit("read", id),
     deleteAnnouncement: (id: number) => socket?.emit("delete", id),
-    markAllAsRead: () => socket?.emit("read-all", user.id),
-    deleteAll: () => socket?.emit("delete-all", user.id),
+    markAllAsRead: () => socket?.emit("read-all", user?.id),
+    deleteAll: () => socket?.emit("delete-all", user?.id),
   };
 }

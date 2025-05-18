@@ -62,14 +62,14 @@ export default function Stream() {
 
     if (res) {
       const memberIds = classroom.members
-        .filter((member) => member.userId !== user.id)
+        .filter((member) => member.userId !== user?.id)
         ?.map((member) => member.userId);
       const plainContent = content.replace(/<[^>]+>/g, "");
 
       socket?.emit("createAnnouncement", {
         title: "Thông báo lớp học",
         content: `Lớp học "${classroom.name}" có thông báo mới: ${plainContent}`,
-        senderId: user.id,
+        senderId: user?.id,
         href: `/teaching/${classroom.id}`,
         userIds: selectedStudentIds.length > 0 ? selectedStudentIds : memberIds,
       });
@@ -137,17 +137,17 @@ export default function Stream() {
                 >
                   <input
                     type="checkbox"
-                    checked={selectedStudentIds.includes(member.user.id)}
+                    checked={selectedStudentIds.includes(member.user?.id)}
                     onChange={(e) => {
                       if (e.target.checked) {
                         setSelectedStudentIds([
                           ...selectedStudentIds,
-                          member.user.id,
+                          member.user?.id,
                         ]);
                       } else {
                         setSelectedStudentIds(
                           selectedStudentIds.filter(
-                            (id) => id !== member.user.id
+                            (id) => id !== member.user?.id
                           )
                         );
                       }
@@ -244,7 +244,7 @@ export default function Stream() {
         </div>
 
         {/* Change Thumbnail - Top Right */}
-        {classroom?.creatorId === user.id && (
+        {classroom?.creatorId === user?.id && (
           <div className="absolute top-4 right-4">
             <Dropdown
               label=""
@@ -294,7 +294,7 @@ export default function Stream() {
                 >
                   Copy
                 </DropdownItem>
-                {classroom?.creatorId === user.id && (
+                {classroom?.creatorId === user?.id && (
                   <div>
                     <DropdownItem
                       onClick={() => {
@@ -368,7 +368,7 @@ export default function Stream() {
 
         {/* New Content - 9/12 */}
         <div className="col-span-9 p-6 bg-white rounded shadow space-y-4">
-          {classroom?.creatorId === user.id && (
+          {classroom?.creatorId === user?.id && (
             <>
               <h2 className="text-xl font-semibold">Tạo bài viết mới</h2>
 
@@ -424,9 +424,9 @@ export default function Stream() {
           )}
           <>
             <h2 className="text-lg font-semibold">📢 Thông báo gần đây</h2>
-            {classroom?.creatorId === user.id && (
+            {classroom?.creatorId === user?.id && (
               <div className="w-full flex justify-between items-center">
-                {classroom?.creatorId === user.id && (
+                {classroom?.creatorId === user?.id && (
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
@@ -469,8 +469,8 @@ export default function Stream() {
                 // Kiểm tra xem người dùng có phải là người nhận thông báo này không
                 const isRecipient = n.recipients.some(
                   (recipient) =>
-                    recipient.userId === user.id ||
-                    user.id === classroom.creatorId // currentUserId là id của người dùng hiện tại
+                    recipient.userId === user?.id ||
+                    user?.id === classroom.creatorId // currentUserId là id của người dùng hiện tại
                 );
 
                 if (!isRecipient) return null; // Nếu không phải người nhận, không hiển thị thông báo
@@ -486,7 +486,7 @@ export default function Stream() {
                         {n.title}
                       </h3>
                       {/* Checkbox và nút xóa chỉ hiển thị nếu người tạo lớp */}
-                      {classroom?.creatorId === user.id && (
+                      {classroom?.creatorId === user?.id && (
                         <div className="flex items-center space-x-2">
                           <input
                             type="checkbox"

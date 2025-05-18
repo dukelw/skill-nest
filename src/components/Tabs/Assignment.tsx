@@ -71,7 +71,7 @@ export default function Assignments() {
       await submissionService.createSubmission({
         assignmentId: selectedAssignmentId,
         fileUrl,
-        userId: user.id,
+        userId: user?.id,
       });
       handleGetClassroomDetail();
       setUploading(false);
@@ -164,21 +164,21 @@ export default function Assignments() {
         updateComment({
           id: replyInfo.id,
           content: newComment,
-          userId: user.id,
+          userId: user?.id,
           classroomId: Number(classroomId),
         });
       } else {
         createComment({
           content: newComment,
           assignmentId,
-          userId: user.id,
+          userId: user?.id,
           classroomId: Number(classroomId),
           parentId: replyInfo.id,
         });
         socket?.emit("createAnnouncement", {
           title: "Bình luận mới",
           content: `Lớp học "${classroom?.name}" có bình luận mới: ${newComment}`,
-          senderId: user.id,
+          senderId: user?.id,
           href: `/teaching/${classroom?.id}`,
           userIds: [classroom?.creatorId, replyInfo.userId].filter(
             Boolean
@@ -222,7 +222,7 @@ export default function Assignments() {
       <div className="flex flex-col items-start">
         <div className="flex justify-between items-center w-full">
           <h2 className="text-xl font-semibold">Assignment</h2>
-          {classroom?.creatorId === user.id && (
+          {classroom?.creatorId === user?.id && (
             <button
               onClick={() => setIsModalOpen(true)}
               className="rounded-full flex items-center justify-center w-10 h-10 text-green bg-transparent hover:bg-green-500/10 transition-colors duration-200"
@@ -326,14 +326,14 @@ export default function Assignments() {
                                       handleReplyClick(
                                         comment.id,
                                         comment.user.email,
-                                        comment.user.id
+                                        comment.user?.id
                                       )
                                     }
                                     className="cursor-pointer text-blue-500 text-xs hover:underline mt-1"
                                   >
                                     Trả lời
                                   </button>
-                                  {comment.user.id === user.id && (
+                                  {comment.user?.id === user?.id && (
                                     <button
                                       onClick={() => handleEditComment(comment)}
                                       className="cursor-pointer ml-4 text-yellow-500 text-xs hover:underline mt-1"
@@ -341,12 +341,12 @@ export default function Assignments() {
                                       Sửa
                                     </button>
                                   )}
-                                  {comment.user.id === user.id && (
+                                  {comment.user?.id === user?.id && (
                                     <button
                                       onClick={() =>
                                         deleteComment({
                                           id: comment.id,
-                                          userId: user.id,
+                                          userId: user?.id,
                                           classroomId: Number(classroomId),
                                         })
                                       }
@@ -397,14 +397,14 @@ export default function Assignments() {
                                               handleReplyClick(
                                                 comment.id,
                                                 comment.user.email,
-                                                comment.user.id
+                                                comment.user?.id
                                               )
                                             }
                                             className="text-blue-500 text-xs hover:underline mt-1"
                                           >
                                             Trả lời
                                           </button>
-                                          {reply.user.id === user.id && (
+                                          {reply.user?.id === user?.id && (
                                             <button
                                               onClick={() =>
                                                 handleEditComment(reply)
@@ -414,12 +414,12 @@ export default function Assignments() {
                                               Sửa
                                             </button>
                                           )}
-                                          {reply.user.id === user.id && (
+                                          {reply.user?.id === user?.id && (
                                             <button
                                               onClick={() =>
                                                 deleteComment({
                                                   id: reply.id,
-                                                  userId: user.id,
+                                                  userId: user?.id,
                                                   classroomId:
                                                     Number(classroomId),
                                                 })

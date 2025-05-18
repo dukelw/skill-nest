@@ -44,8 +44,8 @@ export default function HomePage() {
     const fetchClasses = async () => {
       try {
         const [studentRes, teacherRes] = await Promise.all([
-          classroomService.getStudentRole(user.id),
-          classroomService.getTeacherRole(user.id),
+          classroomService.getStudentRole(user?.id),
+          classroomService.getTeacherRole(user?.id),
         ]);
         setStudentClasses(studentRes);
         setTeacherClasses(teacherRes);
