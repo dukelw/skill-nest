@@ -18,6 +18,7 @@ import { useAuthStore } from "~/store/authStore";
 import { userService } from "~/services/userService";
 import Request from "~/models/Request";
 import LewisButton from "../partial/LewisButton";
+import { useTranslation } from "react-i18next";
 
 export default function People() {
   const { users, setUsers } = useUserStore();
@@ -28,6 +29,7 @@ export default function People() {
   const [addMode, setAddMode] = useState<"teacher" | "student">("student");
   const [requests, setRequests] = useState<Request[]>([]);
   const { classroomId } = useParams();
+  const { t } = useTranslation();
 
   const toggleModal = (mode: "teacher" | "student") => {
     setAddMode(mode);
@@ -97,7 +99,9 @@ export default function People() {
       {/* REQUEST */}
       <div className="flex flex-col items-start">
         <div className="flex justify-between items-center w-full">
-          <h2 className="text-xl font-semibold">Request</h2>
+          <h2 className="text-xl font-semibold">
+            {t("peopleComponent.request")}
+          </h2>
         </div>
 
         <div className="w-full h-px bg-gray-700 my-4" />
@@ -128,26 +132,28 @@ export default function People() {
                   color="red"
                   onClick={() => handleReject(m.userId)}
                 >
-                  Reject
+                  {t("reject")}
                 </LewisButton>
                 <LewisButton
                   lewisSize="small"
                   onClick={() => handleAccept(m.userId)}
                 >
-                  Accept
+                  {t("accept")}
                 </LewisButton>
               </div>
             </div>
           ))
         ) : (
-          <p className="mb-8">No pending request</p>
+          <p className="mb-8">{t("peopleComponent.norequest")}</p>
         )}
       </div>
 
       {/* TEACHER */}
       <div className="flex flex-col items-start">
         <div className="flex justify-between items-center w-full">
-          <h2 className="text-xl font-semibold">Teacher</h2>
+          <h2 className="text-xl font-semibold">
+            {t("peopleComponent.teacher")}
+          </h2>
           {classroom?.creatorId === user?.id && (
             <button
               onClick={() => toggleModal("teacher")}
@@ -181,7 +187,9 @@ export default function People() {
       {/* STUDENT */}
       <div className="flex flex-col items-start mt-6">
         <div className="flex justify-between items-center w-full">
-          <h2 className="text-xl font-semibold">Student</h2>
+          <h2 className="text-xl font-semibold">
+            {t("peopleComponent.student")}
+          </h2>
           {classroom?.creatorId === user?.id && (
             <button
               onClick={() => toggleModal("student")}
@@ -215,7 +223,7 @@ export default function People() {
       {/* MODAL ADD MEMBER */}
       <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <ModalHeader className="bg-green">
-          Add {addMode === "teacher" ? "Teacher" : "Student"}
+          {t("add")} {addMode === "teacher" ? "Teacher" : "Student"}
         </ModalHeader>
         <ModalBody>
           <div className="flex flex-col gap-2 max-h-80 overflow-y-auto">
@@ -234,10 +242,10 @@ export default function People() {
         </ModalBody>
         <ModalFooter>
           <Button className="bg-green" onClick={handleAdd}>
-            Add
+            {t("add")}
           </Button>
           <Button color="gray" onClick={() => setIsModalOpen(false)}>
-            Cancel
+            {t("cancel")}
           </Button>
         </ModalFooter>
       </Modal>

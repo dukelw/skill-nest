@@ -21,8 +21,7 @@ import LewisTextInput from "../partial/LewisTextInput";
 import { uploadService } from "~/services/uploadService";
 import useSocket from "~/hooks/useSocket";
 import MeetingModal from "../Meeting/MeetingModal";
-import { Video } from "lucide-react";
-import { FaVideo } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 type ModalType = "new" | "join" | "schedule" | null;
 
@@ -43,6 +42,7 @@ export default function Stream() {
   const openModal = modalType !== null;
   const socket = useSocket();
   const [openMeetingModal, setOpenMeetingModal] = useState<ModalType>(null);
+  const { t } = useTranslation();
 
   const handleGetClassroomDetail = async () => {
     const res = await classroomService.getDetail(Number(classroomId));
@@ -127,7 +127,7 @@ export default function Stream() {
         {modalType === "student" && (
           <>
             <ModalHeader className="bg-green-500 text-white">
-              Danh sách học viên
+              {t("streamComponent.studentList")}
             </ModalHeader>
             <ModalBody>
               {classroom?.members?.map((member) => (
@@ -158,7 +158,7 @@ export default function Stream() {
               ))}
             </ModalBody>
             <ModalFooter>
-              <button onClick={() => setModalType(null)}>Đóng</button>
+              <button onClick={() => setModalType(null)}>{t("close")}</button>
             </ModalFooter>
           </>
         )}
@@ -166,12 +166,12 @@ export default function Stream() {
         {modalType === "code" && (
           <>
             <ModalHeader className="bg-green-500 text-white">
-              Đổi mã lớp
+              {t("streamComponent.changeCode")}
             </ModalHeader>
             <ModalBody>
               <LewisTextInput
                 type="text"
-                placeholder="Nhập mã lớp mới"
+                placeholder={t("streamComponent.enterNewCode")}
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
               />
@@ -182,7 +182,7 @@ export default function Stream() {
                 lewisSize="small"
                 onClick={() => setModalType(null)}
               >
-                Hủy
+                {t("cancel")}
               </LewisButton>
               <LewisButton onClick={handleChange}>Lưu</LewisButton>
             </ModalFooter>
@@ -192,11 +192,11 @@ export default function Stream() {
         {modalType === "avatar" && (
           <>
             <ModalHeader className="bg-green-500 text-white">
-              Đổi ảnh lớp
+              {t("streamComponent.changeThumb")}
             </ModalHeader>
             <ModalBody>
               <input
-                placeholder={"Thumbnail"}
+                placeholder={t("thumbnail")}
                 name="thumbnail"
                 type="file"
                 onChange={handleFileChange}
@@ -209,7 +209,7 @@ export default function Stream() {
                 lewisSize="small"
                 onClick={() => setModalType(null)}
               >
-                Hủy
+                {t("cancel")}
               </LewisButton>
               <LewisButton onClick={handleChange}>Cập nhật</LewisButton>
             </ModalFooter>
@@ -260,7 +260,7 @@ export default function Stream() {
                 className="w-max"
                 onClick={() => setModalType("avatar")}
               >
-                Đổi ảnh lớp
+                {t("streamComponent.changeThumb")}
               </DropdownItem>
             </Dropdown>
           </div>
@@ -274,7 +274,9 @@ export default function Stream() {
           <div className="bg-gray-50 p-4 rounded shadow">
             <div className="flex justify-between items-center">
               <div>
-                <p className="text-gray-500 text-sm">Class Code</p>
+                <p className="text-gray-500 text-sm">
+                  {t("streamComponent.classCode")}
+                </p>
                 <h4 className="text-lg font-semibold">{classroom?.code}</h4>
               </div>
               <Dropdown
@@ -292,7 +294,7 @@ export default function Stream() {
                     navigator.clipboard.writeText(classroom?.code || "")
                   }
                 >
-                  Copy
+                  {t("streamComponent.copy")}
                 </DropdownItem>
                 {classroom?.creatorId === user?.id && (
                   <div>
@@ -302,7 +304,7 @@ export default function Stream() {
                         setModalType("code");
                       }}
                     >
-                      Change
+                      {t("streamComponent.change")}
                     </DropdownItem>
                   </div>
                 )}
@@ -311,7 +313,9 @@ export default function Stream() {
           </div>
           <div className="bg-gray-50 p-4 rounded shadow">
             <div className="w-full">
-              <p className="text-gray-500 text-sm">Meeting</p>
+              <p className="text-gray-500 text-sm">
+                {t("streamComponent.meeting")}
+              </p>
               <div className="w-full flex items-center justify-between mt-2">
                 {classroom?.creatorId === user?.id ? (
                   <div className="w-full flex items-center justify-around">
@@ -320,14 +324,14 @@ export default function Stream() {
                       space={false}
                       onClick={() => setOpenMeetingModal("new")}
                     >
-                      New
+                      {t("streamComponent.new")}
                     </LewisButton>
                     <LewisButton
                       lewisSize="small"
                       space={false}
                       onClick={() => setOpenMeetingModal("schedule")}
                     >
-                      Schedule
+                      {t("streamComponent.schedule")}
                     </LewisButton>
                   </div>
                 ) : (
@@ -336,7 +340,7 @@ export default function Stream() {
                     space={false}
                     onClick={() => setOpenMeetingModal("join")}
                   >
-                    Join
+                    {t("streamComponent.join")}
                   </LewisButton>
                 )}
               </div>
@@ -346,7 +350,7 @@ export default function Stream() {
           {/* Block 2: Upcoming Items - nền trắng hoặc trong suốt */}
           <div className="bg-gray-50 p-4 rounded shadow">
             <h3 className="text-sm text-gray-600 font-medium mb-2">
-              Sắp đến hạn
+              {t("streamComponent.upcoming")}
             </h3>
             <ul className="space-y-2 text-sm text-gray-700">
               {filteredAssignments?.map((a) => (
@@ -370,7 +374,9 @@ export default function Stream() {
         <div className="col-span-9 p-6 bg-white rounded shadow space-y-4">
           {classroom?.creatorId === user?.id && (
             <>
-              <h2 className="text-xl font-semibold">Tạo bài viết mới</h2>
+              <h2 className="text-xl font-semibold">
+                {t("streamComponent.createNew")}
+              </h2>
 
               <div className="flex items-center space-x-2">
                 <input
@@ -386,8 +392,10 @@ export default function Stream() {
                 >
                   👥{" "}
                   {selectedStudentIds.length === 0
-                    ? "Tất cả học viên"
-                    : `${selectedStudentIds.length} học viên`}
+                    ? t("streamComponent.allMembers")
+                    : `${selectedStudentIds.length} ${t(
+                        "streamComponent.members"
+                      )}`}
                 </LewisButton>
               </div>
 
@@ -409,21 +417,23 @@ export default function Stream() {
               <div className="flex justify-end items-center pt-2">
                 <div className="flex space-x-2">
                   <LewisButton lewisSize="small" color="red">
-                    Cancel
+                    {t("cancel")}
                   </LewisButton>
                   <LewisButton
                     space={false}
                     lewisSize="small"
                     onClick={handlePostNotification}
                   >
-                    Post
+                    {t("post")}
                   </LewisButton>
                 </div>
               </div>
             </>
           )}
           <>
-            <h2 className="text-lg font-semibold">📢 Thông báo gần đây</h2>
+            <h2 className="text-lg font-semibold">
+              📢 {t("streamComponent.allNoti")}
+            </h2>
             {classroom?.creatorId === user?.id && (
               <div className="w-full flex justify-between items-center">
                 {classroom?.creatorId === user?.id && (
@@ -446,14 +456,16 @@ export default function Stream() {
                         }
                       }}
                     />
-                    <span className="text-sm">Chọn tất cả</span>
+                    <span className="text-sm">
+                      {t("streamComponent.chooseAll")}
+                    </span>
                   </div>
                 )}
                 <span
                   onClick={handleDeleteNotification}
                   className="text-sm text-red-600 cursor-pointer"
                 >
-                  Xóa
+                  {t("delete")}
                 </span>
               </div>
             )}
@@ -513,7 +525,8 @@ export default function Stream() {
                       dangerouslySetInnerHTML={{ __html: n.content }}
                     />
                     <p className="text-xs text-gray-400 mt-2">
-                      Gửi lúc: {new Date(n.createdAt).toLocaleString("vi-VN")}
+                      {t("streamComponent.sendAt")}:{" "}
+                      {new Date(n.createdAt).toLocaleString("vi-VN")}
                     </p>
                   </div>
                 );

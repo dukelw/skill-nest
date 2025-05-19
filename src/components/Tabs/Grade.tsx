@@ -16,6 +16,7 @@ import { useSubmissionStore } from "~/store/submissionStore";
 import Submission from "~/models/Submission";
 import { classroomService } from "~/services/classroomService";
 import LewisTextInput from "../partial/LewisTextInput";
+import { useTranslation } from "react-i18next";
 
 export default function Grade() {
   const { classroom } = useClassroomStore();
@@ -30,6 +31,7 @@ export default function Grade() {
   );
   const [isGradingModalOpen, setIsGradingModalOpen] = useState(false);
   const { classroomId } = useParams();
+  const { t } = useTranslation();
 
   const handleViewSubmissions = async (assignmentId: number) => {
     const res = await submissionService.getSubmissionOfAssignment(assignmentId);
@@ -69,7 +71,7 @@ export default function Grade() {
     <div>
       <div className="flex flex-col items-start">
         <div className="flex justify-between items-center w-full">
-          <h2 className="text-xl font-semibold">Grade</h2>
+          <h2 className="text-xl font-semibold">{t("grade")}</h2>
         </div>
         <div className="w-full h-px bg-gray-700 my-4" />
       </div>
@@ -116,17 +118,18 @@ export default function Grade() {
                   <p className="mt-2">{assignment.description}</p>
                   <div className="mt-2 flex justify-between items-center">
                     <p className="text-sm text-gray-500">
-                      Due Date: {new Date(assignment.dueDate).toLocaleString()}
+                      {t("dueDate")}:{" "}
+                      {new Date(assignment.dueDate).toLocaleString()}
                     </p>
                     <p className="text-sm text-gray-500">
-                      Submit: {submissionCount} / {studentCount}
+                      {t("gradeComponent.submit")}: {submissionCount} / {studentCount}
                     </p>
                   </div>
                 </div>
 
                 <div className="col-span-4 px-6 bg-white border-l-2 border-l-green-500">
                   <h4 className="text-center font-bold text-green m-6">
-                    Actions
+                    {t("actions")}
                   </h4>
                   <div className="flex justify-end items-center">
                     {assignment.fileUrl && (
@@ -136,7 +139,7 @@ export default function Grade() {
                         rel="noopener noreferrer"
                         className="text-sm inline-block bg-blue-600 hover:bg-blue-500 text-white py-2.5 px-4 rounded-md"
                       >
-                        Attached
+                        {t("attached")}
                       </a>
                     )}
                     {assignment.type === AssignmentType.QUIZ &&
@@ -147,7 +150,7 @@ export default function Grade() {
                           lewisSize="small"
                           color="pink"
                         >
-                          Review
+                          {t("review")}
                         </LewisButton>
                       )}
                     {classroom.creatorId === user?.id && (
@@ -156,7 +159,7 @@ export default function Grade() {
                         space={false}
                         onClick={() => handleViewSubmissions(assignment?.id)}
                       >
-                        Submission
+                        {t("submission")}
                       </LewisButton>
                     )}
                   </div>
@@ -172,38 +175,45 @@ export default function Grade() {
         onClose={() => setIsViewSubmissionOpen(false)}
       >
         <ModalHeader className="bg-green">
-          Bài làm đã nộp ({submissions.length} /{" "}
+          {t("gradeComponent.submitted")} ({submissions.length} /{" "}
           {classroom?.members.filter((m) => m.role === "STUDENT").length})
         </ModalHeader>
 
         <ModalBody>
           <h2 className="font-semibold mb-2">Đã nộp ({submissions.length})</h2>
           {submissions.length === 0 ? (
-            <p>Chưa có bài nộp nào.</p>
+            <p>{t("gradeComponent.nosubmitted")}</p>
           ) : (
             <ul className="space-y-2 mb-4">
               {submissions?.map((s: Submission) => {
                 const submittedTime = new Date(s.submittedAt);
                 const deadline = new Date(s.assignment.dueDate);
                 const isLate = submittedTime > deadline;
-                const grade = s.grade ?? "Chưa có điểm";
+                const grade = s.grade ?? t("gradeComponent.noscore");
 
                 return (
                   <li key={s?.id} className="flex justify-between items-start">
                     <div>
                       <p>
                         {s.user?.name + " (" + s.user.email + ")" ||
-                          `Sinh viên ${s.userId}`}
+                          `${t("student")} ${s.userId}`}
                       </p>
                       <p className="text-sm text-gray-500">
-                        Nộp lúc: {submittedTime.toLocaleString()}{" "}
+                        {t("gradeComponent.submittedAt")}:{" "}
+                        {submittedTime.toLocaleString()}{" "}
                         <span
                           className={isLate ? "text-red-500" : "text-green-600"}
                         >
-                          ({isLate ? "Quá hạn" : "Đúng hạn"})
+                          (
+                          {isLate
+                            ? t("gradeComponent.overdue")
+                            : t("gradeComponent.ontime")}
+                          )
                         </span>
                       </p>
-                      <p className="text-sm text-gray-500">Điểm: {grade}</p>
+                      <p className="text-sm text-gray-500">
+                        {t("gradeComponent.score")}: {grade}
+                      </p>
                     </div>
                     <div className="flex flex-col space-y-2">
                       {" "}
@@ -217,7 +227,7 @@ export default function Grade() {
                         rel="noopener noreferrer"
                         className="cursor-pointer text-sm text-blue-600 hover:underline"
                       >
-                        Xem
+                        {t("view")}
                       </a>
                       {s.grade === null && (
                         <button
@@ -228,7 +238,7 @@ export default function Grade() {
                           }}
                           className="cursor-pointer text-sm text-blue-600 hover:underline"
                         >
-                          Cho điểm
+                          {t("mark")}
                         </button>
                       )}
                       {s.grade !== null &&
@@ -241,7 +251,7 @@ export default function Grade() {
                             }}
                             className="cursor-pointer text-sm text-blue-600 hover:underline"
                           >
-                            Regrade
+                            {t("remark")}
                           </button>
                         )}
                     </div>
@@ -255,13 +265,13 @@ export default function Grade() {
           <div className="flex items-center my-4">
             <div className="flex-grow h-px bg-gray-300" />
             <span className="px-4 text-sm text-gray-500 uppercase">
-              Chưa nộp
+              {t("gradeComponent.havenotsubmitted")}
             </span>
             <div className="flex-grow h-px bg-gray-300" />
           </div>
 
           <h2 className="font-semibold mb-2">
-            Chưa nộp (
+            {t("gradeComponent.havenotsubmitted")} (
             {
               classroom?.members.filter(
                 (m) =>
@@ -281,7 +291,7 @@ export default function Grade() {
               ?.map((m) => (
                 <li key={m.userId} className="text-gray-600">
                   {m.user?.name + " (" + m.user.email + ")" ||
-                    `Sinh viên ${m.userId}`}
+                    `${t("student")} ${m.userId}`}
                 </li>
               ))}
           </ul>
@@ -289,7 +299,7 @@ export default function Grade() {
 
         <ModalFooter>
           <Button color="gray" onClick={() => setIsViewSubmissionOpen(false)}>
-            Đóng
+            {t("close")}
           </Button>
         </ModalFooter>
       </Modal>
@@ -299,10 +309,10 @@ export default function Grade() {
         show={isGradingModalOpen}
         onClose={() => setIsGradingModalOpen(false)}
       >
-        <ModalHeader className="bg-green">Chấm điểm</ModalHeader>
+        <ModalHeader className="bg-green">{t("mark")}</ModalHeader>
         <ModalBody>
           <p>
-            Sinh viên:{" "}
+            {t("student")}:{" "}
             <strong>
               {gradingSubmission?.user?.name} ({gradingSubmission?.user?.email})
             </strong>
@@ -313,12 +323,12 @@ export default function Grade() {
             onChange={(e) => setGrade(Number(e.target.value))}
             min={0}
             max={10}
-            placeholder="Nhập điểm (0 - 10)"
+            placeholder={t("gradeComponent.enterMark")}
           />
         </ModalBody>
         <ModalFooter>
           <Button color="gray" onClick={() => setIsGradingModalOpen(false)}>
-            Hủy
+            {t("cancel")}
           </Button>
           <Button
             onClick={async () => {
@@ -328,7 +338,7 @@ export default function Grade() {
               setIsViewSubmissionOpen(true);
             }}
           >
-            Confirm
+            {t("confirm")}
           </Button>
         </ModalFooter>
       </Modal>

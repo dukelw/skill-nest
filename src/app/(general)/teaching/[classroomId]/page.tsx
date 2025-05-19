@@ -11,12 +11,14 @@ import People from "~/components/Tabs/People";
 import { useClassroomStore } from "~/store/classroomStore";
 import Asset from "~/components/Tabs/Asset";
 import Loader from "~/components/partial/Loader";
+import { useTranslation } from "react-i18next";
 
 export default function ClientClassroomDetail() {
   const [activeTab, setActiveTab] = useState("stream");
   const { classroomId } = useParams();
   const { classroom, setClassroom } = useClassroomStore();
   const router = useRouter();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchClassroom = async () => {
@@ -40,10 +42,10 @@ export default function ClientClassroomDetail() {
   if (!classroom) return <Loader />;
 
   const tabs = [
-    { name: "Bảng tin", key: "stream" },
-    { name: "Bài tập", key: "assignments" },
-    { name: "Mọi người", key: "people" },
-    { name: "Điểm", key: "grades" },
+    { name: t("teachingDetailPage.stream"), key: "stream" },
+    { name: t("teachingDetailPage.assignments"), key: "assignments" },
+    { name: t("teachingDetailPage.people"), key: "people" },
+    { name: t("teachingDetailPage.grades"), key: "grades" },
   ];
 
   return (

@@ -9,13 +9,23 @@ import CallList from "~/components/Meeting/CallList";
 import MeetingModal from "~/components/Meeting/MeetingModal";
 import LewisButton from "~/components/partial/LewisButton";
 import { useGetCalls } from "~/hooks/useGetCalls";
+import { useAuthStore } from "~/store/authStore";
 
 type ModalType = "new" | "join" | "schedule" | null;
 
 export default function MeetingPage() {
+  const { user } = useAuthStore();
   const [openModal, setOpenModal] = useState<ModalType>(null);
   const router = useRouter();
   const { nearestMeeting } = useGetCalls();
+
+  if (!user) {
+    return (
+      <p className="text-gray-500 p-4 text-center">
+        Please sign in to see your meeting.
+      </p>
+    );
+  }
 
   return (
     <main className="p-6 space-y-6">

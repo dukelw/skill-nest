@@ -60,6 +60,14 @@ function Calendar() {
     return allAssignments.filter((a) => dayjs(a.dueDate).isSame(day, "day"));
   };
 
+  if (!user) {
+    return (
+      <p className="text-gray-500 p-4 text-center">
+        Please sign in to see your calendar.
+      </p>
+    );
+  }
+
   return (
     <div className="p-6 min-h-full bg-white/80 rounded-xl shadow-lg">
       <div className="mb-6 flex justify-between items-center">

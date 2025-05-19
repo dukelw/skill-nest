@@ -32,7 +32,9 @@ export default function Classroom() {
 
   if (!user) {
     return (
-      <p className="text-gray-500 p-4">Please sign in to see your classroom.</p>
+      <p className="text-gray-500 p-4 text-center">
+        Please sign in to see your classroom.
+      </p>
     );
   }
 
@@ -46,7 +48,9 @@ export default function Classroom() {
 
   if (!studentClassrooms || studentClassrooms.length === 0) {
     return (
-      <p className="text-gray-500 p-4">You have no student classrooms yet.</p>
+      <p className="text-gray-500 p-4 text-center">
+        You have no student classrooms yet.
+      </p>
     );
   }
 

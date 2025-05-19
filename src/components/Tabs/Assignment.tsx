@@ -23,6 +23,7 @@ import Assignment from "~/models/Assignment";
 import useComments from "~/hooks/useComments";
 import useSocket from "~/hooks/useSocket";
 import Comment from "~/models/Comment";
+import { useTranslation } from "react-i18next";
 
 export default function Assignments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,6 +59,7 @@ export default function Assignments() {
     email: string | null;
     userId: number;
   }>({ id: undefined, email: null, userId: -1 });
+  const { t } = useTranslation();
 
   const toggleCommentBox = (id: number) => {
     setVisibleCommentBox((prev) => (prev === id ? null : id));
@@ -221,7 +223,9 @@ export default function Assignments() {
     <div>
       <div className="flex flex-col items-start">
         <div className="flex justify-between items-center w-full">
-          <h2 className="text-xl font-semibold">Assignment</h2>
+          <h2 className="text-xl font-semibold">
+            {t("assignmentComponent.assignment")}
+          </h2>
           {classroom?.creatorId === user?.id && (
             <button
               onClick={() => setIsModalOpen(true)}
@@ -273,13 +277,15 @@ export default function Assignments() {
                   <p className="mt-2">{assignment.description}</p>
                   <div className="flex items-center justify-between mt-2">
                     <p className="mt-2 text-sm text-gray-500">
-                      Due Date: {new Date(assignment.dueDate).toLocaleString()}
+                      {t("assignmentComponent.dueDate")}:{" "}
+                      {new Date(assignment.dueDate).toLocaleString()}
                     </p>
                     <button
                       onClick={() => toggleCommentBox(assignment.id)}
                       className="text-blue-600 hover:underline text-sm"
                     >
-                      💬 {assignment.comments.length} Comments
+                      💬 {assignment.comments.length}{" "}
+                      {t("assignmentComponent.comments")}
                     </button>
                   </div>
                   {visibleCommentBox === assignment.id && (
@@ -304,7 +310,7 @@ export default function Assignments() {
                                 <Avatar
                                   rounded
                                   img={comment.user.avatar}
-                                  className="w-8 h-8 rounded-full"
+                                  className="w-10 h-10 rounded-full"
                                 />
                                 <div className="flex-1 ml-1">
                                   <div className="text-sm font-semibold text-green-700">
@@ -331,14 +337,14 @@ export default function Assignments() {
                                     }
                                     className="cursor-pointer text-blue-500 text-xs hover:underline mt-1"
                                   >
-                                    Trả lời
+                                    {t("reply")}
                                   </button>
                                   {comment.user?.id === user?.id && (
                                     <button
                                       onClick={() => handleEditComment(comment)}
                                       className="cursor-pointer ml-4 text-yellow-500 text-xs hover:underline mt-1"
                                     >
-                                      Sửa
+                                      {t("edit")}
                                     </button>
                                   )}
                                   {comment.user?.id === user?.id && (
@@ -352,7 +358,7 @@ export default function Assignments() {
                                       }
                                       className="cursor-pointer ml-4 text-red-500 text-xs hover:underline mt-1"
                                     >
-                                      Xóa
+                                      {t("delete")}
                                     </button>
                                   )}
 
@@ -382,7 +388,7 @@ export default function Assignments() {
                                           </div>
                                           <div className="text-xs text-gray-700">
                                             <span className="text-gray-500 mr-1">
-                                              Trả lời @
+                                              {t("reply")} @
                                               {parentComment?.user.email}
                                             </span>
                                             {reply.content}
@@ -402,7 +408,7 @@ export default function Assignments() {
                                             }
                                             className="text-blue-500 text-xs hover:underline mt-1"
                                           >
-                                            Trả lời
+                                            {t("reply")}
                                           </button>
                                           {reply.user?.id === user?.id && (
                                             <button
@@ -411,7 +417,7 @@ export default function Assignments() {
                                               }
                                               className="cursor-pointer ml-4 text-yellow-500 text-xs hover:underline mt-1"
                                             >
-                                              Sửa
+                                              {t("edit")}
                                             </button>
                                           )}
                                           {reply.user?.id === user?.id && (
@@ -426,7 +432,7 @@ export default function Assignments() {
                                               }
                                               className="cursor-pointer ml-4 text-red-500 text-xs hover:underline mt-1"
                                             >
-                                              Xóa
+                                              {t("delete")}
                                             </button>
                                           )}
                                         </div>
@@ -443,7 +449,7 @@ export default function Assignments() {
                       <div className="mt-4">
                         {replyInfo.email && (
                           <div className="text-xs text-gray-500 mb-1">
-                            Trả lời @{replyInfo.email}
+                            {t("reply")} @{replyInfo.email}
                           </div>
                         )}
                         <textarea
@@ -458,7 +464,7 @@ export default function Assignments() {
                             onClick={() => handleCreateComment(assignment.id)}
                             className="bg-green text-white px-4 py-2 rounded-md text-sm hover:bg-green-600"
                           >
-                            {edit ? "Cập nhật" : "Gửi"}
+                            {edit ? t("update") : t("send")}
                           </button>
                           {edit && (
                             <button
@@ -473,7 +479,7 @@ export default function Assignments() {
                               }}
                               className="bg-red text-white px-4 py-2 ml-2 rounded-md text-sm hover:bg-red-600"
                             >
-                              Huỷ chỉnh sửa
+                              {t("cancel")}
                             </button>
                           )}
                         </div>
@@ -483,7 +489,7 @@ export default function Assignments() {
 
                   {isSubmitted && (
                     <div className="mt-2 text-sm text-green-700">
-                      ✅ Submitted
+                      ✅ {t("submitted")}
                       {submission.fileUrl && (
                         <a
                           href={
@@ -495,13 +501,13 @@ export default function Assignments() {
                           rel="noopener noreferrer"
                           className="ml-4 underline text-blue-600"
                         >
-                          View File
+                          {t("viewFile")}
                         </a>
                       )}
                       <span className="ml-4 font-bold">
-                        Score:{" "}
+                        {t("assignmentComponent.score")}:{" "}
                         {submission.grade === null
-                          ? "Chưa có điểm"
+                          ? t("assignmentComponent.noScore")
                           : submission.grade}
                       </span>
                     </div>
@@ -510,7 +516,7 @@ export default function Assignments() {
 
                 <div className="col-span-4 px-6 bg-white border-l-2 border-l-green-500">
                   <h4 className="text-center font-bold text-green m-6">
-                    Actions
+                    {t("actions")}
                   </h4>
                   <div className="flex justify-end items-center">
                     {assignment.fileUrl && (
@@ -520,7 +526,7 @@ export default function Assignments() {
                         rel="noopener noreferrer"
                         className="text-sm inline-block bg-blue-600 hover:bg-blue-500 text-white py-2.5 px-4 rounded-md"
                       >
-                        Attached
+                        {t("attached")}
                       </a>
                     )}
 
@@ -537,7 +543,7 @@ export default function Assignments() {
                             setIsSubmitModalOpen(true);
                           }}
                         >
-                          {!isSubmitted ? "Upload" : "Re-Submit"}
+                          {!isSubmitted ? t("upload") : t("resubmit")}
                         </LewisButton>
                       )}
 
@@ -555,7 +561,7 @@ export default function Assignments() {
                             setIsConfirmAttempOpen(true);
                           }}
                         >
-                          Attempt
+                          {t("attemp")}
                         </LewisButton>
                       )}
                   </div>
@@ -578,16 +584,16 @@ export default function Assignments() {
                 onClick={() => handleTypeSelection("HOMEWORK")}
                 className="w-full"
               >
-                Homework
+                {t("assignmentComponent.homework")}
               </Button>
               <Button href={`/quiz-creatory/${classroomId}`} className="w-full">
-                Quiz
+                {t("assignmentComponent.quiz")}
               </Button>
               <Button
                 onClick={() => handleTypeSelection("DOCUMENT")}
                 className="w-full"
               >
-                Document
+                {t("assignmentComponent.document")}
               </Button>
             </div>
           ) : (
@@ -595,7 +601,9 @@ export default function Assignments() {
             <div>
               {/* Title */}
               <div className="mb-4">
-                <label className="block text-sm font-medium">Title</label>
+                <label className="block text-sm font-medium">
+                  {t("assignmentComponent.title")}
+                </label>
                 <LewisTextInput
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -605,7 +613,9 @@ export default function Assignments() {
 
               {/* Description */}
               <div className="mb-4">
-                <label className="block text-sm font-medium">Description</label>
+                <label className="block text-sm font-medium">
+                  {t("assignmentComponent.description")}
+                </label>
                 <LewisTextInput
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -615,7 +625,9 @@ export default function Assignments() {
 
               {/* Due Date */}
               <div className="mb-4">
-                <label className="block text-sm font-medium">Due Date</label>
+                <label className="block text-sm font-medium">
+                  {t("assignmentComponent.dueDate")}
+                </label>
                 <input
                   type="datetime-local" // Change from "date" to "datetime-local"
                   value={dueDate}
@@ -626,7 +638,9 @@ export default function Assignments() {
 
               {/* File Upload */}
               <div className="mb-4">
-                <label className="block text-sm font-medium">Upload File</label>
+                <label className="block text-sm font-medium">
+                  {t("upload")}
+                </label>
                 <input
                   type="file"
                   onChange={handleFileChange}
@@ -639,15 +653,15 @@ export default function Assignments() {
         <ModalFooter>
           {showTypeSelection ? (
             <Button className="bg-green" onClick={() => setIsModalOpen(false)}>
-              Cancel
+              {t("cancel")}
             </Button>
           ) : (
             <>
               <Button className="bg-green" onClick={handleCreateAssignment}>
-                Create Assignment
+                {t("create")}
               </Button>
               <Button color="gray" onClick={() => setShowTypeSelection(true)}>
-                Cancel
+                {t("cancel")}
               </Button>
             </>
           )}
@@ -660,10 +674,10 @@ export default function Assignments() {
         onClose={() => setIsConfirmDeleteOpen(false)}
       >
         <ModalHeader className="bg-red-500 text-white">
-          Confirm Delete
+          {t("confirmDelete")}
         </ModalHeader>
         <ModalBody>
-          <p>Are you sure you want to delete this assignment?</p>
+          <p>{t("assignmentComponent.confirmStatement")}</p>
         </ModalBody>
         <ModalFooter>
           <Button
@@ -676,10 +690,10 @@ export default function Assignments() {
               setSelectedAssignmentId(null);
             }}
           >
-            Yes, Delete
+            {t("imsure")}
           </Button>
           <Button color="gray" onClick={() => setIsConfirmDeleteOpen(false)}>
-            Cancel
+            {t("cancel")}
           </Button>
         </ModalFooter>
       </Modal>
@@ -690,10 +704,10 @@ export default function Assignments() {
         onClose={() => setIsConfirmAttempOpen(false)}
       >
         <ModalHeader className="bg-blue-500 text-white">
-          Confirm Attemp
+          {t("confirmAttemp")}
         </ModalHeader>
         <ModalBody>
-          <p>Are you sure you want to attemp this assignment?</p>
+          <p>{t("assignmentComponent.confirmAttemp")}</p>
         </ModalBody>
         <ModalFooter>
           <Button
@@ -706,10 +720,10 @@ export default function Assignments() {
               setSelectedAssignmentId(null);
             }}
           >
-            Yes
+            {t("imsure")}
           </Button>
           <Button color="gray" onClick={() => setIsConfirmAttempOpen(false)}>
-            Cancel
+            {t("cancel")}
           </Button>
         </ModalFooter>
       </Modal>
@@ -723,7 +737,7 @@ export default function Assignments() {
         }}
       >
         <ModalHeader className="bg-green text-white">
-          Submit Homework
+          {t("assignmentComponent.submitHomework")}
         </ModalHeader>
         <ModalBody>
           <input
@@ -738,10 +752,10 @@ export default function Assignments() {
             onClick={handleSubmitHomework}
             disabled={!file || uploading}
           >
-            {uploading ? "Uploading..." : "Submit"}
+            {uploading ? t("uploading") : t("submit")}
           </Button>
           <Button color="gray" onClick={() => setIsSubmitModalOpen(false)}>
-            Cancel
+            {t("cancel")}
           </Button>
         </ModalFooter>
       </Modal>

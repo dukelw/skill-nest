@@ -80,6 +80,14 @@ export default function Tasks() {
     handleGetStudentClasses();
   }, [user?.id]);
 
+  if (!user) {
+    return (
+      <p className="text-gray-500 p-4 text-center">
+        Please sign in to see your tasks.
+      </p>
+    );
+  }
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[300px]">

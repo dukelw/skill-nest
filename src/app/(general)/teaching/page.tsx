@@ -13,11 +13,13 @@ import { useAuthStore } from "~/store/authStore";
 import { useClassroomStore } from "~/store/classroomStore";
 import Link from "next/link";
 import { Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function Teaching() {
   const { teacherClassrooms, setTeacherClassrooms } = useClassroomStore();
   const { user } = useAuthStore();
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleGetTeacherClasses = async () => {
@@ -32,8 +34,8 @@ export default function Teaching() {
 
   if (!user) {
     return (
-      <p className="text-gray-500 p-4">
-        Please sign in to see your teaching classroom.
+      <p className="text-gray-500 p-4 text-center">
+        {t("teachingPage.authError")}
       </p>
     );
   }
@@ -47,9 +49,7 @@ export default function Teaching() {
   }
 
   if (!teacherClassrooms || teacherClassrooms.length === 0) {
-    return (
-      <p className="text-gray-500 p-4">You have no teaching classrooms yet.</p>
-    );
+    return <p className="text-gray-500 p-4">{t("teachingPage.teaching")}</p>;
   }
 
   return (
@@ -87,10 +87,10 @@ export default function Teaching() {
               <div className="flex items-center gap-3 mt-3">
                 <div>
                   <p className="text-sm text-gray-700 dark:text-gray-300">
-                    <strong>Code:</strong> {classroom.code}
+                    <strong>{t("teachingPage.code")}:</strong> {classroom.code}
                   </p>
                   <p className="text-xs text-gray-500">
-                    Created:{" "}
+                    {t("teachingPage.created")}:{" "}
                     {new Date(classroom.createdAt).toLocaleDateString("en-GB")}
                   </p>
                 </div>

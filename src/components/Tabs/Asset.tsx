@@ -21,6 +21,7 @@ import { useAuthStore } from "~/store/authStore";
 import useComments from "~/hooks/useComments";
 import useSocket from "~/hooks/useSocket";
 import Comment from "~/models/Comment";
+import { useTranslation } from "react-i18next";
 
 export default function Asset() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,6 +54,7 @@ export default function Asset() {
     email: string | null;
     userId: number;
   }>({ id: undefined, email: null, userId: -1 });
+  const { t } = useTranslation();
 
   const toggleCommentBox = (id: number) => {
     setVisibleCommentBox((prev) => (prev === id ? null : id));
@@ -206,7 +208,9 @@ export default function Asset() {
     <div>
       <div className="flex flex-col items-start">
         <div className="flex justify-between items-center w-full">
-          <h2 className="text-xl font-semibold">Assignment</h2>
+          <h2 className="text-xl font-semibold">
+            {t("assetsComponent.assignment")}
+          </h2>
           {classroom?.creatorId === user?.id && (
             <button
               onClick={() => setIsModalOpen(true)}
@@ -253,13 +257,15 @@ export default function Asset() {
                   <p className="mt-2">{assignment.description}</p>
                   <div className="flex items-center justify-between mt-2">
                     <p className="mt-2 text-sm text-gray-500">
-                      Due Date: {new Date(assignment.dueDate).toLocaleString()}
+                      {t("assetsComponent.dueDate")}:{" "}
+                      {new Date(assignment.dueDate).toLocaleString()}
                     </p>
                     <button
                       onClick={() => toggleCommentBox(assignment.id)}
                       className="text-blue-600 hover:underline text-sm"
                     >
-                      💬 {assignment.comments.length} Comments
+                      💬 {assignment.comments.length}{" "}
+                      {t("assetsComponent.comments")}
                     </button>
                   </div>
                   {visibleCommentBox === assignment.id && (
@@ -284,7 +290,7 @@ export default function Asset() {
                                 <Avatar
                                   rounded
                                   img={comment.user.avatar}
-                                  className="w-8 h-8 rounded-full"
+                                  className="w-10 h-10 rounded-full"
                                 />
                                 <div className="flex-1 ml-1">
                                   <div className="text-sm font-semibold text-green-700">
@@ -311,14 +317,14 @@ export default function Asset() {
                                     }
                                     className="cursor-pointer text-blue-500 text-xs hover:underline mt-1"
                                   >
-                                    Trả lời
+                                    {t("reply")}
                                   </button>
                                   {comment.user?.id === user?.id && (
                                     <button
                                       onClick={() => handleEditComment(comment)}
                                       className="cursor-pointer ml-4 text-yellow-500 text-xs hover:underline mt-1"
                                     >
-                                      Sửa
+                                      {t("edit")}
                                     </button>
                                   )}
                                   {comment.user?.id === user?.id && (
@@ -332,7 +338,7 @@ export default function Asset() {
                                       }
                                       className="cursor-pointer ml-4 text-red-500 text-xs hover:underline mt-1"
                                     >
-                                      Xóa
+                                      {t("delete")}
                                     </button>
                                   )}
 
@@ -362,7 +368,7 @@ export default function Asset() {
                                           </div>
                                           <div className="text-xs text-gray-700">
                                             <span className="text-gray-500 mr-1">
-                                              Trả lời @
+                                              {t("reply")} @
                                               {parentComment?.user.email}
                                             </span>
                                             {reply.content}
@@ -382,7 +388,7 @@ export default function Asset() {
                                             }
                                             className="text-blue-500 text-xs hover:underline mt-1"
                                           >
-                                            Trả lời
+                                            {t("reply")}
                                           </button>
                                           {reply.user?.id === user?.id && (
                                             <button
@@ -391,7 +397,7 @@ export default function Asset() {
                                               }
                                               className="cursor-pointer ml-4 text-yellow-500 text-xs hover:underline mt-1"
                                             >
-                                              Sửa
+                                              {t("edit")}
                                             </button>
                                           )}
                                           {reply.user?.id === user?.id && (
@@ -406,7 +412,7 @@ export default function Asset() {
                                               }
                                               className="cursor-pointer ml-4 text-red-500 text-xs hover:underline mt-1"
                                             >
-                                              Xóa
+                                              {t("delete")}
                                             </button>
                                           )}
                                         </div>
@@ -423,7 +429,7 @@ export default function Asset() {
                       <div className="mt-4">
                         {replyInfo.email && (
                           <div className="text-xs text-gray-500 mb-1">
-                            Trả lời @{replyInfo.email}
+                            {t("delete")} @{replyInfo.email}
                           </div>
                         )}
                         <textarea
@@ -453,7 +459,7 @@ export default function Asset() {
                               }}
                               className="bg-red text-white px-4 py-2 ml-2 rounded-md text-sm hover:bg-red-600"
                             >
-                              Huỷ chỉnh sửa
+                              {t("cancel")}
                             </button>
                           )}
                         </div>
@@ -471,7 +477,7 @@ export default function Asset() {
                       rel="noopener noreferrer"
                       className="text-sm inline-block bg-blue-600 hover:bg-blue-500 text-white py-2.5 px-4 rounded-md"
                     >
-                      Attached
+                      {t("attached")}
                     </a>
                   )}
                   {assignment.type === AssignmentType.HOMEWORK &&
@@ -481,7 +487,7 @@ export default function Asset() {
                         space={false}
                         lewisSize="small"
                       >
-                        Submit
+                        {t("submit")}
                       </LewisButton>
                     )}
                   {assignment.type === AssignmentType.QUIZ &&
@@ -496,7 +502,7 @@ export default function Asset() {
                           setIsConfirmAttempOpen(true);
                         }}
                       >
-                        Attemp
+                        {t("attemp")}
                       </LewisButton>
                     )}
                   {assignment.type === AssignmentType.QUIZ &&
@@ -507,7 +513,7 @@ export default function Asset() {
                         lewisSize="small"
                         color="pink"
                       >
-                        Review
+                        {t("review")}
                       </LewisButton>
                     )}
                   {classroom.creatorId === user?.id && (
@@ -518,7 +524,7 @@ export default function Asset() {
                         space={false}
                         lewisSize="small"
                       >
-                        Edit
+                        {t("edit")}
                       </LewisButton>
                       <LewisButton
                         color="red"
@@ -530,7 +536,7 @@ export default function Asset() {
                           setIsConfirmDeleteOpen(true);
                         }}
                       >
-                        Delete
+                        {t("delete")}
                       </LewisButton>
                     </>
                   )}
@@ -553,16 +559,16 @@ export default function Asset() {
                 onClick={() => handleTypeSelection("HOMEWORK")}
                 className="w-full"
               >
-                Homework
+                {t("assetsComponent.homework")}
               </Button>
               <Button href={`/quiz-creatory/${classroomId}`} className="w-full">
-                Quiz
+                {t("assetsComponent.quiz")}
               </Button>
               <Button
                 onClick={() => handleTypeSelection("DOCUMENT")}
                 className="w-full"
               >
-                Document
+                {t("assetsComponent.document")}
               </Button>
             </div>
           ) : (
@@ -614,15 +620,15 @@ export default function Asset() {
         <ModalFooter>
           {showTypeSelection ? (
             <Button className="bg-green" onClick={() => setIsModalOpen(false)}>
-              Cancel
+              {t("cancel")}
             </Button>
           ) : (
             <>
               <Button className="bg-green" onClick={handleCreateAssignment}>
-                Create Assignment
+                {t("create")}
               </Button>
               <Button color="gray" onClick={() => setShowTypeSelection(true)}>
-                Cancel
+                {t("cancel")}
               </Button>
             </>
           )}
@@ -635,10 +641,10 @@ export default function Asset() {
         onClose={() => setIsConfirmDeleteOpen(false)}
       >
         <ModalHeader className="bg-red-500 text-white">
-          Confirm Delete
+          {t("confirmDelete")}
         </ModalHeader>
         <ModalBody>
-          <p>Are you sure you want to delete this assignment?</p>
+          <p>{t("confirmStatement")}</p>
         </ModalBody>
         <ModalFooter>
           <Button
@@ -651,10 +657,10 @@ export default function Asset() {
               setSelectedAssignmentId(null);
             }}
           >
-            Yes, Delete
+            {t("imsure")}
           </Button>
           <Button color="gray" onClick={() => setIsConfirmDeleteOpen(false)}>
-            Cancel
+            {t("cancel")}
           </Button>
         </ModalFooter>
       </Modal>
@@ -665,10 +671,10 @@ export default function Asset() {
         onClose={() => setIsConfirmAttempOpen(false)}
       >
         <ModalHeader className="bg-blue-500 text-white">
-          Confirm Attemp
+          {t("confirmAttemp")}
         </ModalHeader>
         <ModalBody>
-          <p>Are you sure you want to attemp this assignment?</p>
+          <p>{t("assetsComponent.confirmAttemp")}</p>
         </ModalBody>
         <ModalFooter>
           <Button
@@ -681,10 +687,10 @@ export default function Asset() {
               setSelectedAssignmentId(null);
             }}
           >
-            Yes
+            {t("imsure")}
           </Button>
           <Button color="gray" onClick={() => setIsConfirmAttempOpen(false)}>
-            Cancel
+            {t("cancel")}
           </Button>
         </ModalFooter>
       </Modal>
