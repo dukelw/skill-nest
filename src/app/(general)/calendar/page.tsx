@@ -8,6 +8,7 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import weekday from "dayjs/plugin/weekday";
 import Assignment from "~/models/Assignment";
 import Classroom from "~/models/Classroom";
+import { useTranslation } from "react-i18next";
 
 dayjs.extend(isoWeek);
 dayjs.extend(weekday);
@@ -18,6 +19,7 @@ function Calendar() {
   const [currentWeekStart, setCurrentWeekStart] = useState(
     dayjs().startOf("isoWeek")
   );
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!user?.id) return;
@@ -63,7 +65,7 @@ function Calendar() {
   if (!user) {
     return (
       <p className="text-gray-500 p-4 text-center">
-        Please sign in to see your calendar.
+        {t("calendarPage.noUser")}
       </p>
     );
   }
@@ -77,18 +79,20 @@ function Calendar() {
             setCurrentWeekStart(currentWeekStart.subtract(1, "week"))
           }
         >
-          ⬅ Tuần trước
+          {t("calendarPage.previousWeek")}
         </button>
         <h2 className="text-xl font-semibold text-green-700 tracking-wide drop-shadow-sm">
-          Tuần {currentWeekStart.format("DD/MM/YYYY")} -{" "}
-          {currentWeekStart.add(6, "day").format("DD/MM/YYYY")}
+          {t("calendarPage.weekRange", {
+            start: currentWeekStart.format("DD/MM/YYYY"),
+            end: currentWeekStart.add(6, "day").format("DD/MM/YYYY"),
+          })}
         </h2>
 
         <button
           className="text-sm text-green-600 hover:underline"
           onClick={() => setCurrentWeekStart(currentWeekStart.add(1, "week"))}
         >
-          Tuần sau ➡
+          {t("calendarPage.nextWeek")}
         </button>
       </div>
 
@@ -113,13 +117,22 @@ function Calendar() {
               >
                 <div className="font-medium text-gray-800">{a.title}</div>
                 <div className="text-xs text-gray-500 mt-1">
-                  🕒 {dayjs(a.dueDate).format("HH:mm")}
+                  {t("calendarPage.time", {
+                    time: dayjs(a.dueDate).format("HH:mm"),
+                  })}
                 </div>
+
                 <div className="text-xs text-gray-500">
-                  🏫 {a.classroomName}
+                  {t("calendarPage.classroom", { name: a.classroomName })}
                 </div>
+
                 <div className="text-xs text-gray-500">
-                  🎓 {a.role === "teaching" ? "Giáo viên" : "Học sinh"}
+                  {t("calendarPage.role", {
+                    role:
+                      a.role === "teaching"
+                        ? t("calendarPage.teacher")
+                        : t("calendarPage.student"),
+                  })}
                 </div>
               </div>
             ))}

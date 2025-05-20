@@ -154,6 +154,17 @@
     "enterMark": "Nhập điểm (0 - 10)",
     "submit": "Đã nộp"
   },
+  "calendarPage": {
+    "previousWeek": "⬅ Tuần trước",
+    "nextWeek": "Tuần sau ➡",
+    "weekRange": "Tuần {{start}} - {{end}}",
+    "noUser": "Vui lòng đăng nhập để xem lịch.",
+    "teacher": "Giáo viên",
+    "student": "Học sinh",
+    "time": "🕒 {{time}}",
+    "classroom": "🏫 {{name}}",
+    "role": "🎓 {{role}}"
+  },
   "post": "Đăng",
   "close": "Đóng",
   "reply": "Trả lời",

@@ -153,7 +153,19 @@
     "overdue": "Overdue",
     "ontime": "On time",
     "havenotsubmitted": "Not submitted",
-    "enterMark": "Enter score (0 - 10)"
+    "enterMark": "Enter score (0 - 10)",
+    "submit": "Submitted"
+  },
+  "calendarPage": {
+    "previousWeek": "⬅ Previous week",
+    "nextWeek": "Next week ➡",
+    "weekRange": "Week {{start}} - {{end}}",
+    "noUser": "Please sign in to see your calendar.",
+    "teacher": "Teacher",
+    "student": "Student",
+    "time": "🕒 {{time}}",
+    "classroom": "🏫 {{name}}",
+    "role": "🎓 {{role}}"
   },
   "post": "Post",
   "close": "Close",
