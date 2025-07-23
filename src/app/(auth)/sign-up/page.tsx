@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Label, Checkbox } from "flowbite-react";
-import { FaGoogle, FaFacebook } from "react-icons/fa";
+import { FaGoogle, FaFacebook, FaGithub } from "react-icons/fa";
 import Link from "next/link";
 import LewisButton from "~/components/partial/LewisButton";
 import "../../../i18n/client";
@@ -13,6 +13,7 @@ import LewisTextInput from "~/components/partial/LewisTextInput";
 import { toast } from "react-toastify";
 import { authService } from "~/services/authService";
 import { useRouter } from "next/navigation";
+import { login } from "~/lib/actions/auth";
 
 export default function SignUp() {
   const { t } = useTranslation();
@@ -87,6 +88,18 @@ export default function SignUp() {
           >
             <FaFacebook className="text-white" />
             {t("signupWithFacebook")}
+          </LewisButton>
+          <LewisButton
+            lewisSize="full"
+            color="black"
+            space={false}
+            className="flex items-center gap-2"
+            onClick={() => {
+              login();
+            }}
+          >
+            <FaGithub className="text-white" />
+            {t("signinWithGithub")}
           </LewisButton>
         </div>
 

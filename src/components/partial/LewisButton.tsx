@@ -2,7 +2,7 @@ import { Button, ButtonProps } from "flowbite-react";
 
 type LewisButtonProps = ButtonProps & {
   lewisSize?: "small" | "medium" | "large" | "full";
-  color?: "green" | "pink" | "blue" | "red" | "orange" | "yellow";
+  color?: "green" | "pink" | "blue" | "red" | "orange" | "yellow" | "black";
   variant?: "contained" | "outlined";
   hoverColor?: string;
   space?: boolean;
@@ -48,7 +48,7 @@ const LewisButton = ({
     <Button
       {...props}
       color="none"
-      className={`focus:outline-none focus:ring-2 hover:opacity-90 font-medium rounded-lg transition-all duration-200 
+      className={`focus:outline-none focus:ring-2 hover:opacity-90 font-medium cursor-pointer rounded-lg transition-all duration-200 
         ${sizeClasses[lewisSize]} 
         ${space ? spacePadding[lewisSize] : ""} 
         ${getColorClasses(color, variant, hoverColor)} 

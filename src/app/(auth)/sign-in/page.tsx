@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Checkbox, Label } from "flowbite-react";
-import { FaGoogle, FaFacebook } from "react-icons/fa";
+import { FaGoogle, FaFacebook, FaGithub } from "react-icons/fa";
 import Link from "next/link";
 import LewisButton from "~/components/partial/LewisButton";
 import "../../../i18n/client";
@@ -15,6 +15,7 @@ import { authService } from "~/services/authService";
 import { useRouter } from "next/navigation";
 // import { useAuth } from "~/context/AuthContext";
 import { useAuthStore } from "~/store/authStore";
+import { login } from "~/lib/actions/auth";
 
 export default function SignIn() {
   const { t } = useTranslation();
@@ -83,6 +84,18 @@ export default function SignIn() {
           >
             <FaFacebook className="text-white" />
             {t("signinWithFacebook")}
+          </LewisButton>
+          <LewisButton
+            lewisSize="full"
+            color="black"
+            space={false}
+            className="flex items-center gap-2"
+            onClick={() => {
+              login();
+            }}
+          >
+            <FaGithub className="text-white" />
+            {t("signinWithGithub")}
           </LewisButton>
         </div>
 

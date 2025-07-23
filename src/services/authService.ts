@@ -43,16 +43,48 @@ export const authService = {
       setAccessToken(tokens.access_token);
       localStorage.setItem("refresh_token", tokens.refresh_token); // Lưu refresh token vào localStorage
 
+      await axios.post("/api/login", {
+        access_token: tokens.access_token,
+        refresh_token: tokens.refresh_token,
+      });
+
       return response.data;
     } catch (error) {
       throw new Error("Invalid credentials");
     }
   },
 
-  // Đăng xuất
+  async signInOAuth(email: string, name: string, image?: string) {
+    try {
+      const response: AxiosResponse = await axios.post(`${API_URL}/oauth`, {
+        email,
+        name,
+        image,
+      });
+      console.log(email, name, image, response);
+
+      const { tokens } = response.data;
+
+      // Lưu token vào localStorage và cookie
+      setAccessToken(tokens.access_token);
+      localStorage.setItem("refresh_token", tokens.refresh_token); // Lưu refresh token vào localStorage
+
+      await axios.post("/api/login", {
+        access_token: tokens.access_token,
+        refresh_token: tokens.refresh_token,
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error("OAuth login failed:", error);
+      throw new Error("OAuth login failed");
+    }
+  },
+
   async logout() {
     try {
-      await axios.post(`${API_URL}/logout`);
+      await axios.post("/api/logout");
+
       removeAccessToken();
       localStorage.removeItem("refresh_token");
     } catch (error) {

@@ -9,6 +9,7 @@ import {
   FaChalkboardTeacher,
   FaSchool,
   FaVideo,
+  FaGraduationCap,
 } from "react-icons/fa";
 
 export default function staticSidebarItems() {
@@ -23,5 +24,6 @@ export default function staticSidebarItems() {
     { label: t("meetingTab"), icon: FaVideo, href: "/meeting" },
     { label: t("reviewTab"), icon: FaRecordVinyl, href: "/review" },
     { label: t("storageTab"), icon: FaBox, href: "/storage" },
+    { label: t("courseTab"), icon: FaGraduationCap, href: "/course" },
   ];
 }
