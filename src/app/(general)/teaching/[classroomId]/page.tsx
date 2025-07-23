@@ -12,6 +12,7 @@ import { useClassroomStore } from "~/store/classroomStore";
 import Asset from "~/components/Tabs/Asset";
 import Loader from "~/components/partial/Loader";
 import { useTranslation } from "react-i18next";
+import Head from "../head";
 
 export default function ClientClassroomDetail() {
   const [activeTab, setActiveTab] = useState("stream");
@@ -50,6 +51,7 @@ export default function ClientClassroomDetail() {
 
   return (
     <div className="p-6 space-y-3">
+      <Head />
       <Breadcrumb aria-label="Breadcrumb" className="mb-4">
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
         <BreadcrumbItem href="/teaching">Teaching</BreadcrumbItem>

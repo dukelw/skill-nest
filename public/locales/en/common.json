@@ -35,6 +35,7 @@
   "storageTab": "Storage",
   "teachingTab": "Teaching",
   "classroomTab": "Classroom",
+  "courseTab": "Course",
   "noCurrentClass": "You do not have any class now",
   "create": "Create",
   "cancel": "Cancel",

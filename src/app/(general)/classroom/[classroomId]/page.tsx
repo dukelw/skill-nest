@@ -10,6 +10,7 @@ import Assignment from "~/components/Tabs/Assignment";
 import { useClassroomStore } from "~/store/classroomStore";
 import Stream from "~/components/Tabs/Stream";
 import Loader from "~/components/partial/Loader";
+import Head from "../head";
 
 export default function StudentClassroomDetail() {
   const [activeTab, setActiveTab] = useState("stream");
@@ -46,6 +47,7 @@ export default function StudentClassroomDetail() {
 
   return (
     <div className="p-6 space-y-3">
+      <Head />
       <Breadcrumb aria-label="Breadcrumb" className="mb-4">
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
         <BreadcrumbItem href="/classroom">Classroom</BreadcrumbItem>

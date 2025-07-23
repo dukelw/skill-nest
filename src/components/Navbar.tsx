@@ -124,10 +124,10 @@ const AppNavbar = () => {
       <div className="flex items-center space-x-2">
         <NavbarBrand href="/">
           <Image
-            src="https://flowbite.com/docs/images/logo.svg"
+            src="/logo-white.png"
             alt="Flowbite Logo"
-            width={32}
-            height={32}
+            width={40}
+            height={40}
           />
           <span className="ml-2 self-center whitespace-nowrap text-xl font-semibold dark:text-white">
             {t("home")}

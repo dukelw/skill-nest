@@ -23,6 +23,7 @@ import { useAuthStore } from "~/store/authStore";
 import Classroom from "~/models/Classroom";
 import { uploadService } from "~/services/uploadService";
 import { Users } from "lucide-react";
+import Head from "./head";
 
 export default function HomePage() {
   const { t } = useTranslation();
@@ -200,6 +201,8 @@ export default function HomePage() {
           )}
         </>
       )}
+
+      <Head />
 
       {/* Create modal */}
       <Modal show={modalType === "create"} onClose={() => setModalType(null)}>

@@ -13,6 +13,7 @@ import { useAuthStore } from "~/store/authStore";
 import { useClassroomStore } from "~/store/classroomStore";
 import Link from "next/link";
 import { Users } from "lucide-react";
+import Head from "./head";
 
 export default function Classroom() {
   const { studentClassrooms, setStudentClassrooms } = useClassroomStore();
@@ -56,6 +57,7 @@ export default function Classroom() {
 
   return (
     <div className="p-6 gap-4">
+      <Head />
       <Breadcrumb aria-label="Breadcrumb" className="mb-4">
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
         <BreadcrumbItem href="/classroom">Classroom</BreadcrumbItem>

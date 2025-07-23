@@ -21,6 +21,7 @@ import Assignment from "~/models/Assignment";
 import { submissionService } from "~/services/submissionService";
 import { classroomService } from "~/services/classroomService";
 import Classroom from "~/models/Classroom";
+import Head from "./head";
 
 export default function Tasks() {
   const { studentClassrooms, setStudentClassrooms } = useClassroomStore();
@@ -102,6 +103,7 @@ export default function Tasks() {
 
   return (
     <div className="p-6">
+      <Head />
       <Breadcrumb aria-label="Breadcrumb" className="mb-4">
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
         <BreadcrumbItem href="/tasks">Tasks</BreadcrumbItem>

@@ -5,6 +5,7 @@ import Sidebar from "~/components/Sidebar";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import StreamVideoProvider from "~/providers/StreamClientProvider";
+import Head from "./head";
 
 export default function GeneralLayout({
   children,
@@ -24,6 +25,7 @@ export default function GeneralLayout({
       lang={i18n.language}
       className="font-sans bg-gray-50 flex"
     >
+      <Head />
       {/* Navbar cố định top */}
       <div className={`fixed top-0 right-0 z-50 left-20`}>
         <Navbar />
