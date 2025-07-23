@@ -15,7 +15,7 @@ import { authService } from "~/services/authService";
 import { useRouter } from "next/navigation";
 // import { useAuth } from "~/context/AuthContext";
 import { useAuthStore } from "~/store/authStore";
-import { login } from "~/lib/actions/auth";
+import { loginWithFacebook, loginWithGithub, loginWithGoogle } from "~/lib/actions/auth";
 
 export default function SignIn() {
   const { t } = useTranslation();
@@ -72,6 +72,9 @@ export default function SignIn() {
             lewisSize="full"
             space={false}
             className="flex items-center gap-2"
+            onClick={() => {
+              loginWithGoogle();
+            }}
           >
             <FaGoogle className="text-white" />
             {t("signinWithGoogle")}
@@ -81,6 +84,9 @@ export default function SignIn() {
             color="blue"
             space={false}
             className="flex items-center gap-2"
+            onClick={() => {
+              loginWithFacebook();
+            }}
           >
             <FaFacebook className="text-white" />
             {t("signinWithFacebook")}
@@ -91,7 +97,7 @@ export default function SignIn() {
             space={false}
             className="flex items-center gap-2"
             onClick={() => {
-              login();
+              loginWithGithub();
             }}
           >
             <FaGithub className="text-white" />

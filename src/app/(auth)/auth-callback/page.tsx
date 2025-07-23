@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 export default async function AuthCallbackPage() {
   const session = await auth();
+  console.log(session);
 
   if (session?.user?.email && session?.user?.name) {
     const query = new URLSearchParams({

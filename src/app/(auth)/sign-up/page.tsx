@@ -13,7 +13,7 @@ import LewisTextInput from "~/components/partial/LewisTextInput";
 import { toast } from "react-toastify";
 import { authService } from "~/services/authService";
 import { useRouter } from "next/navigation";
-import { login } from "~/lib/actions/auth";
+import { loginWithGithub, loginWithFacebook, loginWithGoogle } from "~/lib/actions/auth";
 
 export default function SignUp() {
   const { t } = useTranslation();
@@ -76,6 +76,9 @@ export default function SignUp() {
             lewisSize="full"
             space={false}
             className="flex items-center gap-2"
+            onClick={() => {
+              loginWithGoogle();
+            }}
           >
             <FaGoogle className="text-white" />
             {t("signupWithGoogle")}
@@ -85,6 +88,9 @@ export default function SignUp() {
             color="blue"
             space={false}
             className="flex items-center gap-2"
+            onClick={() => {
+              loginWithFacebook();
+            }}
           >
             <FaFacebook className="text-white" />
             {t("signupWithFacebook")}
@@ -95,7 +101,7 @@ export default function SignUp() {
             space={false}
             className="flex items-center gap-2"
             onClick={() => {
-              login();
+              loginWithGithub();
             }}
           >
             <FaGithub className="text-white" />
