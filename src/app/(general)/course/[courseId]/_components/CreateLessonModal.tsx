@@ -68,7 +68,7 @@ export default function CreateLessonModal({
         name: form.name.trim(),
         contentUrl: form.contentUrl,
         duration: durationInSeconds,
-        chapterId: form.chapterId,
+        chapterId: Number(form.chapterId),
       });
 
       toast.success("Tạo bài học thành công!");

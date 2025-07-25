@@ -28,6 +28,7 @@ import Head from "./head";
 import { Course } from "~/models/Course";
 import CourseCreateModal from "./_components/CreateCourseModal";
 import { formatDuration } from "~/utils/format";
+import Loader from "~/components/partial/Loader";
 
 export default function CourseOverview() {
   const { t } = useTranslation();
@@ -108,11 +109,7 @@ export default function CourseOverview() {
   }
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[300px]">
-        <Spinner size="xl" aria-label="Loading courses..." />
-      </div>
-    );
+    return <Loader />;
   }
 
   const renderClassCards = (classes: Course[], prefix: string) =>
@@ -132,9 +129,7 @@ export default function CourseOverview() {
             </h5>
             <Badge color="info" className="ml-2 inline-flex items-center gap-1">
               <Users size={14} className="inline-block" />
-              <span className="inline-block ml-1">
-                {course.totalMembers}
-              </span>
+              <span className="inline-block ml-1">{course.totalMembers}</span>
             </Badge>
           </div>
 

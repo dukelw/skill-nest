@@ -1,8 +1,6 @@
 "use client";
 
-import Navbar from "~/components/Navbar";
-import Sidebar from "~/components/Sidebar";
-import { useState } from "react";
+import LearningNavbar from "~/components/LearningNavbar";
 import { useTranslation } from "react-i18next";
 
 export default function GeneralLayout({
@@ -20,7 +18,7 @@ export default function GeneralLayout({
     >
       {/* Navbar cố định top */}
       <div className={`fixed top-0 right-0 z-50 left-0`}>
-        <Navbar />
+        <LearningNavbar />
       </div>
 
       <div className="flex pt-15 min-h-screen">
