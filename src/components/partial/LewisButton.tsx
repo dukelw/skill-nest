@@ -9,6 +9,7 @@ type LewisButtonProps = ButtonProps & {
 };
 
 const sizeClasses = {
+  xsmall: "text-sm min-w-12 max-w-24",
   small: "text-sm min-w-16 max-w-32",
   medium: "text-base min-w-32 max-w-48",
   large: "text-lg min-w-48 max-w-60",

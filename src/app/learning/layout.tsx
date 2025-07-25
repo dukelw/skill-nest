@@ -1,0 +1,39 @@
+"use client";
+
+import Navbar from "~/components/Navbar";
+import Sidebar from "~/components/Sidebar";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+
+export default function GeneralLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { i18n } = useTranslation();
+
+  return (
+    <div
+      suppressHydrationWarning
+      lang={i18n.language}
+      className="font-sans bg-gray-50 flex"
+    >
+      {/* Navbar cố định top */}
+      <div className={`fixed top-0 right-0 z-50 left-0`}>
+        <Navbar />
+      </div>
+
+      <div className="flex pt-15 min-h-screen">
+        {/* Nội dung chính */}
+        <div
+          style={{
+            width: "calc(100vw - 16px)",
+          }}
+          className="min-h-full overflow-x-hidden"
+        >
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}

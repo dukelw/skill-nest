@@ -168,6 +168,15 @@
     "classroom": "🏫 {{name}}",
     "role": "🎓 {{role}}"
   },
+  "courseComponent": {
+    "createCourse": "Tạo khóa học",
+    "joinCourse": "Tham gia khóa học",
+    "courseTitle": "Tiêu đề khóa học",
+    "courseDescription": "Mô tả khóa học",
+    "courseId": "Mã khóa học",
+    "newCourse": "Khóa học mới",
+    "popularCourse": "Khóa học phổ biến"
+  },
   "post": "Đăng",
   "close": "Đóng",
   "reply": "Trả lời",

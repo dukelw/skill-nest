@@ -170,6 +170,15 @@
     "classroom": "🏫 {{name}}",
     "role": "🎓 {{role}}"
   },
+  "courseComponent": {
+    "createCourse": "Create course",
+    "joinCourse": "Join course",
+    "courseTitle": "Course title",
+    "courseDescription": "Course description",
+    "courseId": "Course code",
+    "newCourse": "New course",
+    "popularCourse": "Popular course"
+  },
   "post": "Post",
   "close": "Close",
   "reply": "Reply",
