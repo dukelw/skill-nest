@@ -25,8 +25,32 @@ export const courseService = {
     return res.data;
   },
 
+  async update(
+    courseId: number,
+    data: {
+      title: string;
+      description?: string;
+      thumbnail?: string;
+      introVideoUrl?: string;
+      isFree?: boolean;
+      level?: string;
+      creatorId: number;
+    }
+  ): Promise<any> {
+    const res: AxiosResponse = await api.post(
+      `${API_URL}/${courseId}/update`,
+      data
+    );
+    return res.data;
+  },
+
   async getDetail(courseId: number): Promise<any> {
     const res: AxiosResponse = await api.get(`${API_URL}/${courseId}`);
+    return res.data;
+  },
+
+  async getCoursesOfUser(courseId: number): Promise<any> {
+    const res: AxiosResponse = await api.get(`${API_URL}/${courseId}/user`);
     return res.data;
   },
 
@@ -43,6 +67,46 @@ export const courseService = {
   async addGoals(courseId: number, goals: string[]): Promise<any> {
     const res: AxiosResponse = await api.post(`${API_URL}/${courseId}/goals`, {
       goals,
+    });
+    return res.data;
+  },
+
+  async updateGoals(courseId: number, goals: string[]): Promise<any> {
+    const res: AxiosResponse = await api.patch(`${API_URL}/${courseId}/goals`, {
+      goals,
+    });
+    return res.data;
+  },
+
+  async updateChapter(
+    chapterId: number,
+    title: string,
+    order: number
+  ): Promise<any> {
+    const res: AxiosResponse = await api.patch(
+      `${API_URL}/${chapterId}/chapter`,
+      {
+        title,
+        order,
+      }
+    );
+    return res.data;
+  },
+
+  async deleteChapters(chapterIds: number[]): Promise<any> {
+    const res: AxiosResponse = await api.delete(`${API_URL}/chapter`, {
+      data: {
+        chapterIds,
+      },
+    });
+    return res.data;
+  },
+
+  async deleteCourse(courseId: number): Promise<any> {
+    const res: AxiosResponse = await api.delete(`${API_URL}/course`, {
+      data: {
+        courseId,
+      },
     });
     return res.data;
   },

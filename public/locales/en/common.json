@@ -4,6 +4,7 @@
   "fullname": "Full Name",
   "email": "Email",
   "password": "Password",
+  "dashboard": "Dashboard",
   "confirmPassword": "Confirm Password",
   "submit": "Sign Up",
   "signupWithGoogle": "Google",

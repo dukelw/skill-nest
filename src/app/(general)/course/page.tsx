@@ -26,7 +26,7 @@ import { uploadService } from "~/services/uploadService";
 import { Users } from "lucide-react";
 import Head from "./head";
 import { Course } from "~/models/Course";
-import CourseCreateModal from "./_components/CreateCourseModal";
+import CourseCreateModal from "./_components/CourseModal";
 import { formatDuration } from "~/utils/format";
 import Loader from "~/components/partial/Loader";
 
