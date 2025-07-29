@@ -61,7 +61,14 @@ export default function CourseDetail() {
       <div className="flex justify-end items-center">
         {isCreator && (
           <div className="flex items-center gap-2">
-            <LewisButton color="blue" lewisSize="small" space={false}>
+            <LewisButton
+              onClick={() => {
+                router.push("/dashboard/course");
+              }}
+              color="blue"
+              lewisSize="small"
+              space={false}
+            >
               Edit
             </LewisButton>
 

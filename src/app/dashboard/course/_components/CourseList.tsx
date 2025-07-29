@@ -310,7 +310,7 @@ export default function CourseList({ data, userId }: Props) {
                                   <div className="flex justify-between items-center">
                                     <div
                                       onClick={() => toggleChapter(chapter.id)}
-                                      className="flex items-center gap-2 cursor-pointer"
+                                      className="flex flex-1 items-center gap-2 cursor-pointer"
                                     >
                                       {openChapterIds.includes(chapter.id) ? (
                                         <ChevronUp className="w-4 h-4 text-green-700" />
