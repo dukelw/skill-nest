@@ -93,6 +93,30 @@ export const courseService = {
     return res.data;
   },
 
+  async updateLesson(
+    courseId: number,
+    lessonId: number,
+    input: {
+      name?: string;
+      contentUrl?: string;
+      thumbnail?: string;
+      duration?: number;
+    }
+  ): Promise<any> {
+    const res: AxiosResponse = await api.patch(
+      `${API_URL}/${courseId}/lessons/${lessonId}`,
+      input
+    );
+    return res.data;
+  },
+
+  async deleteLesson(courseId: number, lessonId: number): Promise<any> {
+    const res: AxiosResponse = await api.delete(
+      `${API_URL}/${courseId}/lessons/${lessonId}`
+    );
+    return res.data;
+  },
+
   async deleteChapters(chapterIds: number[]): Promise<any> {
     const res: AxiosResponse = await api.delete(`${API_URL}/chapter`, {
       data: {

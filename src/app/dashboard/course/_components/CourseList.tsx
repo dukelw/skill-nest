@@ -23,6 +23,7 @@ import UpdateChapterModal from "./UpdateChapterModal";
 import CreateChapterModal from "~/app/(general)/course/[courseId]/_components/CreateChapterModal";
 import { toast } from "react-toastify";
 import ConfirmModal from "~/components/Modal/ConfirmModal";
+import LessonModal from "./LessonModal";
 
 interface Props {
   data: Course[];
@@ -44,6 +45,15 @@ export default function CourseList({ data, userId }: Props) {
   const [deleteMode, setDeleteMode] = useState<"chapter" | "course" | null>(
     null
   );
+  const [showLessonModal, setShowLessonModal] = useState(false);
+  const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
+  const [selectedChapterForLesson, setSelectedChapterForLesson] =
+    useState<Chapter | null>(null);
+  const [currentCourseId, setCurrentCourseId] = useState<number | null>(null);
+  const [lessonToDelete, setLessonToDelete] = useState<{
+    courseId: number;
+    lessonId: number;
+  } | null>(null);
 
   const { setCourses } = useCourseStore();
 
@@ -72,6 +82,24 @@ export default function CourseList({ data, userId }: Props) {
       setSelectedCourse(null);
       setSelectedChapterIds([]);
     }
+  };
+
+  const handleAddLesson = (chapter: Chapter, courseId: number) => {
+    setEditingLesson(null);
+    setSelectedChapterForLesson(chapter);
+    setCurrentCourseId(courseId);
+    setShowLessonModal(true);
+  };
+
+  const handleEditLesson = (
+    lesson: Lesson,
+    chapter: Chapter,
+    courseId: number
+  ) => {
+    setEditingLesson(lesson);
+    setSelectedChapterForLesson(chapter);
+    setCurrentCourseId(courseId);
+    setShowLessonModal(true);
   };
 
   const toggleCourse = (id: number) => {
@@ -255,55 +283,66 @@ export default function CourseList({ data, userId }: Props) {
                           .map((chapter) => (
                             <div
                               key={chapter.id}
-                              className="border border-green-200 p-3 rounded flex items-center gap-2"
+                              className="border border-green-200 p-3 rounded flex-col items-center gap-2"
                             >
-                              <input
-                                type="checkbox"
-                                checked={selectedChapterIds.includes(
-                                  chapter.id
-                                )}
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setSelectedChapterIds((prev) => [
-                                      ...prev,
-                                      chapter.id,
-                                    ]);
-                                  } else {
-                                    setSelectedChapterIds((prev) =>
-                                      prev.filter((id) => id !== chapter.id)
-                                    );
-                                  }
-                                }}
-                              />
+                              <div className="flex items-center">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedChapterIds.includes(
+                                    chapter.id
+                                  )}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setSelectedChapterIds((prev) => [
+                                        ...prev,
+                                        chapter.id,
+                                      ]);
+                                    } else {
+                                      setSelectedChapterIds((prev) =>
+                                        prev.filter((id) => id !== chapter.id)
+                                      );
+                                    }
+                                  }}
+                                  className="mr-2"
+                                />
 
-                              <div className="w-full">
-                                <div className="flex justify-between items-center">
-                                  <div
-                                    onClick={() => toggleChapter(chapter.id)}
-                                    className="flex items-center gap-2 cursor-pointer"
-                                  >
-                                    {openChapterIds.includes(chapter.id) ? (
-                                      <ChevronUp className="w-4 h-4 text-green-700" />
-                                    ) : (
-                                      <ChevronDown className="w-4 h-4 text-green-700" />
-                                    )}
-                                    <span className="font-medium">
-                                      {chapter.title}
-                                    </span>
-                                  </div>
-
-                                  <div className="flex items-center gap-2">
-                                    <Button size="xs">
-                                      <Plus className="w-3 h-3 mr-1" />
-                                      Lesson
-                                    </Button>
-                                    <Button
-                                      size="xs"
-                                      color="yellow"
-                                      onClick={() => handleEditChapter(chapter)}
+                                <div className="w-full">
+                                  <div className="flex justify-between items-center">
+                                    <div
+                                      onClick={() => toggleChapter(chapter.id)}
+                                      className="flex items-center gap-2 cursor-pointer"
                                     >
-                                      <Pencil className="w-3 h-3" />
-                                    </Button>
+                                      {openChapterIds.includes(chapter.id) ? (
+                                        <ChevronUp className="w-4 h-4 text-green-700" />
+                                      ) : (
+                                        <ChevronDown className="w-4 h-4 text-green-700" />
+                                      )}
+                                      <span className="font-medium">
+                                        {chapter.title}
+                                      </span>
+                                    </div>
+
+                                    <div className="flex items-center gap-2">
+                                      <Button
+                                        size="xs"
+                                        onClick={() =>
+                                          handleAddLesson(chapter, course.id)
+                                        }
+                                      >
+                                        <Plus className="w-3 h-3 mr-1" />
+                                        Lesson
+                                      </Button>
+
+                                      <Button
+                                        size="xs"
+                                        color="yellow"
+                                        onClick={() =>
+                                          handleEditChapter(chapter)
+                                        }
+                                      >
+                                        <Pencil className="w-3 h-3" />
+                                      </Button>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -316,12 +355,29 @@ export default function CourseList({ data, userId }: Props) {
                                     >
                                       <span>
                                         {lesson.name} –{" "}
-                                        {Math.floor(lesson.duration / 60)}m{" "}
-                                        {lesson.duration % 60}s
+                                        {formatDuration(lesson.duration)}
                                       </span>
                                       <div className="flex gap-2">
-                                        <Pencil className="w-4 h-4 text-yellow-600 hover:text-yellow-800 cursor-pointer" />
-                                        <Trash className="w-4 h-4 text-red-500 hover:text-red-700 cursor-pointer" />
+                                        <Pencil
+                                          className="w-4 h-4 text-yellow-600 hover:text-yellow-800 cursor-pointer"
+                                          onClick={() =>
+                                            handleEditLesson(
+                                              lesson,
+                                              chapter,
+                                              course.id
+                                            )
+                                          }
+                                        />
+
+                                        <Trash
+                                          className="w-4 h-4 text-red-500 hover:text-red-700 cursor-pointer"
+                                          onClick={() =>
+                                            setLessonToDelete({
+                                              courseId: course.id,
+                                              lessonId: lesson.id,
+                                            })
+                                          }
+                                        />
                                       </div>
                                     </div>
                                   ))}
@@ -399,6 +455,56 @@ export default function CourseList({ data, userId }: Props) {
             : "Bạn có chắc muốn xóa khoá học này? Tất cả chương, bài học và mục tiêu sẽ bị xóa vĩnh viễn."
         }
         confirmText={deleteMode === "chapter" ? "Xóa chương" : "Xóa khoá học"}
+      />
+      {selectedChapterForLesson && currentCourseId !== null && (
+        <LessonModal
+          courseId={currentCourseId}
+          open={showLessonModal}
+          onClose={() => {
+            setShowLessonModal(false);
+            setEditingLesson(null);
+            setSelectedChapterForLesson(null);
+            setCurrentCourseId(null);
+          }}
+          chapterId={selectedChapterForLesson.id}
+          chapterName={selectedChapterForLesson.title}
+          initialData={
+            editingLesson
+              ? {
+                  id: editingLesson.id,
+                  name: editingLesson.name,
+                  contentUrl: editingLesson.contentUrl ?? "",
+                  thumbnail: editingLesson.thumbnail ?? "",
+                  duration: editingLesson.duration ?? 0,
+                }
+              : null
+          }
+          isEdit={!!editingLesson}
+          onSuccess={fetchData}
+        />
+      )}
+      <ConfirmModal
+        show={lessonToDelete !== null}
+        onClose={() => setLessonToDelete(null)}
+        onConfirm={async () => {
+          if (!lessonToDelete) return;
+          try {
+            await courseService.deleteLesson(
+              lessonToDelete.courseId,
+              lessonToDelete.lessonId
+            );
+            toast.success("Đã xoá bài học.");
+            fetchData();
+          } catch (err) {
+            toast.error("Xoá bài học thất bại.");
+          } finally {
+            setLessonToDelete(null);
+          }
+        }}
+        isLoading={false}
+        title="Xác nhận xoá bài học"
+        description="Bạn có chắc muốn xoá bài học này? Hành động này không thể hoàn tác."
+        confirmText="Xoá bài học"
       />
     </div>
   );
