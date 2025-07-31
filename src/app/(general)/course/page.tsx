@@ -123,15 +123,9 @@ export default function CourseOverview() {
             "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg"
           }
         >
-          <div className="flex items-center justify-between">
-            <h5 className="text-xl font-semibold text-green-600 dark:text-green-600 truncate">
-              {course.title}
-            </h5>
-            <Badge color="info" className="ml-2 inline-flex items-center gap-1">
-              <Users size={14} className="inline-block" />
-              <span className="inline-block ml-1">{course.totalMembers}</span>
-            </Badge>
-          </div>
+          <h5 className="text-xl font-semibold text-green-600 dark:text-green-600 truncate">
+            {course.title}
+          </h5>
 
           <p className="text-sm">{course.description}</p>
           <div className="flex flex-col gap-1 text-sm text-gray-600">
@@ -147,12 +141,21 @@ export default function CourseOverview() {
                 <strong>Lessons:</strong> {course.totalLessons}
               </p>
             )}
-            {course.totalDuration !== null && (
-              <p>
-                <strong>Duration:</strong>{" "}
-                {formatDuration(course.totalDuration)}
-              </p>
-            )}
+            <div className="flex items-center justify-between">
+              {course.totalDuration !== null && (
+                <p>
+                  <strong>Duration:</strong>{" "}
+                  {formatDuration(course.totalDuration)}
+                </p>
+              )}
+              <Badge
+                color="info"
+                className="ml-2 flex-nowrap items-center gap-1"
+              >
+                <Users size={14} className="inline-block" />
+                <span className="inline-block ml-1">{course.totalMembers}</span>
+              </Badge>
+            </div>
           </div>
         </Card>
       </Link>
