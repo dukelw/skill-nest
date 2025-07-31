@@ -2,8 +2,9 @@
 
 import Navbar from "~/components/Navbar";
 import Sidebar from "~/components/Sidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import useIsMobile from "~/hooks/useIsMobile";
 
 export default function GeneralLayout({
   children,
@@ -12,6 +13,7 @@ export default function GeneralLayout({
 }) {
   const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(true);
+  const isMobile = useIsMobile();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -24,7 +26,7 @@ export default function GeneralLayout({
       className="font-sans bg-gray-50 flex"
     >
       {/* Navbar cố định top */}
-      <div className={`fixed top-0 right-0 z-50 left-20`}>
+      <div className="fixed top-0 right-0 z-50 left-20">
         <Navbar />
       </div>
 
@@ -37,8 +39,12 @@ export default function GeneralLayout({
         {/* Nội dung chính */}
         <div
           style={{
-            width: isOpen ? "calc(100vw - 272px)" : "calc(100vw - 96px)",
-            marginLeft: isOpen ? "256px" : "80px",
+            width: isMobile
+              ? "100vw"
+              : isOpen
+              ? "calc(100vw - 272px)"
+              : "calc(100vw - 96px)",
+            marginLeft: isMobile ? "0" : isOpen ? "256px" : "80px",
           }}
           className="min-h-full overflow-x-hidden"
         >
