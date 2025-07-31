@@ -103,7 +103,7 @@ export default function CourseOverview() {
   if (!user) {
     return (
       <p className="text-gray-500 p-4 text-center">
-        Please sign in to see your coursess.
+        Please sign in to see your courses.
       </p>
     );
   }
@@ -170,7 +170,7 @@ export default function CourseOverview() {
         <BreadcrumbItem href="/course">Course</BreadcrumbItem>
       </Breadcrumb>
       <div className="w-full flex flex-col items-center justify-end">
-        <div className="ml-auto mt-4 flex gap-4">
+        <div className="ml-auto my-4 flex gap-4">
           <LewisButton space={false} onClick={() => setModalType("create")}>
             {t("courseComponent.createCourse")}
           </LewisButton>

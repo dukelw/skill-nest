@@ -2,6 +2,7 @@
 
 import LearningNavbar from "~/components/LearningNavbar";
 import { useTranslation } from "react-i18next";
+import useIsMobile from "~/hooks/useIsMobile";
 
 export default function GeneralLayout({
   children,
@@ -9,6 +10,7 @@ export default function GeneralLayout({
   children: React.ReactNode;
 }) {
   const { i18n } = useTranslation();
+  const isMobile = useIsMobile();
 
   return (
     <div
@@ -25,7 +27,7 @@ export default function GeneralLayout({
         {/* Nội dung chính */}
         <div
           style={{
-            width: "calc(100vw - 16px)",
+            width: isMobile ? "100vw" : "calc(100vw - 16px)",
           }}
           className="min-h-full overflow-x-hidden"
         >

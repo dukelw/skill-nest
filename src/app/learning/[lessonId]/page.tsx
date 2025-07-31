@@ -106,7 +106,7 @@ export default function LessonPage() {
         </div>
 
         {/* Điều hướng */}
-        <div className="flex justify-between pt-2 px-6 border-t">
+        <div className="flex justify-between py-6 md:pt-2 px-6 border-t">
           <LewisButton
             space={false}
             onClick={() => {
@@ -136,7 +136,7 @@ export default function LessonPage() {
       </div>
 
       {/* Right - Danh sách bài học */}
-      <div>
+      <div className="p-6 md:p-0">
         <h2 className="text-xl font-bold text-gray-800 py-2">
           📚 Nội dung khóa học
         </h2>
