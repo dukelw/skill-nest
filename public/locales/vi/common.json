@@ -160,7 +160,9 @@
   },
   "calendarPage": {
     "previousWeek": "⬅ Tuần trước",
+    "previousDay": "Hôm qua",
     "nextWeek": "Tuần sau ➡",
+    "nextDay": "Ngày mai",
     "weekRange": "Tuần {{start}} - {{end}}",
     "noUser": "Vui lòng đăng nhập để xem lịch.",
     "teacher": "Giáo viên",

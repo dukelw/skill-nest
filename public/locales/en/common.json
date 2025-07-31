@@ -162,7 +162,9 @@
   },
   "calendarPage": {
     "previousWeek": "⬅ Previous week",
+    "previousDay": "Yesterday",
     "nextWeek": "Next week ➡",
+    "nextDay": "Tomorrow",
     "weekRange": "Week {{start}} - {{end}}",
     "noUser": "Please sign in to see your calendar.",
     "teacher": "Teacher",

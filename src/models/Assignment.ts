@@ -12,6 +12,8 @@ export default interface Assignment {
   dueDate: string; // Date in ISO string format
   fileUrl: string;
   title: string;
+  role: string;
+  classroomName: string;
   type: AssignmentType;
   comments: Comment[];
   submissions: Submission[];
