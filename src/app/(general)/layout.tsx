@@ -23,7 +23,7 @@ export default function GeneralLayout({
     <div
       suppressHydrationWarning
       lang={i18n.language}
-      className="font-sans bg-gray-50 flex"
+      className="font-sans bg-gray-50 flex w-full"
     >
       {/* Navbar cố định top */}
       <div className="fixed top-0 right-0 z-50 left-20">

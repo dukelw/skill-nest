@@ -11,12 +11,14 @@ import { useClassroomStore } from "~/store/classroomStore";
 import Stream from "~/components/Tabs/Stream";
 import Loader from "~/components/partial/Loader";
 import Head from "../head";
+import { useTranslation } from "react-i18next";
 
 export default function StudentClassroomDetail() {
   const [activeTab, setActiveTab] = useState("stream");
   const { classroomId } = useParams();
   const { classroom, setClassroom } = useClassroomStore();
   const router = useRouter();
+  const {t} = useTranslation()
 
   useEffect(() => {
     const fetchClassroom = async () => {
@@ -26,7 +28,6 @@ export default function StudentClassroomDetail() {
           router.replace("/not-found");
           return;
         }
-        console.log("classroom data", res);
         setClassroom(res);
       } catch (error) {
         console.error("Error fetching classroom details:", error);
@@ -40,9 +41,9 @@ export default function StudentClassroomDetail() {
   if (!classroom) return <Loader />;
 
   const tabs = [
-    { name: "Bảng tin", key: "stream" },
-    { name: "Bài tập", key: "assignments" },
-    { name: "Mọi người", key: "people" },
+    { name: t("teachingDetailPage.stream"), key: "stream" },
+    { name: t("teachingDetailPage.assignments"), key: "assignments" },
+    { name: t("teachingDetailPage.people"), key: "people" },
   ];
 
   return (

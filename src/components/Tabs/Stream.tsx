@@ -267,9 +267,9 @@ export default function Stream() {
         )}
       </div>
 
-      <div className="grid grid-cols-12 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
         {/* Class Info - 3/12 */}
-        <div className="col-span-3 space-y-4">
+        <div className="col-span-12 md:col-span-3 space-y-4">
           {/* Block 1: Class Code - nền xám */}
           <div className="bg-gray-50 p-4 rounded shadow">
             <div className="flex justify-between items-center">
@@ -371,23 +371,23 @@ export default function Stream() {
         </div>
 
         {/* New Content - 9/12 */}
-        <div className="col-span-9 p-6 bg-white rounded shadow space-y-4">
+        <div className="col-span-12 md:col-span-9 p-6 bg-white rounded shadow space-y-4">
           {classroom?.creatorId === user?.id && (
             <>
               <h2 className="text-xl font-semibold">
                 {t("streamComponent.createNew")}
               </h2>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <input
                   value={classroom?.name}
                   readOnly
-                  className="rounded px-2 py-2 bg-gray-100 cursor-default select-none outline-none"
+                  className="rounded px-2 py-2 bg-gray-100 cursor-default select-none outline-none w-full sm:w-auto"
                 />
 
                 <LewisButton
                   space={false}
-                  className="py-0"
+                  className="py-0 sm:ml-auto"
                   onClick={() => setModalType("student")}
                 >
                   👥{" "}

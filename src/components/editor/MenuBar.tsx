@@ -65,7 +65,7 @@ export default function MenuBar({ editor }: { editor: Editor | null }) {
   ];
 
   return (
-    <div className="border border-green-500 rounded-md p-1 mb-1 bg-slate-50 space-x-2 z-50 flex">
+    <div className="border border-green-500 rounded-md p-1 mb-1 bg-slate-50 space-x-2 z-50 flex overflow-x-auto sm:overflow-x-visible">
       {Options?.map((option, index) => {
         const Icon = option.icon;
         return (

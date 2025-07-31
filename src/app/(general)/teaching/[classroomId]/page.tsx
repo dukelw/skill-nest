@@ -58,26 +58,29 @@ export default function ClientClassroomDetail() {
         <BreadcrumbItem>{classroom.name}</BreadcrumbItem>
       </Breadcrumb>
       {/* Tabs */}
-      <Tabs
-        theme={customFlowbiteTheme.tabs}
-        aria-label="Classroom tabs"
-        onActiveTabChange={(tabIndex) => {
-          setActiveTab(tabs[tabIndex].key);
-        }}
-      >
-        {tabs?.map((tab) => (
-          <TabItem
-            active={activeTab === tab.key}
-            key={tab.key}
-            title={tab.name}
-          >
-            {activeTab === "stream" && <Stream />}
-            {activeTab === "assignments" && <Asset />}
-            {activeTab === "people" && <People />}
-            {activeTab === "grades" && <Grade />}
-          </TabItem>
-        ))}
-      </Tabs>
+      <div className="overflow-x-auto w-full">
+        <Tabs
+          theme={customFlowbiteTheme.tabs}
+          aria-label="Classroom tabs"
+          onActiveTabChange={(tabIndex) => {
+            setActiveTab(tabs[tabIndex].key);
+          }}
+          style={{ minWidth: "max-content" }} // Đảm bảo tab không bị co lại
+        >
+          {tabs.map((tab) => (
+            <TabItem
+              active={activeTab === tab.key}
+              key={tab.key}
+              title={tab.name}
+            >
+              {activeTab === "stream" && <Stream />}
+              {activeTab === "assignments" && <Asset />}
+              {activeTab === "people" && <People />}
+              {activeTab === "grades" && <Grade />}
+            </TabItem>
+          ))}
+        </Tabs>
+      </div>
     </div>
   );
 }

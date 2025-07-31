@@ -255,9 +255,9 @@ export default function Assignments() {
             return (
               <div
                 key={assignment.id}
-                className="grid grid-cols-12 rounded-lg shadow-md"
+                className="grid grid-cols-1 md:grid-cols-12 rounded-lg shadow-md"
               >
-                <div className="col-span-8 mr-4 p-6">
+                <div className="col-span-12 md:col-span-8 md:mr-4 p-6">
                   <div className="flex justify-between items-center">
                     <h3 className="text-lg font-semibold">
                       {assignment.title}
@@ -289,7 +289,7 @@ export default function Assignments() {
                     </button>
                   </div>
                   {visibleCommentBox === assignment.id && (
-                    <div className="mt-2">
+                    <div className="mt-2 overflow-x-scroll">
                       {/* Danh sách comment gốc */}
                       <div className="mt-4 space-y-3">
                         {assignment.comments
@@ -514,11 +514,11 @@ export default function Assignments() {
                   )}
                 </div>
 
-                <div className="col-span-4 px-6 bg-white border-l-2 border-l-green-500">
-                  <h4 className="text-center font-bold text-green m-6">
+                <div className="col-span-12 md:col-span-4 px-6 bg-white md:border-l-2 border-l-green-500">
+                  <h4 className="text-center hidden md:block font-bold text-green m-6">
                     {t("actions")}
                   </h4>
-                  <div className="flex justify-end items-center">
+                  <div className="flex justify-end items-center mb-2">
                     {assignment.fileUrl && (
                       <a
                         href={assignment.fileUrl}

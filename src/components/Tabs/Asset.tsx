@@ -233,7 +233,7 @@ export default function Asset() {
           ?.map((assignment) => (
             <div
               key={assignment.id}
-              className="grid grid-cols-12 p-4 border border-green-500 rounded-lg shadow-md"
+              className="grid grid-cols-1 md:grid-cols-12 p-4 border border-green-500 rounded-lg shadow-md"
             >
               <div className="col-span-12">
                 <div className="flex justify-between items-center">
@@ -252,7 +252,7 @@ export default function Asset() {
                   </span>
                 </div>
               </div>
-              <div className="col-span-8">
+              <div className="col-span-12 md:col-span-8">
                 <div>
                   <p className="mt-2">{assignment.description}</p>
                   <div className="flex items-center justify-between mt-2">
@@ -284,7 +284,7 @@ export default function Asset() {
                             return (
                               <div
                                 key={comment.id}
-                                className="flex items-start space-x-2"
+                                className="flex items-start space-x-2 overflow-x-auto sm:overflow-x-visible"
                               >
                                 {/* Avatar người comment gốc */}
                                 <Avatar
@@ -292,7 +292,7 @@ export default function Asset() {
                                   img={comment.user.avatar}
                                   className="w-10 h-10 rounded-full"
                                 />
-                                <div className="flex-1 ml-1">
+                                <div className="flex-1 md:ml-1">
                                   <div className="text-sm font-semibold text-green-700">
                                     {comment.user.name}
                                     <span className="ml-1 text-xs font-light text-gray-400">
@@ -352,7 +352,7 @@ export default function Asset() {
                                     return (
                                       <div
                                         key={reply.id}
-                                        className="flex items-start space-x-2 mt-3 ml-6 pl-2 border-gray-300"
+                                        className="flex items-start space-x-2 mt-3 md:ml-6 md:pl-2 border-gray-300"
                                       >
                                         <Avatar
                                           rounded
@@ -429,7 +429,7 @@ export default function Asset() {
                       <div className="mt-4">
                         {replyInfo.email && (
                           <div className="text-xs text-gray-500 mb-1">
-                            {t("delete")} @{replyInfo.email}
+                            {t("reply")} @{replyInfo.email}
                           </div>
                         )}
                         <textarea
@@ -468,8 +468,8 @@ export default function Asset() {
                   )}
                 </div>
               </div>
-              <div className="col-span-4 mt-4">
-                <div className="flex justify-end items-center">
+              <div className="col-span-12 md:col-span-4 mt-4">
+                <div className="flex justify-end items-center overflow-x-auto">
                   {assignment.fileUrl && (
                     <a
                       href={assignment.fileUrl}

@@ -96,9 +96,9 @@ export default function Grade() {
             return (
               <div
                 key={assignment?.id}
-                className="grid grid-cols-12 rounded-lg shadow-md"
+                className="grid grid-cols-1 md:grid-cols-12 rounded-lg shadow-md"
               >
-                <div className="col-span-8 mr-4 p-6">
+                <div className="col-span-12 md:col-span-8 md:mr-4 p-6">
                   <div className="flex justify-between items-center">
                     <h3 className="text-lg font-semibold">
                       {assignment.title}
@@ -116,19 +116,20 @@ export default function Grade() {
                     </span>
                   </div>
                   <p className="mt-2">{assignment.description}</p>
-                  <div className="mt-2 flex justify-between items-center">
+                  <div className="mt-2 flex-col justify-between items-center">
                     <p className="text-sm text-gray-500">
                       {t("dueDate")}:{" "}
                       {new Date(assignment.dueDate).toLocaleString()}
                     </p>
                     <p className="text-sm text-gray-500">
-                      {t("gradeComponent.submit")}: {submissionCount} / {studentCount}
+                      {t("gradeComponent.submit")}: {submissionCount} /{" "}
+                      {studentCount}
                     </p>
                   </div>
                 </div>
 
-                <div className="col-span-4 px-6 bg-white border-l-2 border-l-green-500">
-                  <h4 className="text-center font-bold text-green m-6">
+                <div className="col-span-12 md:col-span-4 px-6 mb-2 bg-white md:border-l-2 border-l-green-500">
+                  <h4 className="text-center font-bold text-green m-6 hidden md:block">
                     {t("actions")}
                   </h4>
                   <div className="flex justify-end items-center">

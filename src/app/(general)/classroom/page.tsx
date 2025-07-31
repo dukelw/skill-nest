@@ -14,11 +14,14 @@ import { useClassroomStore } from "~/store/classroomStore";
 import Link from "next/link";
 import { Users } from "lucide-react";
 import Head from "./head";
+import { useTranslation } from "react-i18next";
+import Loader from "~/components/partial/Loader";
 
 export default function Classroom() {
   const { studentClassrooms, setStudentClassrooms } = useClassroomStore();
   const { user } = useAuthStore();
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleGetStudentClasses = async () => {
@@ -40,11 +43,7 @@ export default function Classroom() {
   }
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[300px]">
-        <Spinner size="xl" aria-label="Loading classrooms..." />
-      </div>
-    );
+    return <Loader />;
   }
 
   if (!studentClassrooms || studentClassrooms.length === 0) {
@@ -91,10 +90,10 @@ export default function Classroom() {
               <div className="flex items-center gap-3 mt-3">
                 <div>
                   <p className="text-sm text-gray-700 dark:text-gray-300">
-                    <strong>Code:</strong> {classroom.code}
+                    <strong>{t("teachingPage.code")}:</strong> {classroom.code}
                   </p>
                   <p className="text-xs text-gray-500">
-                    Created:{" "}
+                    {t("teachingPage.created")}:{" "}
                     {new Date(classroom.createdAt).toLocaleDateString("en-GB")}
                   </p>
                 </div>

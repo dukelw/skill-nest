@@ -54,13 +54,13 @@ export default function Teaching() {
   }
 
   return (
-    <div className="p-6 gap-4">
+    <div className="md:pl-6 md:pr-2 md:py-6 p-6 mx-auto">
       <Head />
       <Breadcrumb aria-label="Breadcrumb" className="mb-4">
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
         <BreadcrumbItem href="/teaching">Teaching</BreadcrumbItem>
       </Breadcrumb>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {teacherClassrooms?.map((classroom) => (
           <Link href={`/teaching/${classroom.id}`} key={classroom.id}>
             <Card
@@ -72,9 +72,10 @@ export default function Teaching() {
               }
             >
               <div className="flex items-center justify-between">
-                <h5 className="text-xl font-semibold text-green-600 dark:text-green-600 truncate">
+                <h5 className="text-xl font-semibold text-green-600 dark:text-green-600 truncate max-w-[80%]">
                   {classroom.name}
                 </h5>
+
                 <Badge
                   color="info"
                   className="ml-2 inline-flex items-center gap-1"
