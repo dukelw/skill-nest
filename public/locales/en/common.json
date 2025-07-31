@@ -182,6 +182,10 @@
     "newCourse": "New course",
     "popularCourse": "Popular course"
   },
+  "taskPage": {
+    "taskOf": "Task of",
+    "areYouSureToStartTheQuiz": "Are you sure to attemp the quiz?"
+  },
   "post": "Post",
   "close": "Close",
   "reply": "Reply",
@@ -207,5 +211,8 @@
   "student": "Student",
   "view": "View",
   "mark": "Mark",
-  "remark": "Remark"
+  "remark": "Remark",
+  "score": "Score",
+  "doesNotHaveScore": "Doesn't have score",
+  "attach": "Attach"
 }

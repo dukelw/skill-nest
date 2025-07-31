@@ -180,6 +180,10 @@
     "newCourse": "Khóa học mới",
     "popularCourse": "Khóa học phổ biến"
   },
+  "taskPage": {
+    "taskOf": "Bài tập của lớp",
+    "areYouSureToStartTheQuiz": "Bạn có chắc muốn làm bài kiểm tra ngay bây giờ?"
+  },
   "post": "Đăng",
   "close": "Đóng",
   "reply": "Trả lời",
@@ -205,5 +209,7 @@
   "student": "Học sinh",
   "view": "Xem",
   "mark": "Cho điểm",
-  "remark": "Chấm lại"
+  "remark": "Chấm lại",
+  "score": "Điểm",
+  "doesNotHaveScore": "Chưa có điểm"
 }

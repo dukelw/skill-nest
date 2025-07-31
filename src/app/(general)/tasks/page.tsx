@@ -9,7 +9,6 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
-  Spinner,
 } from "flowbite-react";
 import { useRouter } from "next/navigation";
 import { uploadService } from "~/services/uploadService";
@@ -22,6 +21,8 @@ import { submissionService } from "~/services/submissionService";
 import { classroomService } from "~/services/classroomService";
 import Classroom from "~/models/Classroom";
 import Head from "./head";
+import Loader from "~/components/partial/Loader";
+import { useTranslation } from "react-i18next";
 
 export default function Tasks() {
   const { studentClassrooms, setStudentClassrooms } = useClassroomStore();
@@ -34,6 +35,7 @@ export default function Tasks() {
   const [isConfirmAttempOpen, setIsConfirmAttempOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const { t } = useTranslation();
 
   const router = useRouter();
 
@@ -72,7 +74,6 @@ export default function Tasks() {
   const handleGetStudentClasses = async () => {
     if (!user?.id) return;
     const response = await classroomService.getStudentRole(user?.id);
-    console.log(response);
     setStudentClassrooms(response);
     setLoading(false);
   };
@@ -90,11 +91,7 @@ export default function Tasks() {
   }
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[300px]">
-        <Spinner size="xl" aria-label="Loading classrooms..." />
-      </div>
-    );
+    return <Loader />;
   }
 
   if (!studentClassrooms || studentClassrooms.length === 0) {
@@ -112,7 +109,7 @@ export default function Tasks() {
         <div key={index}>
           <div className="flex justify-between items-center w-full">
             <h2 className="mt-4 text-xl font-semibold">
-              Task of{" "}
+              {t("taskPage.taskOf")}{" "}
               <span className="text-green font-bold">{classroom.name}</span>
             </h2>
           </div>
@@ -134,9 +131,9 @@ export default function Tasks() {
                 return (
                   <div
                     key={assignment.id}
-                    className="grid grid-cols-12 rounded-lg shadow-md"
+                    className="grid grid-cols-1 md:grid-cols-12 rounded-lg shadow-md"
                   >
-                    <div className="col-span-8 mr-4 p-6">
+                    <div className="col-span-12 md:col-span-8 md:mr-4 p-6">
                       <div className="flex justify-between items-center">
                         <h3 className="text-lg font-semibold">
                           {assignment.title}
@@ -155,12 +152,12 @@ export default function Tasks() {
                       </div>
                       <p className="mt-2">{assignment.description}</p>
                       <p className="mt-2 text-sm text-gray-500">
-                        Due Date:{" "}
+                        {t("dueDate")}:{" "}
                         {new Date(assignment.dueDate).toLocaleString()}
                       </p>
                       {isSubmitted && (
                         <div className="mt-2 text-sm text-green-700">
-                          ✅ Submitted
+                          ✅ {t("submitted")}
                           {submission.fileUrl && (
                             <a
                               href={
@@ -172,22 +169,22 @@ export default function Tasks() {
                               rel="noopener noreferrer"
                               className="ml-4 underline text-blue-600"
                             >
-                              View File
+                              {t("view")}
                             </a>
                           )}
                           <span className="ml-4 font-bold">
-                            Score:{" "}
+                            {t("score")}:{" "}
                             {submission.grade === null
-                              ? "Chưa có điểm"
+                              ? t("doesNotHaveScore")
                               : submission.grade}
                           </span>
                         </div>
                       )}
                     </div>
 
-                    <div className="col-span-4 px-6 bg-white border-l-2 border-l-green-500">
-                      <h4 className="text-center font-bold text-green m-6">
-                        Actions
+                    <div className="col-span-12 md:col-span-4 p-6 md:border-l-2 border-l-green-500">
+                      <h4 className="text-center hidden md:block font-bold text-green m-6">
+                        {t("actions")}
                       </h4>
                       <div className="flex justify-end items-center">
                         {assignment.fileUrl && (
@@ -197,7 +194,7 @@ export default function Tasks() {
                             rel="noopener noreferrer"
                             className="text-sm inline-block bg-blue-600 hover:bg-blue-500 text-white py-2.5 px-4 rounded-md"
                           >
-                            Attached
+                            {t("attach")}
                           </a>
                         )}
 
@@ -214,7 +211,7 @@ export default function Tasks() {
                                 setIsSubmitModalOpen(true);
                               }}
                             >
-                              {!isSubmitted ? "Upload" : "Re-Submit"}
+                              {!isSubmitted ? t("upload") : t("resubmit")}
                             </LewisButton>
                           )}
 
@@ -232,7 +229,7 @@ export default function Tasks() {
                                 setIsConfirmAttempOpen(true);
                               }}
                             >
-                              Attempt
+                              {t("attemp")}
                             </LewisButton>
                           )}
                       </div>
@@ -250,10 +247,10 @@ export default function Tasks() {
         onClose={() => setIsConfirmAttempOpen(false)}
       >
         <ModalHeader className="bg-blue-500 text-white">
-          Confirm Attempt
+          {t("confirm")}
         </ModalHeader>
         <ModalBody>
-          <p>Are you sure you want to attempt this quiz?</p>
+          <p> {t("taskPage.areYouSureToStartTheQuiz")}</p>
         </ModalBody>
         <ModalFooter>
           <Button
@@ -266,10 +263,10 @@ export default function Tasks() {
               setSelectedAssignmentId(null);
             }}
           >
-            Yes
+            {t("yes")}
           </Button>
           <Button color="gray" onClick={() => setIsConfirmAttempOpen(false)}>
-            Cancel
+            {t("cancel")}
           </Button>
         </ModalFooter>
       </Modal>
@@ -282,9 +279,7 @@ export default function Tasks() {
           setFile(null);
         }}
       >
-        <ModalHeader className="bg-green text-white">
-          Submit Homework
-        </ModalHeader>
+        <ModalHeader className="bg-green text-white">{t("submit")}</ModalHeader>
         <ModalBody>
           <input
             type="file"
@@ -301,7 +296,7 @@ export default function Tasks() {
             {uploading ? "Uploading..." : "Submit"}
           </Button>
           <Button color="gray" onClick={() => setIsSubmitModalOpen(false)}>
-            Cancel
+            {t("cancel")}
           </Button>
         </ModalFooter>
       </Modal>
