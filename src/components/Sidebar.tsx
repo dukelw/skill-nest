@@ -24,7 +24,7 @@ const Sidebar = ({
     >
       <button
         onClick={toggleSidebar}
-        className="rounded-full z-100 flex items-center justify-center w-10 h-10 text-white bg-transparent hover:bg-white/10 transition-colors duration-200 ml-4"
+        className="rounded-full flex items-center justify-center w-10 h-10 text-white bg-transparent hover:bg-white/10 transition-colors duration-200 ml-4 z-100"
       >
         <FaBars />
       </button>
@@ -57,12 +57,13 @@ const Sidebar = ({
       {/* Overlay + drawer */}
       <div className="md:hidden">
         <Drawer
+          backdrop={false}
           open={isOpen}
           onClose={toggleSidebar}
           position="left"
           className="w-72 z-40 mt-[60px] bg-dark-green"
         >
-          <div className="w-64 h-full bg-dark-green p-4">
+          <div className="w-64 h-full bg-dark-green p-4 pt-0">
             {sidebarItems?.map((item: any, index: number) => {
               const Icon = item.icon;
               const isActive =
