@@ -61,7 +61,12 @@ export default function SignIn() {
           password: "",
           remember: false,
         });
-        router.push("/");
+
+        if (user.role === "ADMIN") {
+          router.push("/admin");
+        } else {
+          router.push("/");
+        }
       }
     } catch (error: any) {
       toast.error(error?.response?.data?.message || t("signinFailed"));

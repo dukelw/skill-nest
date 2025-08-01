@@ -30,6 +30,8 @@
   "accountInformation": "Account information",
   "logout": "Log out",
   "homeTab": "Home",
+  "userTab": "User",
+  "statisticTab": "Statistic",
   "calendarTab": "Calendar",
   "taskTab": "Tasks",
   "reviewTab": "Review",

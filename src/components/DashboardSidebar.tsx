@@ -5,7 +5,10 @@ import { Drawer } from "flowbite-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaBars } from "react-icons/fa";
-import staticSidebarItems from "~/static/DashboardSideBarItem";
+import dashboardSidebarItems from "~/static/DashboardSideBarItem";
+import adminSidebarItems from "~/static/AdminSideBarItem";
+import { useAuthStore } from "~/store/authStore";
+import { UserRole } from "~/models/UserRole";
 
 const Sidebar = ({
   isOpen,
@@ -14,7 +17,11 @@ const Sidebar = ({
   isOpen: boolean;
   toggleSidebar: () => void;
 }) => {
-  const sidebarItems = staticSidebarItems();
+  const { user } = useAuthStore();
+  const sidebarItems =
+    user?.role === UserRole.ADMIN
+      ? adminSidebarItems()
+      : dashboardSidebarItems();
   const pathName = usePathname();
   return (
     <div
@@ -32,10 +39,8 @@ const Sidebar = ({
       <div className="space-y-4 p-4 flex-grow hidden md:block">
         {sidebarItems?.map((item: any, index: number) => {
           const Icon = item.icon;
-          const isActive =
-            item.href === "/"
-              ? pathName === item.href
-              : pathName.startsWith(item.href);
+          const isActive = item.href === pathName;
+
           return (
             <Link className="cursor-pointer" href={item.href} key={index}>
               <button
