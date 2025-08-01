@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Checkbox, Label } from "flowbite-react";
-import { FaGoogle, FaFacebook, FaGithub } from "react-icons/fa";
+import { FaGoogle, FaGithub } from "react-icons/fa";
 import Link from "next/link";
 import LewisButton from "~/components/partial/LewisButton";
 import "../../../i18n/client";
@@ -15,7 +15,9 @@ import { authService } from "~/services/authService";
 import { useRouter } from "next/navigation";
 // import { useAuth } from "~/context/AuthContext";
 import { useAuthStore } from "~/store/authStore";
-import { loginWithFacebook, loginWithGithub, loginWithGoogle } from "~/lib/actions/auth";
+import { loginWithGithub, loginWithGoogle } from "~/lib/actions/auth";
+import { HiArrowLeft } from "react-icons/hi";
+import Cookies from "js-cookie";
 
 export default function SignIn() {
   const { t } = useTranslation();
@@ -45,6 +47,13 @@ export default function SignIn() {
 
         setUser(user);
         setTokens(tokens);
+        if (form.remember) {
+          Cookies.set("rememberEmail", form.email, { expires: 7 });
+          Cookies.set("rememberPassword", form.password, { expires: 7 });
+        } else {
+          Cookies.remove("rememberEmail");
+          Cookies.remove("rememberPassword");
+        }
 
         toast.success(t("signinSuccess"));
         setForm({
@@ -59,12 +68,33 @@ export default function SignIn() {
     }
   };
 
+  useEffect(() => {
+    const rememberedEmail = Cookies.get("rememberEmail") || "";
+    const rememberedPassword = Cookies.get("rememberPassword") || "";
+
+    if (rememberedEmail && rememberedPassword) {
+      setForm((prev) => ({
+        ...prev,
+        email: rememberedEmail,
+        password: rememberedPassword,
+        remember: true,
+      }));
+    }
+  }, []);
+
   return (
     <div
       lang={i18n?.language}
       className="w-full min-h-screen flex items-center justify-center bg-gray-100 px-4"
     >
       <div className="max-w-md w-full p-6 bg-white rounded shadow-md space-y-5">
+        <Link
+          href="/"
+          className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
+        >
+          <HiArrowLeft className="text-xl" />
+          <span className="text-sm">{t("back")}</span>
+        </Link>
         <h1 className="text-2xl font-bold text-center">{t("signin")}</h1>
 
         <div className="flex justify-center gap-3">
@@ -78,18 +108,6 @@ export default function SignIn() {
           >
             <FaGoogle className="text-white" />
             {t("signinWithGoogle")}
-          </LewisButton>
-          <LewisButton
-            lewisSize="full"
-            color="blue"
-            space={false}
-            className="flex items-center gap-2"
-            onClick={() => {
-              loginWithFacebook();
-            }}
-          >
-            <FaFacebook className="text-white" />
-            {t("signinWithFacebook")}
           </LewisButton>
           <LewisButton
             lewisSize="full"
@@ -144,7 +162,7 @@ export default function SignIn() {
               </Label>
             </div>
             <Link
-              href="/forgot-password"
+              href="/reset-password"
               className="text-sm text-blue-600 hover:underline"
             >
               {t("forgotPassword")}

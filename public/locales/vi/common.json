@@ -184,6 +184,17 @@
     "taskOf": "Bài tập của lớp",
     "areYouSureToStartTheQuiz": "Bạn có chắc muốn làm bài kiểm tra ngay bây giờ?"
   },
+  "resetPasswordPage": {
+    "resetPassword": "Đặt lại mật khẩu",
+    "enterEmail": "Nhập email của bạn",
+    "sendOtp": "Gửi mã OTP",
+    "otpSent": "Đã gửi mã OTP đến email!",
+    "otpRequired": "Vui lòng nhập mã OTP",
+    "enterOtp": "Nhập mã OTP",
+    "verifyOtp": "Xác minh mã",
+    "newPassword": "Mật khẩu mới",
+    "passwordResetSuccess": "Mật khẩu đã được cập nhật!"
+  },
   "post": "Đăng",
   "close": "Đóng",
   "reply": "Trả lời",
@@ -211,5 +222,6 @@
   "mark": "Cho điểm",
   "remark": "Chấm lại",
   "score": "Điểm",
-  "doesNotHaveScore": "Chưa có điểm"
+  "doesNotHaveScore": "Chưa có điểm",
+  "back": "Quay lại"
 }

@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Label, Checkbox } from "flowbite-react";
-import { FaGoogle, FaFacebook, FaGithub } from "react-icons/fa";
+import { FaGoogle, FaGithub } from "react-icons/fa";
 import Link from "next/link";
 import LewisButton from "~/components/partial/LewisButton";
 import "../../../i18n/client";
@@ -13,7 +13,9 @@ import LewisTextInput from "~/components/partial/LewisTextInput";
 import { toast } from "react-toastify";
 import { authService } from "~/services/authService";
 import { useRouter } from "next/navigation";
-import { loginWithGithub, loginWithFacebook, loginWithGoogle } from "~/lib/actions/auth";
+import { loginWithGithub, loginWithGoogle } from "~/lib/actions/auth";
+import { HiArrowLeft } from "react-icons/hi";
+import Cookies from "js-cookie";
 
 export default function SignUp() {
   const { t } = useTranslation();
@@ -48,6 +50,14 @@ export default function SignUp() {
       );
 
       if (res) {
+        if (form.remember) {
+          Cookies.set("rememberEmail", form.email, { expires: 7 });
+          Cookies.set("rememberPassword", form.password, { expires: 7 });
+        } else {
+          Cookies.remove("rememberEmail");
+          Cookies.remove("rememberPassword");
+        }
+
         toast.success(t("signupSuccess"));
         setForm({
           name: "",
@@ -65,10 +75,18 @@ export default function SignUp() {
 
   return (
     <div
+      suppressHydrationWarning={false}
       lang={i18n?.language}
       className="w-full min-h-screen flex items-center justify-center bg-gray-100 px-4"
     >
       <div className="max-w-md w-full p-6 bg-white rounded shadow-md space-y-5">
+        <Link
+          href="/"
+          className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
+        >
+          <HiArrowLeft className="text-xl" />
+          <span className="text-sm">{t("back")}</span>
+        </Link>
         <h1 className="text-2xl font-bold text-center">{t("signup")}</h1>
 
         <div className="flex justify-center gap-3">
@@ -82,18 +100,6 @@ export default function SignUp() {
           >
             <FaGoogle className="text-white" />
             {t("signupWithGoogle")}
-          </LewisButton>
-          <LewisButton
-            lewisSize="full"
-            color="blue"
-            space={false}
-            className="flex items-center gap-2"
-            onClick={() => {
-              loginWithFacebook();
-            }}
-          >
-            <FaFacebook className="text-white" />
-            {t("signupWithFacebook")}
           </LewisButton>
           <LewisButton
             lewisSize="full"
@@ -170,12 +176,6 @@ export default function SignUp() {
                 {t("rememberMe")}
               </Label>
             </div>
-            <Link
-              href="/forgot-password"
-              className="text-sm text-blue-600 hover:underline"
-            >
-              {t("forgotPassword")}
-            </Link>
           </div>
 
           <LewisButton onClick={handleSubmit} lewisSize="full" type="submit">

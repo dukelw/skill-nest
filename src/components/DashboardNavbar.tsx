@@ -2,13 +2,11 @@ import {
   Navbar,
   NavbarBrand,
   Avatar,
-  Button,
   Dropdown,
   DropdownItem,
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Badge,
   NavbarCollapse,
 } from "flowbite-react";
@@ -19,12 +17,7 @@ import { FiBell, FiMenu } from "react-icons/fi";
 // import { useAuth } from "~/context/AuthContext";
 import { useAuthStore } from "~/store/authStore";
 import { useRouter } from "next/navigation";
-import LewisButton from "./partial/LewisButton";
-import LewisTextInput from "./partial/LewisTextInput";
 import { useEffect, useRef, useState } from "react";
-import { classroomService } from "~/services/classroomService";
-import { toast } from "react-toastify";
-import { uploadService } from "~/services/uploadService";
 import { AnnouncementReceiver } from "~/models/AnnouncementReceiver";
 import useUserAnnouncements from "~/hooks/useUserAnnouncements";
 
@@ -32,15 +25,6 @@ const AppNavbar = () => {
   const { i18n, t } = useTranslation();
   const currentLang = i18n.language;
   const router = useRouter();
-  const [openSelectModal, setOpenSelectModal] = useState(false);
-  const [modalType, setModalType] = useState<"create" | "join" | null>(null);
-  const [joinCode, setJoinCode] = useState("");
-  const [file, setFile] = useState<File | null>(null); // State to hold file
-  const [form, setForm] = useState({
-    name: "",
-    code: "",
-    thumbnail: "",
-  });
   const {
     announcements,
     markAsRead,
@@ -63,47 +47,9 @@ const AppNavbar = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
   const handleChangeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
     localStorage.setItem("i18nextLng", lang);
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]); // Set the selected file
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (modalType === "create") {
-      let fileUrl = "";
-      if (file) {
-        fileUrl = await uploadService.uploadFile(file);
-      }
-      const res = await classroomService.create({
-        ...form,
-        creatorId: user!.id,
-        thumbnail: fileUrl,
-      });
-      if (res) {
-        setForm({
-          name: "",
-          code: "",
-          thumbnail: "",
-        });
-        setModalType(null);
-        router.replace("/teaching");
-      }
-    } else {
-      await classroomService.requestToJoinClass(user!.id, joinCode);
-      setModalType(null);
-      toast.success(`Request to join classroom ${joinCode} successfully`);
-    }
-    setModalType(null);
   };
 
   const { user, setUser, setTokens } = useAuthStore();
@@ -137,6 +83,9 @@ const AppNavbar = () => {
         className="block md:hidden"
         width={40}
         height={40}
+        onClick={() => {
+          router.push("/");
+        }}
       />
       <NavbarCollapse>
         <div className="flex items-center space-x-2">

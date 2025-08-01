@@ -147,6 +147,9 @@ const AppNavbar = () => {
               alt="Flowbite Logo"
               width={40}
               height={40}
+              onClick={() => {
+                router.push("/");
+              }}
             />
             <span className="ml-2 self-center whitespace-nowrap text-xl font-semibold dark:text-white">
               {t("home")}

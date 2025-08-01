@@ -186,6 +186,17 @@
     "taskOf": "Task of",
     "areYouSureToStartTheQuiz": "Are you sure to attemp the quiz?"
   },
+  "resetPasswordPage": {
+    "resetPassword": "Reset Password",
+    "enterEmail": "Enter your email",
+    "sendOtp": "Send OTP",
+    "otpSent": "OTP has been sent to your email!",
+    "otpRequired": "Please enter the OTP code",
+    "enterOtp": "Enter OTP code",
+    "verifyOtp": "Verify OTP",
+    "newPassword": "New password",
+    "passwordResetSuccess": "Your password has been updated!"
+  },
   "post": "Post",
   "close": "Close",
   "reply": "Reply",
@@ -214,5 +225,6 @@
   "remark": "Remark",
   "score": "Score",
   "doesNotHaveScore": "Doesn't have score",
-  "attach": "Attach"
+  "attach": "Attach",
+  "back": "Back"
 }

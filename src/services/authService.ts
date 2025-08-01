@@ -114,4 +114,34 @@ export const authService = {
       throw new Error("Failed to refresh tokens");
     }
   },
+
+  // Gửi yêu cầu gửi mã OTP qua email
+  async requestResetPassword(email: string) {
+    try {
+      const res = await axios.post(`${API_URL}/request-reset-password`, {
+        email,
+      });
+      return res.data;
+    } catch (error: any) {
+      throw new Error(
+        error?.response?.data?.message || "Failed to request OTP"
+      );
+    }
+  },
+
+  // Xác thực mã OTP và đổi mật khẩu mới
+  async verifyResetPassword(email: string, token: string, newPassword: string) {
+    try {
+      const res = await axios.post(`${API_URL}/verify-reset-password`, {
+        email,
+        token,
+        password: newPassword,
+      });
+      return res.data;
+    } catch (error: any) {
+      throw new Error(
+        error?.response?.data?.message || "Failed to reset password"
+      );
+    }
+  },
 };
