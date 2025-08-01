@@ -1,11 +1,16 @@
 import {
   Navbar,
   NavbarBrand,
-  NavbarToggle,
   Avatar,
+  Button,
   Dropdown,
   DropdownItem,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
   Badge,
+  NavbarCollapse,
 } from "flowbite-react";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
@@ -14,14 +19,22 @@ import { FiBell, FiMenu } from "react-icons/fi";
 // import { useAuth } from "~/context/AuthContext";
 import { useAuthStore } from "~/store/authStore";
 import { useRouter } from "next/navigation";
+import LewisButton from "./partial/LewisButton";
+import LewisTextInput from "./partial/LewisTextInput";
 import { useEffect, useRef, useState } from "react";
+import { classroomService } from "~/services/classroomService";
+import { toast } from "react-toastify";
+import { uploadService } from "~/services/uploadService";
 import { AnnouncementReceiver } from "~/models/AnnouncementReceiver";
 import useUserAnnouncements from "~/hooks/useUserAnnouncements";
 
-const DashboardNavbar = () => {
+const AppNavbar = () => {
   const { i18n, t } = useTranslation();
   const currentLang = i18n.language;
   const router = useRouter();
+  const [openSelectModal, setOpenSelectModal] = useState(false);
+  const [modalType, setModalType] = useState<"create" | "join" | null>(null);
+  const [joinCode, setJoinCode] = useState("");
   const [file, setFile] = useState<File | null>(null); // State to hold file
   const [form, setForm] = useState({
     name: "",
@@ -38,7 +51,17 @@ const DashboardNavbar = () => {
 
   const [showNotificationDropdown, setShowNotificationDropdown] =
     useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
   const notificationRef = useRef<HTMLDivElement | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -53,6 +76,34 @@ const DashboardNavbar = () => {
     if (e.target.files) {
       setFile(e.target.files[0]); // Set the selected file
     }
+  };
+
+  const handleSubmit = async () => {
+    if (modalType === "create") {
+      let fileUrl = "";
+      if (file) {
+        fileUrl = await uploadService.uploadFile(file);
+      }
+      const res = await classroomService.create({
+        ...form,
+        creatorId: user!.id,
+        thumbnail: fileUrl,
+      });
+      if (res) {
+        setForm({
+          name: "",
+          code: "",
+          thumbnail: "",
+        });
+        setModalType(null);
+        router.replace("/teaching");
+      }
+    } else {
+      await classroomService.requestToJoinClass(user!.id, joinCode);
+      setModalType(null);
+      toast.success(`Request to join classroom ${joinCode} successfully`);
+    }
+    setModalType(null);
   };
 
   const { user, setUser, setTokens } = useAuthStore();
@@ -80,21 +131,29 @@ const DashboardNavbar = () => {
 
   return (
     <Navbar className="bg-dark-green" fluid>
-      <div className="flex items-center space-x-2">
-        <NavbarBrand href="/">
-          <Image
-            src="/logo-white.png"
-            alt="Flowbite Logo"
-            width={40}
-            height={40}
-          />
-          <span className="ml-2 self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-            {t("home")}
-          </span>
-        </NavbarBrand>
-      </div>
-
-      <div className="flex md:order-2 space-x-2">
+      <Image
+        src="/logo-white.png"
+        alt="Flowbite Logo"
+        className="block md:hidden"
+        width={40}
+        height={40}
+      />
+      <NavbarCollapse>
+        <div className="flex items-center space-x-2">
+          <NavbarBrand href="/">
+            <Image
+              src="/logo-white.png"
+              alt="Flowbite Logo"
+              width={40}
+              height={40}
+            />
+            <span className="ml-2 self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+              {t("home")}
+            </span>
+          </NavbarBrand>
+        </div>
+      </NavbarCollapse>
+      <div className="flex ml-auto md:order-2 space-x-2">
         <Dropdown
           arrowIcon={false}
           label={
@@ -120,7 +179,13 @@ const DashboardNavbar = () => {
         </Dropdown>
         <div
           className="relative mx-2 cursor-pointer flex items-center"
-          onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
+          onClick={() => {
+            if (isMobile) {
+              setShowNotificationModal(true);
+            } else {
+              setShowNotificationDropdown(!showNotificationDropdown);
+            }
+          }}
           ref={notificationRef}
         >
           <FiBell className="text-white" size={24} />
@@ -260,8 +325,6 @@ const DashboardNavbar = () => {
           )}
         </div>
 
-        <NavbarToggle />
-
         {user ? (
           <Dropdown
             arrowIcon={false}
@@ -303,8 +366,68 @@ const DashboardNavbar = () => {
           </Dropdown>
         )}
       </div>
+
+      <Modal
+        show={showNotificationModal}
+        onClose={() => setShowNotificationModal(false)}
+      >
+        <ModalHeader className="bg-green-500 text-white">
+          🔔 {t("notifications")}
+        </ModalHeader>
+        <ModalBody className="p-0 max-h-[70vh] overflow-y-auto">
+          {announcements?.length > 0 ? (
+            announcements
+              ?.sort(
+                (a, b) =>
+                  new Date(b?.announcement?.createdAt).getTime() -
+                  new Date(a?.announcement?.createdAt).getTime()
+              )
+              ?.map((a, index) => (
+                <div
+                  key={index}
+                  className={`flex items-start px-4 py-2 gap-2 border-b text-sm cursor-pointer hover:bg-gray-100 ${
+                    a?.isRead ? "opacity-60" : ""
+                  }`}
+                  onClick={() => {
+                    router.push(
+                      `${process.env.NEXT_PUBLIC_CLIENT_URL}${a?.announcement?.href}` ||
+                        ""
+                    );
+                    setShowNotificationModal(false);
+                  }}
+                >
+                  <Avatar
+                    img={
+                      a?.user?.avatar ||
+                      "https://cdn-icons-png.freepik.com/512/3607/3607444.png"
+                    }
+                    rounded
+                    size="sm"
+                    alt="avatar"
+                  />
+                  <div className="flex-1">
+                    <p className="text-green font-bold">
+                      {a?.announcement?.title}
+                    </p>
+                    <p className="text-gray-800">{a?.announcement?.content}</p>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {(() => {
+                        const createdAt = a?.announcement?.createdAt;
+                        return createdAt && !isNaN(Date.parse(createdAt))
+                          ? new Date(createdAt).toLocaleString()
+                          : "Không rõ thời gian";
+                      })()}
+                    </div>
+                  </div>
+                </div>
+              ))
+          ) : (
+            <p className="text-center text-sm p-6">No announcement</p>
+          )}
+        </ModalBody>
+      </Modal>
     </Navbar>
   );
 };
 
-export default DashboardNavbar;
+export default AppNavbar;
