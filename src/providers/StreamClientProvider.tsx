@@ -1,9 +1,8 @@
-// StreamVideoProvider.tsx
 import { ReactNode, useEffect, useState } from "react";
 import { StreamVideoClient, StreamVideo } from "@stream-io/video-react-sdk";
 
 import { useAuthStore } from "~/store/authStore";
-import Loader from "~/components/partial/Loader";
+import { useTranslation } from "react-i18next";
 
 const fetchToken = async (userId: string) => {
   const res = await fetch(`/api/stream/token?userId=${userId}`);
@@ -17,6 +16,7 @@ const API_KEY = process.env.NEXT_PUBLIC_STREAM_API_KEY!;
 const StreamVideoProvider = ({ children }: { children: ReactNode }) => {
   const [videoClient, setVideoClient] = useState<StreamVideoClient>();
   const { user } = useAuthStore();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!user) return;
@@ -40,7 +40,12 @@ const StreamVideoProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [user]);
 
-  if (!videoClient) return <Loader />;
+  if (!videoClient)
+    return (
+      <p className="text-gray-500 p-4 text-center">
+        {t("meetingPage.authError")}
+      </p>
+    );
 
   return <StreamVideo client={videoClient}>{children}</StreamVideo>;
 };

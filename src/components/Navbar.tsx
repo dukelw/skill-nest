@@ -374,7 +374,7 @@ const AppNavbar = () => {
             }
           >
             <DropdownItem href="/sign-in">🔑 {t("signin")}</DropdownItem>
-            <DropdownItem href="/sign-up">📝 {t("submit")}</DropdownItem>
+            <DropdownItem href="/sign-up">📝 {t("signup")}</DropdownItem>
           </Dropdown>
         )}
       </div>

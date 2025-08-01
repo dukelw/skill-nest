@@ -87,6 +87,9 @@
     "people": "People",
     "grades": "Grades"
   },
+  "meetingPage": {
+    "authError": "You need to log in to view your meeting."
+  },
   "streamComponent": {
     "studentList": "Student list",
     "changeCode": "Change class code",

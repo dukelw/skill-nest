@@ -195,6 +195,9 @@
     "newPassword": "Mật khẩu mới",
     "passwordResetSuccess": "Mật khẩu đã được cập nhật!"
   },
+  "meetingPage": {
+    "authError": "Vui lòng đăng nhập để xem các cuộc họp của bạn."
+  },
   "post": "Đăng",
   "close": "Đóng",
   "reply": "Trả lời",

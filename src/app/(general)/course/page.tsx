@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import {
   Modal,
@@ -12,7 +10,6 @@ import {
   ModalFooter,
   ModalHeader,
   Card,
-  Spinner,
   Badge,
   Breadcrumb,
   BreadcrumbItem,
@@ -24,7 +21,6 @@ import { courseService } from "~/services/courseService";
 import { useAuthStore } from "~/store/authStore";
 import { uploadService } from "~/services/uploadService";
 import { Users } from "lucide-react";
-import Head from "./head";
 import { Course } from "~/models/Course";
 import CourseCreateModal from "./_components/CourseModal";
 import { formatDuration } from "~/utils/format";
@@ -33,7 +29,6 @@ import Loader from "~/components/partial/Loader";
 export default function CourseOverview() {
   const { t } = useTranslation();
   const { user } = useAuthStore();
-  const router = useRouter();
 
   const [form, setForm] = useState({
     title: "",
@@ -217,8 +212,6 @@ export default function CourseOverview() {
           )}
         </>
       )}
-
-      <Head />
 
       {/* Create modal */}
       <CourseCreateModal

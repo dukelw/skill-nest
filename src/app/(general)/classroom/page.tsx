@@ -1,19 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Card,
-  Badge,
-  Spinner,
-  Breadcrumb,
-  BreadcrumbItem,
-} from "flowbite-react";
+import { Card, Badge, Breadcrumb, BreadcrumbItem } from "flowbite-react";
 import { classroomService } from "~/services/classroomService";
 import { useAuthStore } from "~/store/authStore";
 import { useClassroomStore } from "~/store/classroomStore";
 import Link from "next/link";
 import { Users } from "lucide-react";
-import Head from "./head";
 import { useTranslation } from "react-i18next";
 import Loader from "~/components/partial/Loader";
 
@@ -56,7 +49,6 @@ export default function Classroom() {
 
   return (
     <div className="p-6 gap-4">
-      <Head />
       <Breadcrumb aria-label="Breadcrumb" className="mb-4">
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
         <BreadcrumbItem href="/classroom">Classroom</BreadcrumbItem>

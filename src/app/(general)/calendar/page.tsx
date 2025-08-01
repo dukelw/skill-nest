@@ -9,7 +9,6 @@ import weekday from "dayjs/plugin/weekday";
 import Assignment from "~/models/Assignment";
 import Classroom from "~/models/Classroom";
 import { useTranslation } from "react-i18next";
-import Head from "./head";
 import useIsMobile from "~/hooks/useIsMobile";
 
 dayjs.extend(isoWeek);
@@ -87,7 +86,6 @@ function Calendar() {
 
   return (
     <div className="p-6 min-h-full bg-white/80 rounded-xl shadow-lg">
-      <Head />
       <div className="mb-6 flex justify-between items-center">
         <button
           className="text-sm text-green-600 hover:underline"

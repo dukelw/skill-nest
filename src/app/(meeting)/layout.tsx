@@ -5,8 +5,8 @@ import Sidebar from "~/components/Sidebar";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import StreamVideoProvider from "~/providers/StreamClientProvider";
-import Head from "./head";
 import useIsMobile from "~/hooks/useIsMobile";
+import Head from "./head";
 
 export default function GeneralLayout({
   children,

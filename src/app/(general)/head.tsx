@@ -1,12 +1,30 @@
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export default function Head() {
   const { t } = useTranslation();
+  const pathname = usePathname();
+  const currentBasePath = pathname.split("/")[1]
+    ? "/" + pathname.split("/")[1]
+    : "/";
+
+  const ROUTES_METADATA: Record<string, string> = {
+    "/": t("homeTab"),
+    "/calendar": t("calendarTab"),
+    "/teaching": t("teachingTab"),
+    "/classroom": t("classroomTab"),
+    "/tasks": t("taskTab"),
+    "/meeting": t("meetingTab"),
+    "/review": t("reviewTab"),
+    "/storage": t("storageTab"),
+    "/course": t("courseTab"),
+  };
 
   useEffect(() => {
-    document.title = `Skill Nest | ${t("homeTab")}`;
-  }, [t]);
+    const tabLabel = ROUTES_METADATA[currentBasePath] || "Skill Nest";
+    document.title = `Skill Nest | ${tabLabel}`;
+  }, [pathname, t]);
 
   return null;
 }

@@ -12,7 +12,6 @@ import { useCourseStore } from "~/store/courseStore";
 import { useAuthStore } from "~/store/authStore";
 import { courseService } from "~/services/courseService";
 import Loader from "~/components/partial/Loader";
-import Head from "../head";
 import CourseHero from "./_components/CourseHero";
 import CourseContent from "./_components/CourseContent";
 import CreateChapterModal from "./_components/CreateChapterModal";
@@ -51,7 +50,6 @@ export default function CourseDetail() {
 
   return (
     <div className="p-6 space-y-6">
-      <Head />
       <Breadcrumb aria-label="Breadcrumb">
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
         <BreadcrumbItem href="/course">Course</BreadcrumbItem>

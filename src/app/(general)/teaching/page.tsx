@@ -14,7 +14,6 @@ import { useClassroomStore } from "~/store/classroomStore";
 import Link from "next/link";
 import { Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import Head from "./head";
 
 export default function Teaching() {
   const { teacherClassrooms, setTeacherClassrooms } = useClassroomStore();
@@ -55,7 +54,6 @@ export default function Teaching() {
 
   return (
     <div className="md:pl-6 md:pr-2 md:py-6 p-6 mx-auto">
-      <Head />
       <Breadcrumb aria-label="Breadcrumb" className="mb-4">
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
         <BreadcrumbItem href="/teaching">Teaching</BreadcrumbItem>

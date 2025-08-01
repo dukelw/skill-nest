@@ -10,7 +10,6 @@ import Assignment from "~/components/Tabs/Assignment";
 import { useClassroomStore } from "~/store/classroomStore";
 import Stream from "~/components/Tabs/Stream";
 import Loader from "~/components/partial/Loader";
-import Head from "../head";
 import { useTranslation } from "react-i18next";
 
 export default function StudentClassroomDetail() {
@@ -18,7 +17,7 @@ export default function StudentClassroomDetail() {
   const { classroomId } = useParams();
   const { classroom, setClassroom } = useClassroomStore();
   const router = useRouter();
-  const {t} = useTranslation()
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchClassroom = async () => {
@@ -48,7 +47,6 @@ export default function StudentClassroomDetail() {
 
   return (
     <div className="p-6 space-y-3">
-      <Head />
       <Breadcrumb aria-label="Breadcrumb" className="mb-4">
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
         <BreadcrumbItem href="/classroom">Classroom</BreadcrumbItem>

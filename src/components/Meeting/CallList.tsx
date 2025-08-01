@@ -7,8 +7,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useGetCalls } from "~/hooks/useGetCalls";
 import Loader from "../partial/Loader";
+import { useAuthStore } from "~/store/authStore";
 
 const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
+  const { user } = useAuthStore();
   const router = useRouter();
   const { upcomingCalls, callRecordings, isLoading } = useGetCalls();
   const [recordings, setRecordings] = useState<CallRecording[]>([]);
@@ -54,6 +56,7 @@ const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
       fetchRecordings();
     }
   }, [type, callRecordings]);
+  if (!user) return "Please sign in first to see your meeting.";
 
   if (isLoading) return <Loader />;
 
