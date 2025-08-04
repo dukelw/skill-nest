@@ -10,14 +10,14 @@ import {
 } from "flowbite-react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useState } from "react";
-import RichTextEditor from "../editor/RichTextEditor";
-import LewisButton from "../partial/LewisButton";
+import RichTextEditor from "../Editor/RichTextEditor";
+import LewisButton from "../Partial/LewisButton";
 import { notificationService } from "~/services/notificationService";
 import { classroomService } from "~/services/classroomService";
 import { useParams } from "next/navigation";
 import { useAuthStore } from "~/store/authStore";
 import Assignment from "~/models/Assignment";
-import LewisTextInput from "../partial/LewisTextInput";
+import LewisTextInput from "../Partial/LewisTextInput";
 import { uploadService } from "~/services/uploadService";
 import useSocket from "~/hooks/useSocket";
 import MeetingModal from "../Meeting/MeetingModal";

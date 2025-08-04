@@ -14,7 +14,7 @@ import { Users } from "lucide-react";
 import { Copy } from "lucide-react";
 
 import EndCallButton from "./EndCallButton";
-import Loader from "../partial/Loader";
+import Loader from "../Partial/Loader";
 
 type CallLayoutType = "grid" | "speaker-left" | "speaker-right";
 

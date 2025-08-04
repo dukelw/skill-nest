@@ -240,5 +240,6 @@
   "preview": "Preview",
   "description": "Description",
   "createdAt": "Created at",
+  "select": "Select",
   "back": "Back"
 }

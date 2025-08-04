@@ -8,7 +8,7 @@ import { useClassroomStore } from "~/store/classroomStore";
 import Link from "next/link";
 import { Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import Loader from "~/components/partial/Loader";
+import Loader from "~/components/Partial/Loader";
 
 export default function Classroom() {
   const { studentClassrooms, setStudentClassrooms } = useClassroomStore();

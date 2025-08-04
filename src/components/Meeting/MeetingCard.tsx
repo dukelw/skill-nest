@@ -1,5 +1,5 @@
 import { CalendarDays } from "lucide-react";
-import LewisButton from "../partial/LewisButton";
+import LewisButton from "../Partial/LewisButton";
 
 interface MeetingCardProps {
   title: string;

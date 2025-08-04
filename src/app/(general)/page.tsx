@@ -16,8 +16,8 @@ import {
   Badge,
 } from "flowbite-react";
 
-import LewisButton from "~/components/partial/LewisButton";
-import LewisTextInput from "~/components/partial/LewisTextInput";
+import LewisButton from "~/components/Partial/LewisButton";
+import LewisTextInput from "~/components/Partial/LewisTextInput";
 import { classroomService } from "~/services/classroomService";
 import { useAuthStore } from "~/store/authStore";
 import Classroom from "~/models/Classroom";

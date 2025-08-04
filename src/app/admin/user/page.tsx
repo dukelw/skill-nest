@@ -5,7 +5,7 @@ import { userService } from "~/services/userService";
 import UserList from "./_components/UserList";
 import { Breadcrumb, BreadcrumbItem } from "flowbite-react";
 import User from "~/models/User";
-import { LewisPagination } from "~/components/partial/LewisPagination";
+import { LewisPagination } from "~/components/Partial/LewisPagination";
 import { useAuthStore } from "~/store/authStore";
 
 function UserManagement() {

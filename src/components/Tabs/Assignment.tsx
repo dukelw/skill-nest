@@ -12,11 +12,11 @@ import {
 import { useParams, useRouter } from "next/navigation";
 import { assignmentService } from "~/services/assignmentService";
 import { uploadService } from "~/services/uploadService"; // Import the uploadService
-import LewisTextInput from "../partial/LewisTextInput";
+import LewisTextInput from "../Partial/LewisTextInput";
 import { classroomService } from "~/services/classroomService";
 import { useClassroomStore } from "~/store/classroomStore";
 import { AssignmentType } from "~/models/AssignmentType";
-import LewisButton from "../partial/LewisButton";
+import LewisButton from "../Partial/LewisButton";
 import { useAuthStore } from "~/store/authStore";
 import { submissionService } from "~/services/submissionService";
 import Assignment from "~/models/Assignment";

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalHeader, ModalBody, Label } from "flowbite-react";
-import LewisButton from "~/components/partial/LewisButton";
-import LewisTextInput from "../partial/LewisTextInput";
+import LewisButton from "~/components/Partial/LewisButton";
+import LewisTextInput from "../Partial/LewisTextInput";
 import { useAuthStore } from "~/store/authStore";
 import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
 import { toast } from "react-toastify";

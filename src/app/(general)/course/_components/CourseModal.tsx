@@ -9,8 +9,8 @@ import {
   ModalHeader,
   Spinner,
 } from "flowbite-react";
-import LewisTextInput from "~/components/partial/LewisTextInput";
-import LewisButton from "~/components/partial/LewisButton";
+import LewisTextInput from "~/components/Partial/LewisTextInput";
+import LewisButton from "~/components/Partial/LewisButton";
 import { uploadService } from "~/services/uploadService";
 import { courseService } from "~/services/courseService";
 import { toast } from "react-toastify";

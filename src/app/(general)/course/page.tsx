@@ -15,8 +15,8 @@ import {
   BreadcrumbItem,
 } from "flowbite-react";
 
-import LewisButton from "~/components/partial/LewisButton";
-import LewisTextInput from "~/components/partial/LewisTextInput";
+import LewisButton from "~/components/Partial/LewisButton";
+import LewisTextInput from "~/components/Partial/LewisTextInput";
 import { courseService } from "~/services/courseService";
 import { useAuthStore } from "~/store/authStore";
 import { uploadService } from "~/services/uploadService";
@@ -24,7 +24,7 @@ import { Users } from "lucide-react";
 import { Course } from "~/models/Course";
 import CourseCreateModal from "./_components/CourseModal";
 import { formatDuration } from "~/utils/format";
-import Loader from "~/components/partial/Loader";
+import Loader from "~/components/Partial/Loader";
 
 export default function CourseOverview() {
   const { t } = useTranslation();

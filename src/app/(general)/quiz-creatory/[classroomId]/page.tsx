@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import LewisTextInput from "~/components/partial/LewisTextInput";
+import LewisTextInput from "~/components/Partial/LewisTextInput";
 import {
   Button,
   Modal,

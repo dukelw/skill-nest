@@ -9,7 +9,7 @@ import People from "~/components/Tabs/People";
 import Assignment from "~/components/Tabs/Assignment";
 import { useClassroomStore } from "~/store/classroomStore";
 import Stream from "~/components/Tabs/Stream";
-import Loader from "~/components/partial/Loader";
+import Loader from "~/components/Partial/Loader";
 import { useTranslation } from "react-i18next";
 
 export default function StudentClassroomDetail() {

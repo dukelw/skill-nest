@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import LewisButton from "~/components/partial/LewisButton";
+import LewisButton from "~/components/Partial/LewisButton";
 import { useCourseStore } from "~/store/courseStore";
 import { courseService } from "~/services/courseService";
 import { Chapter } from "~/models/Chapter";

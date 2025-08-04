@@ -12,7 +12,7 @@ import {
 } from "flowbite-react";
 import { toast } from "react-toastify";
 import { courseService } from "~/services/courseService";
-import LewisTextInput from "~/components/partial/LewisTextInput";
+import LewisTextInput from "~/components/Partial/LewisTextInput";
 
 interface LessonModalProps {
   open: boolean;

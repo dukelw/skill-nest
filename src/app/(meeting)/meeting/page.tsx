@@ -7,7 +7,7 @@ import { useState } from "react";
 import ActionCard from "~/components/Meeting/ActionCard";
 import CallList from "~/components/Meeting/CallList";
 import MeetingModal from "~/components/Meeting/MeetingModal";
-import LewisButton from "~/components/partial/LewisButton";
+import LewisButton from "~/components/Partial/LewisButton";
 import { useGetCalls } from "~/hooks/useGetCalls";
 import { useAuthStore } from "~/store/authStore";
 

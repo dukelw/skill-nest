@@ -9,13 +9,13 @@ import {
 import { useParams, useRouter } from "next/navigation";
 import { useClassroomStore } from "~/store/classroomStore";
 import { AssignmentType } from "~/models/AssignmentType";
-import LewisButton from "../partial/LewisButton";
+import LewisButton from "../Partial/LewisButton";
 import { useAuthStore } from "~/store/authStore";
 import { submissionService } from "~/services/submissionService";
 import { useSubmissionStore } from "~/store/submissionStore";
 import Submission from "~/models/Submission";
 import { classroomService } from "~/services/classroomService";
-import LewisTextInput from "../partial/LewisTextInput";
+import LewisTextInput from "../Partial/LewisTextInput";
 import { useTranslation } from "react-i18next";
 
 export default function Grade() {

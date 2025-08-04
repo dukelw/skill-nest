@@ -14,13 +14,13 @@ import { useRouter } from "next/navigation";
 import { uploadService } from "~/services/uploadService";
 import { useClassroomStore } from "~/store/classroomStore";
 import { AssignmentType } from "~/models/AssignmentType";
-import LewisButton from "~/components/partial/LewisButton";
+import LewisButton from "~/components/Partial/LewisButton";
 import { useAuthStore } from "~/store/authStore";
 import Assignment from "~/models/Assignment";
 import { submissionService } from "~/services/submissionService";
 import { classroomService } from "~/services/classroomService";
 import Classroom from "~/models/Classroom";
-import Loader from "~/components/partial/Loader";
+import Loader from "~/components/Partial/Loader";
 import { useTranslation } from "react-i18next";
 
 export default function Tasks() {

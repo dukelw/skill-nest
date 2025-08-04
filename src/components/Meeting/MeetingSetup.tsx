@@ -8,7 +8,7 @@ import {
   useCallStateHooks,
 } from "@stream-io/video-react-sdk";
 import { toast } from "react-toastify";
-import LewisButton from "../partial/LewisButton";
+import LewisButton from "../Partial/LewisButton";
 
 const OFF_IMAGE_URL =
   "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg";

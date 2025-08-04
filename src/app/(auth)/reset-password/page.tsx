@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import LewisButton from "~/components/partial/LewisButton";
-import LewisTextInput from "~/components/partial/LewisTextInput";
+import LewisButton from "~/components/Partial/LewisButton";
+import LewisTextInput from "~/components/Partial/LewisTextInput";
 import { authService } from "~/services/authService";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";

@@ -3,10 +3,10 @@
 
 import { useEffect, useState } from "react";
 import { Avatar, Breadcrumb, BreadcrumbItem } from "flowbite-react";
-import LewisTextInput from "~/components/partial/LewisTextInput";
+import LewisTextInput from "~/components/Partial/LewisTextInput";
 import { userService } from "~/services/userService";
 import { useAuthStore } from "~/store/authStore";
-import LewisButton from "~/components/partial/LewisButton";
+import LewisButton from "~/components/Partial/LewisButton";
 import { uploadService } from "~/services/uploadService";
 import { authService } from "~/services/authService";
 import { toast } from "react-toastify";

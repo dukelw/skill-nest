@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { Avatar, Button } from "flowbite-react";
-import LewisPagination from "~/components/partial/LewisPagination";
+import LewisPagination from "~/components/Partial/LewisPagination";
 import useUserAnnouncements from "~/hooks/useUserAnnouncements";
 
 const PAGE_SIZE = 4;

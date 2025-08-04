@@ -10,7 +10,7 @@ import Stream from "~/components/Tabs/Stream";
 import People from "~/components/Tabs/People";
 import { useClassroomStore } from "~/store/classroomStore";
 import Asset from "~/components/Tabs/Asset";
-import Loader from "~/components/partial/Loader";
+import Loader from "~/components/Partial/Loader";
 import { useTranslation } from "react-i18next";
 
 export default function ClientClassroomDetail() {

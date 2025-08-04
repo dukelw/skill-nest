@@ -6,7 +6,7 @@ import MeetingCard from "./MeetingCard";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useGetCalls } from "~/hooks/useGetCalls";
-import Loader from "../partial/Loader";
+import Loader from "../Partial/Loader";
 import { useAuthStore } from "~/store/authStore";
 
 const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {

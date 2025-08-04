@@ -3,7 +3,7 @@
 import { useCall, useCallStateHooks } from "@stream-io/video-react-sdk";
 
 import { useRouter } from "next/navigation";
-import LewisButton from "../partial/LewisButton";
+import LewisButton from "../Partial/LewisButton";
 
 const EndCallButton = () => {
   const call = useCall();

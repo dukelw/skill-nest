@@ -17,7 +17,7 @@ import { useParams } from "next/navigation";
 import { useAuthStore } from "~/store/authStore";
 import { userService } from "~/services/userService";
 import Request from "~/models/Request";
-import LewisButton from "../partial/LewisButton";
+import LewisButton from "../Partial/LewisButton";
 import { useTranslation } from "react-i18next";
 
 export default function People() {

@@ -11,9 +11,9 @@ import { useState } from "react";
 import { Chapter } from "~/models/Chapter";
 import { courseService } from "~/services/courseService";
 import { toast } from "react-toastify";
-import LewisTextInput from "~/components/partial/LewisTextInput";
-import LewisButton from "~/components/partial/LewisButton";
-import LewisSelect from "~/components/partial/LewisSelect";
+import LewisTextInput from "~/components/Partial/LewisTextInput";
+import LewisButton from "~/components/Partial/LewisButton";
+import LewisSelect from "~/components/Partial/LewisSelect";
 
 type Props = {
   open: boolean;

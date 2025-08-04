@@ -11,12 +11,12 @@ import {
 import { useCourseStore } from "~/store/courseStore";
 import { useAuthStore } from "~/store/authStore";
 import { courseService } from "~/services/courseService";
-import Loader from "~/components/partial/Loader";
+import Loader from "~/components/Partial/Loader";
 import CourseHero from "./_components/CourseHero";
 import CourseContent from "./_components/CourseContent";
 import CreateChapterModal from "./_components/CreateChapterModal";
 import CreateLessonModal from "./_components/CreateLessonModal";
-import LewisButton from "~/components/partial/LewisButton";
+import LewisButton from "~/components/Partial/LewisButton";
 
 export default function CourseDetail() {
   const { courseId } = useParams();

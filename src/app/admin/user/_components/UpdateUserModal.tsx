@@ -7,7 +7,7 @@ import {
   ModalFooter,
 } from "flowbite-react";
 import { Avatar } from "flowbite-react";
-import LewisTextInput from "~/components/partial/LewisTextInput";
+import LewisTextInput from "~/components/Partial/LewisTextInput";
 import { uploadService } from "~/services/uploadService";
 import { userService } from "~/services/userService";
 import { toast } from "react-toastify";

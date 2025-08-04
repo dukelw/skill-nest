@@ -1,7 +1,7 @@
 "use client";
 
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "flowbite-react";
-import LewisButton from "~/components/partial/LewisButton";
+import LewisButton from "~/components/Partial/LewisButton";
 
 type ConfirmModalProps = {
   show: boolean;

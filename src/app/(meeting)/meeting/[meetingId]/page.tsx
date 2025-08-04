@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import MeetingSetup from "~/components/Meeting/MeetingSetup";
 import MeetingRoom from "~/components/Meeting/MeetingRoom";
 import { useGetCallById } from "~/hooks/useGetCallById";
-import Loader from "~/components/partial/Loader";
+import Loader from "~/components/Partial/Loader";
 
 const MeetingPage = () => {
   const { meetingId } = useParams();

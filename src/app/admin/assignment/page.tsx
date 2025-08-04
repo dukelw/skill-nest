@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { userService } from "~/services/userService";
 import { Breadcrumb, BreadcrumbItem } from "flowbite-react";
 import User from "~/models/User";
-import { LewisPagination } from "~/components/partial/LewisPagination";
+import { LewisPagination } from "~/components/Partial/LewisPagination";
 import { useAuthStore } from "~/store/authStore";
 import AssignmentList from "./_components/AssignmentList";
 import { assignmentService } from "~/services/assignmentService";

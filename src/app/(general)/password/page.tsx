@@ -3,8 +3,8 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import LewisTextInput from "~/components/partial/LewisTextInput";
-import LewisButton from "~/components/partial/LewisButton";
+import LewisTextInput from "~/components/Partial/LewisTextInput";
+import LewisButton from "~/components/Partial/LewisButton";
 import { userService } from "~/services/userService";
 import { toast } from "react-toastify";
 import { Breadcrumb, BreadcrumbItem } from "flowbite-react";

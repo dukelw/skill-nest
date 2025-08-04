@@ -6,7 +6,7 @@ import { useAuthStore } from "~/store/authStore";
 import { useCourseStore } from "~/store/courseStore";
 import { Breadcrumb, BreadcrumbItem } from "flowbite-react";
 import CourseList from "./_components/CourseList";
-import LewisButton from "~/components/partial/LewisButton";
+import LewisButton from "~/components/Partial/LewisButton";
 import CourseModal from "~/app/(general)/course/_components/CourseModal";
 
 function Course() {
