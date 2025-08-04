@@ -37,6 +37,7 @@
   "reviewTab": "Lịch sử",
   "storageTab": "Lưu trữ",
   "teachingTab": "Giảng dạy",
+  "assignmentTab": "Bài tập",
   "classroomTab": "Lớp học",
   "courseTab": "Khóa học",
   "noCurrentClass": "Hiện bạn không tham gia lớp nào.",
@@ -233,6 +234,8 @@
   "mark": "Cho điểm",
   "remark": "Chấm lại",
   "score": "Điểm",
+  "preview": "Xem lại",
+  "description": "Mô tả",
   "doesNotHaveScore": "Chưa có điểm",
   "back": "Quay lại"
 }

@@ -7,7 +7,8 @@ export default function staticSidebarItems() {
 
   return [
     { label: t("statisticTab"), icon: FaHome, href: "/admin" },
-    { label: t("courseTab"), icon: FaGraduationCap, href: "/admin/course" },
     { label: t("userTab"), icon: FaUser, href: "/admin/user" },
+    { label: t("courseTab"), icon: FaGraduationCap, href: "/admin/course" },
+    { label: t("assignmentTab"), icon: FaUser, href: "/admin/assignment" },
   ];
 }

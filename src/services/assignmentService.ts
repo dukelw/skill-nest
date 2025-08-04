@@ -10,6 +10,29 @@ export const assignmentService = {
     return res.data;
   },
 
+  async getAllAssignments(filter?: {
+    creatorId?: number;
+    limit: number;
+    page: number;
+  }) {
+    const query = new URLSearchParams();
+
+    if (filter?.creatorId) {
+      query.append("creatorId", filter.creatorId.toString());
+    }
+
+    if (filter?.limit) {
+      query.append("limit", filter.limit.toString());
+    }
+
+    if (filter?.page) {
+      query.append("page", filter.page.toString());
+    }
+
+    const res: AxiosResponse = await api.get(`${API_URL}?${query.toString()}`);
+    return res.data;
+  },
+
   async createAssignment(data: {
     title: string;
     description?: string;

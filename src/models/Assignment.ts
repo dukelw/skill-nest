@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AssignmentType } from "./AssignmentType";
+import Classroom from "./Classroom";
 import Comment from "./Comment";
 import Submission from "./Submission";
 
@@ -17,5 +18,6 @@ export default interface Assignment {
   type: AssignmentType;
   comments: Comment[];
   submissions: Submission[];
+  classroom: Classroom;
   questions: any[];
 }

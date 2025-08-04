@@ -21,7 +21,7 @@ function Course() {
   const [modalType, setModalType] = useState<"create" | "join" | null>(null);
 
   const fetchData = async () => {
-    const res = await courseService.getCoursesOfUser(user?.id ?? 0);
+    const res = await courseService.getAll();
     setCourses(res);
   };
 

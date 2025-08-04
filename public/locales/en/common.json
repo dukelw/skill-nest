@@ -38,6 +38,7 @@
   "storageTab": "Storage",
   "teachingTab": "Teaching",
   "classroomTab": "Classroom",
+  "assignmentTab": "Assignment",
   "courseTab": "Course",
   "noCurrentClass": "You do not have any class now",
   "create": "Create",
@@ -61,7 +62,6 @@
   "name": "Name",
   "phone": "Phone number",
   "gender": "Gender",
-  "createdAt": "Account created on",
   "editInfo": "Edit information",
   "saveChanges": "Save changes",
   "saving": "Saving...",
@@ -237,5 +237,8 @@
   "score": "Score",
   "doesNotHaveScore": "Doesn't have score",
   "attach": "Attach",
+  "preview": "Preview",
+  "description": "Description",
+  "createdAt": "Created at",
   "back": "Back"
 }
