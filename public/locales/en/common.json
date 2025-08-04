@@ -166,17 +166,17 @@
     "submit": "Submitted"
   },
   "calendarPage": {
-    "previousWeek": "⬅ Previous week",
+    "previousWeek": "Previous week",
     "previousDay": "Yesterday",
-    "nextWeek": "Next week ➡",
+    "nextWeek": "Next week",
     "nextDay": "Tomorrow",
     "weekRange": "Week {{start}} - {{end}}",
     "noUser": "Please sign in to see your calendar.",
     "teacher": "Teacher",
     "student": "Student",
-    "time": "🕒 {{time}}",
-    "classroom": "🏫 {{name}}",
-    "role": "🎓 {{role}}"
+    "time": "{{time}}",
+    "classroom": "{{name}}",
+    "role": "{{role}}"
   },
   "courseComponent": {
     "createCourse": "Create course",
@@ -241,5 +241,6 @@
   "description": "Description",
   "createdAt": "Created at",
   "select": "Select",
+  "submitted": "Submitted",
   "back": "Back"
 }

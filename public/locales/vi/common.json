@@ -162,17 +162,17 @@
     "submit": "Đã nộp"
   },
   "calendarPage": {
-    "previousWeek": "⬅ Tuần trước",
+    "previousWeek": "Tuần trước",
     "previousDay": "Hôm qua",
-    "nextWeek": "Tuần sau ➡",
+    "nextWeek": "Tuần sau",
     "nextDay": "Ngày mai",
     "weekRange": "Tuần {{start}} - {{end}}",
     "noUser": "Vui lòng đăng nhập để xem lịch.",
     "teacher": "Giáo viên",
     "student": "Học sinh",
-    "time": "🕒 {{time}}",
-    "classroom": "🏫 {{name}}",
-    "role": "🎓 {{role}}"
+    "time": "{{time}}",
+    "classroom": "{{name}}",
+    "role": "{{role}}"
   },
   "courseComponent": {
     "createCourse": "Tạo khóa học",
@@ -238,5 +238,6 @@
   "description": "Mô tả",
   "doesNotHaveScore": "Chưa có điểm",
   "select": "Chọn",
+  "submitted": "Đã nộp",
   "back": "Quay lại"
 }

@@ -10,6 +10,7 @@ import Assignment from "~/models/Assignment";
 import Classroom from "~/models/Classroom";
 import { useTranslation } from "react-i18next";
 import useIsMobile from "~/hooks/useIsMobile";
+import { ChevronLeft, ChevronRight, Clock, School, User } from "lucide-react";
 
 dayjs.extend(isoWeek);
 dayjs.extend(weekday);
@@ -88,13 +89,14 @@ function Calendar() {
     <div className="p-6 min-h-full bg-white/80 rounded-xl shadow-lg">
       <div className="mb-6 flex justify-between items-center">
         <button
-          className="text-sm text-green-600 hover:underline"
+          className="flex items-center gap-1 text-sm text-green-600 hover:underline"
           onClick={() =>
             isMobile
               ? setSelectedDate(selectedDate.subtract(1, "day"))
               : setCurrentWeekStart(currentWeekStart.subtract(1, "week"))
           }
         >
+          <ChevronLeft className="w-4 h-4" />
           {isMobile
             ? t("calendarPage.previousDay")
             : t("calendarPage.previousWeek")}
@@ -110,7 +112,7 @@ function Calendar() {
         </h2>
 
         <button
-          className="text-sm text-green-600 hover:underline"
+          className="flex items-center gap-1 text-sm text-green-600 hover:underline"
           onClick={() =>
             isMobile
               ? setSelectedDate(selectedDate.add(1, "day"))
@@ -118,6 +120,7 @@ function Calendar() {
           }
         >
           {isMobile ? t("calendarPage.nextDay") : t("calendarPage.nextWeek")}
+          <ChevronRight className="w-4 h-4" />
         </button>
       </div>
 
@@ -146,15 +149,18 @@ function Calendar() {
                   {a.type}
                 </span>
               </div>
-              <div className="text-xs text-gray-500 mt-1">
+              <div className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5" />
                 {t("calendarPage.time", {
                   time: dayjs(a.dueDate).format("HH:mm"),
                 })}
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-gray-500 flex items-center gap-1">
+                <School className="w-3.5 h-3.5" />
                 {t("calendarPage.classroom", { name: a.classroomName })}
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-gray-500 flex items-center gap-1">
+                <User className="w-3.5 h-3.5" />
                 {t("calendarPage.role", {
                   role:
                     a.role === "teaching"
@@ -195,15 +201,18 @@ function Calendar() {
                   <div className="font-medium text-gray-800 flex justify-between items-start">
                     {a.title}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
+                  <div className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5" />
                     {t("calendarPage.time", {
                       time: dayjs(a.dueDate).format("HH:mm"),
                     })}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-gray-500 flex items-center gap-1">
+                    <School className="w-3.5 h-3.5" />
                     {t("calendarPage.classroom", { name: a.classroomName })}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-gray-500 flex items-center gap-1">
+                    <User className="w-3.5 h-3.5" />
                     {t("calendarPage.role", {
                       role:
                         a.role === "teaching"

@@ -22,6 +22,7 @@ import { classroomService } from "~/services/classroomService";
 import Classroom from "~/models/Classroom";
 import Loader from "~/components/Partial/Loader";
 import { useTranslation } from "react-i18next";
+import { CheckCircleIcon } from "lucide-react";
 
 export default function Tasks() {
   const { studentClassrooms, setStudentClassrooms } = useClassroomStore();
@@ -155,26 +156,29 @@ export default function Tasks() {
                       </p>
                       {isSubmitted && (
                         <div className="mt-2 text-sm text-green-700">
-                          ✅ {t("submitted")}
-                          {submission.fileUrl && (
-                            <a
-                              href={
-                                assignment.type === AssignmentType.QUIZ
-                                  ? `/result/${submission.id}`
-                                  : `${submission.fileUrl}`
-                              }
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="ml-4 underline text-blue-600"
-                            >
-                              {t("view")}
-                            </a>
-                          )}
-                          <span className="ml-4 font-bold">
-                            {t("score")}:{" "}
-                            {submission.grade === null
-                              ? t("doesNotHaveScore")
-                              : submission.grade}
+                          <span className="flex items-center gap-1 text-green-600 font-medium">
+                            <CheckCircleIcon className="w-5 h-5" />
+                            {t("submitted")}
+                            {submission.fileUrl && (
+                              <a
+                                href={
+                                  assignment.type === AssignmentType.QUIZ
+                                    ? `/result/${submission.id}`
+                                    : `${submission.fileUrl}`
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="ml-4 underline text-blue-600"
+                              >
+                                {t("view")}
+                              </a>
+                            )}
+                            <span className="ml-4 font-bold">
+                              {t("score")}:{" "}
+                              {submission.grade === null
+                                ? t("doesNotHaveScore")
+                                : submission.grade}
+                            </span>
                           </span>
                         </div>
                       )}

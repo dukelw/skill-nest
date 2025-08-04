@@ -22,6 +22,7 @@ import { uploadService } from "~/services/uploadService";
 import useSocket from "~/hooks/useSocket";
 import MeetingModal from "../Meeting/MeetingModal";
 import { useTranslation } from "react-i18next";
+import { MegaphoneIcon, UsersIcon } from "lucide-react";
 
 type ModalType = "new" | "join" | "schedule" | null;
 
@@ -390,7 +391,7 @@ export default function Stream() {
                   className="py-0 sm:ml-auto"
                   onClick={() => setModalType("student")}
                 >
-                  👥{" "}
+                  <UsersIcon className="h-5 w-5 mr-2 text-white" />
                   {selectedStudentIds.length === 0
                     ? t("streamComponent.allMembers")
                     : `${selectedStudentIds.length} ${t(
@@ -431,8 +432,9 @@ export default function Stream() {
             </>
           )}
           <>
-            <h2 className="text-lg font-semibold">
-              📢 {t("streamComponent.allNoti")}
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              <MegaphoneIcon className="h-5 w-5 text-green-600" />
+              {t("streamComponent.allNoti")}
             </h2>
             {classroom?.creatorId === user?.id && (
               <div className="w-full flex justify-between items-center">
