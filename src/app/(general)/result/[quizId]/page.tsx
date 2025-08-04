@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "flowbite-react";
+import { CheckCircle } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { submissionService } from "~/services/submissionService";
@@ -149,8 +150,9 @@ export default function Quiz() {
           })}
         </div>
         <div className="mt-4 text-lg font-semibold text-green-600">
-          <span>
-            ✅ Đúng {score}/{submission?.assignment?.questions.length} câu. Được{" "}
+          <span className="flex items-center gap-1">
+            <CheckCircle className="text-green-600 w-5 h-5" />
+            Đúng {score}/{submission?.assignment?.questions.length} câu. Được{" "}
             {(score * 10) / (submission?.assignment?.questions?.length ?? 1)}{" "}
             điểm
           </span>
