@@ -200,6 +200,12 @@
   "meetingPage": {
     "authError": "Vui lòng đăng nhập để xem các cuộc họp của bạn."
   },
+  "userModal": {
+    "updateSuccessfully": "Cập nhật thông tin người dùng thành công!",
+    "deactiveSuccessfully": "Đã vô hiệu hóa người dùng!",
+    "activeSuccessfully": "Đã kích hoạt hóa người dùng!",
+    "updateFailed": "Có lỗi xảy ra khi cập nhật thông tin người dùng"
+  },
   "post": "Đăng",
   "close": "Đóng",
   "reply": "Trả lời",

@@ -12,6 +12,7 @@ import LewisTextInput from "~/components/partial/LewisTextInput";
 import LewisButton from "~/components/partial/LewisButton";
 import { toast } from "react-toastify";
 import { courseService } from "~/services/courseService";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   show: boolean;
@@ -32,6 +33,7 @@ export default function UpdateChapterModal({
 }: Props) {
   const [title, setTitle] = useState(initialTitle);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (show) {
@@ -64,7 +66,7 @@ export default function UpdateChapterModal({
 
   return (
     <Modal show={show} onClose={onClose}>
-      <ModalHeader className="bg-green text-white">Cập nhật chương</ModalHeader>
+      <ModalHeader className="bg-green text-white">{t("update")}</ModalHeader>
       <ModalBody>
         <LewisTextInput
           name="title"
@@ -78,10 +80,10 @@ export default function UpdateChapterModal({
         <LewisButton onClick={handleSubmit} disabled={isSubmitting}>
           {isSubmitting ? (
             <>
-              <Spinner size="sm" className="mr-2" /> Đang cập nhật...
+              <Spinner size="sm" className="mr-2" /> {t("saving")}
             </>
           ) : (
-            "Cập nhật"
+            t("saveChange")
           )}
         </LewisButton>
         <LewisButton
@@ -89,7 +91,7 @@ export default function UpdateChapterModal({
           onClick={onClose}
           disabled={isSubmitting}
         >
-          Hủy
+          {t("cancel")}
         </LewisButton>
       </ModalFooter>
     </Modal>

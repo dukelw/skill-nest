@@ -1,53 +1,77 @@
-"use client";
+import React from "react";
 
-import { Pagination } from "flowbite-react";
-import type { PaginationProps } from "flowbite-react";
-import classNames from "classnames";
+type Props = {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  limit: number;
+  total: number;
+};
 
-type LewisPaginationProps = PaginationProps;
+export const LewisPagination: React.FC<Props> = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+  limit,
+  total,
+}) => {
+  if (totalPages <= 1) return null;
 
-export default function LewisPagination({
-  className,
-  ...props
-}: LewisPaginationProps) {
+  const createPageNumbers = () => {
+    const pages = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
+
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
+      onPageChange(page);
+    }
+  };
+
   return (
-    <Pagination
-      className={classNames("pagination-wrapper", className)}
-      theme={{
-        base: "flex items-center -space-x-px text-sm",
-        layout: {
-          table: {
-            base: "text-sm text-gray-700 dark:text-gray-400",
-            span: "font-semibold text-gray-900 dark:text-white",
-          },
-        },
-        pages: {
-          base: "inline-flex items-center -space-x-px",
-          previous: {
-            base: "block px-3 py-2 ml-0 leading-tight text-green-600 bg-white border border-gray-300 rounded-l-lg hover:bg-green-50 hover:text-green-700",
-            icon: "w-5 h-5",
-          },
-          next: {
-            base: "block px-3 py-2 leading-tight text-green-600 bg-white border border-gray-300 rounded-r-lg hover:bg-green-50 hover:text-green-700",
-            icon: "w-5 h-5",
-          },
-          selector: {
-            base: classNames(
-              "px-3 py-2 leading-tight border border-gray-300",
-              "bg-white text-green-600",
-              "hover:bg-green-50 hover:text-green-700",
-              "transition-colors duration-150 ease-in-out"
-            ),
-            active: classNames(
-              "bg-green-600 text-white",
-              "hover:bg-green-600 hover:text-white",
-              "!ring-0"
-            ),
-            disabled: "opacity-50 cursor-not-allowed",
-          },
-        },
-      }}
-      {...props}
-    />
+    <div className="flex items-center justify-between mt-4 text-sm">
+      <p className="text-gray-600">
+        Showing{" "}
+        <span className="text-green-600 font-medium">
+          {Math.min(currentPage * limit, total)}
+        </span>{" "}
+        of <span className="text-green-600 font-medium">{total}</span>
+      </p>
+
+      <div className="flex items-center space-x-1">
+        <button
+          className="px-4 py-2 border border-green-300 text-green-600 bg-white hover:bg-green-100 rounded-md disabled:opacity-50"
+          disabled={currentPage === 1}
+          onClick={() => goToPage(currentPage - 1)}
+        >
+          Prev
+        </button>
+
+        {createPageNumbers().map((page) => (
+          <button
+            key={page}
+            onClick={() => goToPage(page)}
+            className={`px-4 py-2 border border-green-300 rounded-md ${
+              page === currentPage
+                ? "bg-dark-green text-white"
+                : "text-green-600 bg-white hover:bg-green-100 hover:text-green-700"
+            }`}
+          >
+            {page}
+          </button>
+        ))}
+
+        <button
+          className="px-4 py-2 border border-green-300 text-green-600 bg-white hover:bg-green-100 rounded-md disabled:opacity-50"
+          disabled={currentPage === totalPages}
+          onClick={() => goToPage(currentPage + 1)}
+        >
+          Next
+        </button>
+      </div>
+    </div>
   );
-}
+};

@@ -202,6 +202,12 @@
     "newPassword": "New password",
     "passwordResetSuccess": "Your password has been updated!"
   },
+  "userModal": {
+    "updateSuccessfully": "Update user information successfully!",
+    "updateFailed": "Update user information failed",
+    "deactiveSuccessfully": "Deactive user account successfully!",
+    "activeSuccessfully": "Active user accounr successfully!"
+  },
   "post": "Post",
   "close": "Close",
   "reply": "Reply",
