@@ -16,6 +16,7 @@ export default interface User {
   createdAt: string; // Date in ISO string format
   updatedAt: string; // Date in ISO string format
   role: UserRole;
+  isActive: boolean;
 
   // Relations
   createdClassrooms: Classroom[]; // Array of classrooms where the user is the creator

@@ -11,15 +11,15 @@ import {
   TableRow,
   Button,
 } from "flowbite-react";
-import { Pencil, Ban } from "lucide-react";
+import { Pencil, Lock, UnlockIcon } from "lucide-react";
 import { Course } from "~/models/Course";
 import { courseService } from "~/services/courseService";
-import { useCourseStore } from "~/store/courseStore";
 import { toast } from "react-toastify";
 import ConfirmModal from "~/components/Modal/ConfirmModal";
 import User from "~/models/User";
 import { fallbackUserAvatar } from "~/constant";
 import UpdateUserModal from "./UpdateUserModal";
+import { userService } from "~/services/userService";
 
 interface Props {
   users: User[];
@@ -35,18 +35,9 @@ export default function UserList({ users, userId, onUpdate }: Props) {
   const [deleteMode, setDeleteMode] = useState<"chapter" | "course" | null>(
     null
   );
-  const [lessonToDelete, setLessonToDelete] = useState<{
-    courseId: number;
-    lessonId: number;
-  } | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-
-  const { setCourses } = useCourseStore();
-
-  const fetchData = async () => {
-    const res = await courseService.getCoursesOfUser(userId);
-    setCourses(res);
-  };
+  const [userToToggle, setUserToToggle] = useState<User | null>(null);
+  const [isToggling, setIsToggling] = useState(false);
 
   const handleDeleteConfirmed = async () => {
     setIsDeleting(true);
@@ -58,7 +49,7 @@ export default function UserList({ users, userId, onUpdate }: Props) {
         await courseService.deleteCourse(selectedCourse.id);
         toast.success("Đã xoá khoá học.");
       }
-      fetchData();
+      onUpdate?.();
       setShowConfirmDelete(false);
     } catch (err) {
       toast.error("Xoá thất bại. Thử lại.");
@@ -81,6 +72,7 @@ export default function UserList({ users, userId, onUpdate }: Props) {
           <TableHeadCell>Email</TableHeadCell>
           <TableHeadCell>Phone</TableHeadCell>
           <TableHeadCell>Role</TableHeadCell>
+          <TableHeadCell>Active</TableHeadCell>
           <TableHeadCell>Actions</TableHeadCell>
         </TableHead>
         <TableBody>
@@ -117,6 +109,15 @@ export default function UserList({ users, userId, onUpdate }: Props) {
                   {user.role}
                 </span>
               </TableCell>
+              <TableCell>
+                <span
+                  className={`inline-block w-2 h-2 rounded-full mr-2 ${
+                    user.isActive ? "bg-green-500" : "bg-gray-400"
+                  }`}
+                  title={user.isActive ? "Đang hoạt động" : "Đã vô hiệu hoá"}
+                ></span>
+                {user.isActive ? "Active" : "Inactive"}
+              </TableCell>
               <TableCell className="flex gap-2">
                 <Button
                   size="xs"
@@ -127,10 +128,14 @@ export default function UserList({ users, userId, onUpdate }: Props) {
                 </Button>
                 <Button
                   size="xs"
-                  color="red"
-                  // onClick={() => handleDisable(user.id)}
+                  color={user.isActive ? "red" : "green"}
+                  onClick={() => setUserToToggle(user)}
                 >
-                  <Ban className="w-4 h-4" />
+                  {user.isActive ? (
+                    <Lock className="w-4 h-4" />
+                  ) : (
+                    <UnlockIcon className="w-4 h-4" />
+                  )}
                 </Button>
               </TableCell>
             </TableRow>
@@ -169,27 +174,38 @@ export default function UserList({ users, userId, onUpdate }: Props) {
       )}
 
       <ConfirmModal
-        show={lessonToDelete !== null}
-        onClose={() => setLessonToDelete(null)}
+        show={!!userToToggle}
+        onClose={() => setUserToToggle(null)}
         onConfirm={async () => {
-          if (!lessonToDelete) return;
+          if (!userToToggle) return;
+          setIsToggling(true);
           try {
-            await courseService.deleteLesson(
-              lessonToDelete.courseId,
-              lessonToDelete.lessonId
+            await userService.toggleActiveUser(userToToggle.id);
+            toast.success(
+              userToToggle.isActive
+                ? "Đã vô hiệu hóa người dùng."
+                : "Đã kích hoạt người dùng."
             );
-            toast.success("Đã xoá bài học.");
-            fetchData();
-          } catch (err) {
-            toast.error("Xoá bài học thất bại.");
+            setUserToToggle(null);
+            onUpdate?.();
+          } catch {
+            toast.error("Thao tác thất bại.");
           } finally {
-            setLessonToDelete(null);
+            setIsToggling(false);
           }
         }}
-        isLoading={false}
-        title="Xác nhận xoá bài học"
-        description="Bạn có chắc muốn xoá bài học này? Hành động này không thể hoàn tác."
-        confirmText="Xoá bài học"
+        isLoading={isToggling}
+        title={
+          userToToggle?.isActive
+            ? "Vô hiệu hóa người dùng"
+            : "Kích hoạt người dùng"
+        }
+        description={
+          userToToggle?.isActive
+            ? "Bạn có chắc muốn vô hiệu hóa người dùng này? Họ sẽ không thể đăng nhập."
+            : "Bạn có chắc muốn kích hoạt người dùng này? Họ sẽ có thể đăng nhập lại."
+        }
+        confirmText={userToToggle?.isActive ? "Vô hiệu hóa" : "Kích hoạt"}
       />
     </div>
   );

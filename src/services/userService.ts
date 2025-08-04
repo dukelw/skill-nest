@@ -64,6 +64,18 @@ export const userService = {
     }
   },
 
+  async toggleActiveUser(userId: number) {
+    try {
+      const response: AxiosResponse = await api.put(
+        `${API_URL}/toggle-active-user`,
+        { userId }
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to toggle user");
+    }
+  },
+
   async changePassword(data: { currentPassword: string; newPassword: string }) {
     try {
       const response: AxiosResponse = await api.put(
