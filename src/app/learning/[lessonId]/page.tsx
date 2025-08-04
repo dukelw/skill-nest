@@ -2,13 +2,19 @@
 
 import { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
-import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  GraduationCap,
+  MessageCircle,
+} from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import LewisButton from "~/components/Partial/LewisButton";
 import { useCourseStore } from "~/store/courseStore";
 import { courseService } from "~/services/courseService";
 import { Chapter } from "~/models/Chapter";
 import { Lesson } from "~/models/Lesson";
+import { useTranslation } from "react-i18next";
 
 export default function LessonPage() {
   const { course } = useCourseStore();
@@ -18,6 +24,7 @@ export default function LessonPage() {
 
   const [openChapterIds, setOpenChapterIds] = useState<number[]>([]);
   const { lesson, setLesson } = useCourseStore();
+  const { t } = useTranslation();
 
   const getPrevLessonId = () => {
     if (!course || !course.chapters) return null;
@@ -100,7 +107,7 @@ export default function LessonPage() {
               space={false}
             >
               <MessageCircle className="w-4 h-4" />
-              Hỏi đáp
+              {t("Q&A")}
             </LewisButton>
           </div>
         </div>
@@ -117,7 +124,7 @@ export default function LessonPage() {
             className="flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronLeft className="w-4 h-4" />
-            Bài trước
+            {t("prev")}
           </LewisButton>
 
           <LewisButton
@@ -129,7 +136,7 @@ export default function LessonPage() {
             disabled={!getNextLessonId()}
             className="flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Bài tiếp theo
+            {t("next")}
             <ChevronRight className="w-4 h-4" />
           </LewisButton>
         </div>
@@ -137,9 +144,11 @@ export default function LessonPage() {
 
       {/* Right - Danh sách bài học */}
       <div className="p-6 md:p-0">
-        <h2 className="text-xl font-bold text-gray-800 py-2">
-          📚 Nội dung khóa học
+        <h2 className="text-xl font-bold text-gray-800 py-2 flex items-center gap-2">
+          <GraduationCap className="w-5 h-5 ml-2" />
+          {t("learningPage.courseContent")}
         </h2>
+
         {course?.chapters?.map((chapter) => (
           <div key={chapter.id}>
             {/* Chapter Header */}

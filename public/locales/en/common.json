@@ -38,6 +38,7 @@
   "storageTab": "Storage",
   "teachingTab": "Teaching",
   "classroomTab": "Classroom",
+  "learningTab": "Learning",
   "assignmentTab": "Assignment",
   "courseTab": "Course",
   "noCurrentClass": "You do not have any class now",
@@ -208,6 +209,11 @@
     "deactiveSuccessfully": "Deactive user account successfully!",
     "activeSuccessfully": "Active user accounr successfully!"
   },
+  "learningPage": {
+    "courseContent": "Course content"
+  },
+  "next": "Next",
+  "prev": "Prev",
   "post": "Post",
   "close": "Close",
   "reply": "Reply",
