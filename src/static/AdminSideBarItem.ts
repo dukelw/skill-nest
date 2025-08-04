@@ -1,6 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useTranslation } from "react-i18next";
-import { FaHome, FaGraduationCap, FaUser } from "react-icons/fa";
+import {
+  FaHome,
+  FaGraduationCap,
+  FaUser,
+  FaClipboardList,
+} from "react-icons/fa";
 
 export default function staticSidebarItems() {
   const { t } = useTranslation();
@@ -9,6 +14,10 @@ export default function staticSidebarItems() {
     { label: t("statisticTab"), icon: FaHome, href: "/admin" },
     { label: t("userTab"), icon: FaUser, href: "/admin/user" },
     { label: t("courseTab"), icon: FaGraduationCap, href: "/admin/course" },
-    { label: t("assignmentTab"), icon: FaUser, href: "/admin/assignment" },
+    {
+      label: t("assignmentTab"),
+      icon: FaClipboardList,
+      href: "/admin/assignment",
+    },
   ];
 }

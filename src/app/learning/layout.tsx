@@ -1,6 +1,6 @@
 "use client";
 
-import LearningNavbar from "~/components/LearningNavbar";
+import LearningNavbar from "~/layout/_components/LearningNavbar";
 import { useTranslation } from "react-i18next";
 import useIsMobile from "~/hooks/useIsMobile";
 

@@ -1,7 +1,7 @@
 "use client";
 
-import Navbar from "~/components/Navbar";
-import Sidebar from "~/components/Sidebar";
+import Navbar from "~/layout/_components/Navbar";
+import Sidebar from "~/layout/_components/Sidebar";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useIsMobile from "~/hooks/useIsMobile";

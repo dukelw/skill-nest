@@ -11,23 +11,32 @@ import {
   ModalBody,
   ModalFooter,
   Badge,
-  NavbarCollapse,
 } from "flowbite-react";
-import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import { authService } from "~/services/authService";
 import { FiBell, FiMenu } from "react-icons/fi";
 // import { useAuth } from "~/context/AuthContext";
 import { useAuthStore } from "~/store/authStore";
 import { useRouter } from "next/navigation";
-import LewisButton from "./partial/LewisButton";
-import LewisTextInput from "./partial/LewisTextInput";
+import LewisButton from "../../components/partial/LewisButton";
+import LewisTextInput from "../../components/partial/LewisTextInput";
 import { useEffect, useRef, useState } from "react";
 import { classroomService } from "~/services/classroomService";
 import { toast } from "react-toastify";
 import { uploadService } from "~/services/uploadService";
 import { AnnouncementReceiver } from "~/models/AnnouncementReceiver";
 import useUserAnnouncements from "~/hooks/useUserAnnouncements";
+import { useCourseStore } from "~/store/courseStore";
+import {
+  BellIcon,
+  ChevronLeft,
+  LayoutDashboard,
+  Lock,
+  LogIn,
+  LogOut,
+  UserCircle,
+  UserPlus,
+} from "lucide-react";
 
 const AppNavbar = () => {
   const { i18n, t } = useTranslation();
@@ -49,20 +58,11 @@ const AppNavbar = () => {
     markAllAsRead,
     deleteAll,
   } = useUserAnnouncements();
+  const { course } = useCourseStore();
 
   const [showNotificationDropdown, setShowNotificationDropdown] =
     useState(false);
-  const [showNotificationModal, setShowNotificationModal] = useState(false);
   const notificationRef = useRef<HTMLDivElement | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -132,32 +132,16 @@ const AppNavbar = () => {
 
   return (
     <Navbar className="bg-dark-green" fluid>
-      <Image
-        src="/logo-white.png"
-        alt="Flowbite Logo"
-        className="block md:hidden"
-        width={40}
-        height={40}
-      />
-      <NavbarCollapse>
-        <div className="flex items-center space-x-2">
-          <NavbarBrand href="/">
-            <Image
-              src="/logo-white.png"
-              alt="Flowbite Logo"
-              width={40}
-              height={40}
-              onClick={() => {
-                router.push("/");
-              }}
-            />
-            <span className="ml-2 self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-              {t("home")}
-            </span>
-          </NavbarBrand>
-        </div>
-      </NavbarCollapse>
-      <div className="flex ml-auto md:order-2 space-x-2">
+      <div className="flex items-center space-x-2">
+        <NavbarBrand href={`/course/${course?.id}`}>
+          <ChevronLeft className="w-5 h-5 text-white dark:text-white" />
+          <span className="ml-2 self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+            {course?.title}
+          </span>
+        </NavbarBrand>
+      </div>
+
+      <div className="flex md:order-2 space-x-2">
         <Button
           className="w-10 h-10 text-white text-2xl bg-green-700 hover:bg-green-800 
              focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full 
@@ -191,13 +175,7 @@ const AppNavbar = () => {
         </Dropdown>
         <div
           className="relative mx-2 cursor-pointer flex items-center"
-          onClick={() => {
-            if (isMobile) {
-              setShowNotificationModal(true);
-            } else {
-              setShowNotificationDropdown(!showNotificationDropdown);
-            }
-          }}
+          onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
           ref={notificationRef}
         >
           <FiBell className="text-white" size={24} />
@@ -216,7 +194,10 @@ const AppNavbar = () => {
           {showNotificationDropdown && (
             <div className="absolute right-0 top-full mt-2 w-100 bg-white rounded shadow-lg z-50 text-black">
               <div className="flex items-center justify-between px-4 py-2 border-b font-semibold bg-green text-white">
-                🔔 {t("notifications")}
+                <div className="flex items-center">
+                  <BellIcon className="w-5 h-5 inline-block mr-2" />
+                  {t("notifications")}
+                </div>
                 {/* Hành động */}
                 <div className="flex items-center gap-1 ml-2">
                   <button
@@ -337,6 +318,8 @@ const AppNavbar = () => {
           )}
         </div>
 
+        <NavbarToggle />
+
         {user ? (
           <Dropdown
             arrowIcon={false}
@@ -354,14 +337,25 @@ const AppNavbar = () => {
               />
             }
           >
-            <DropdownItem href="/dashboard">👤 {t("dashboard")}</DropdownItem>
+            <DropdownItem href="/dashboard">
+              <LayoutDashboard className="mr-2 h-4 w-4" />
+              {t("dashboard")}
+            </DropdownItem>
+
             <DropdownItem href="/profile">
-              👤 {t("accountInformation")}
+              <UserCircle className="mr-2 h-4 w-4" />
+              {t("accountInformation")}
             </DropdownItem>
+
             <DropdownItem href="/password">
-              🔒 {t("changePassword")}
+              <Lock className="mr-2 h-4 w-4" />
+              {t("changePassword")}
             </DropdownItem>
-            <DropdownItem onClick={handleLogout}>🚪 {t("logout")}</DropdownItem>
+
+            <DropdownItem onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              {t("logout")}
+            </DropdownItem>
           </Dropdown>
         ) : (
           <Dropdown
@@ -373,11 +367,19 @@ const AppNavbar = () => {
               </span>
             }
           >
-            <DropdownItem href="/sign-in">🔑 {t("signin")}</DropdownItem>
-            <DropdownItem href="/sign-up">📝 {t("signup")}</DropdownItem>
+            <DropdownItem href="/sign-in">
+              <LogIn className="mr-2 h-4 w-4" />
+              {t("signin")}
+            </DropdownItem>
+
+            <DropdownItem href="/sign-up">
+              <UserPlus className="mr-2 h-4 w-4" />
+              {t("signup")}
+            </DropdownItem>
           </Dropdown>
         )}
       </div>
+
       {/* Type modal */}
       <Modal show={openSelectModal} onClose={() => setOpenSelectModal(false)}>
         <ModalHeader className="bg-green-500 text-white">
@@ -402,6 +404,7 @@ const AppNavbar = () => {
           </LewisButton>
         </ModalBody>
       </Modal>
+
       {/* Create modal */}
       <Modal show={modalType === "create"} onClose={() => setModalType(null)}>
         <ModalHeader className="bg-green-500 text-white">
@@ -435,6 +438,7 @@ const AppNavbar = () => {
           </LewisButton>
         </ModalFooter>
       </Modal>
+
       {/* Join modal */}
       <Modal show={modalType === "join"} onClose={() => setModalType(null)}>
         <ModalHeader className="bg-green-500 text-white">
@@ -454,65 +458,6 @@ const AppNavbar = () => {
             {t("cancel")}
           </LewisButton>
         </ModalFooter>
-      </Modal>
-      <Modal
-        show={showNotificationModal}
-        onClose={() => setShowNotificationModal(false)}
-      >
-        <ModalHeader className="bg-green-500 text-white">
-          🔔 {t("notifications")}
-        </ModalHeader>
-        <ModalBody className="p-0 max-h-[70vh] overflow-y-auto">
-          {announcements?.length > 0 ? (
-            announcements
-              ?.sort(
-                (a, b) =>
-                  new Date(b?.announcement?.createdAt).getTime() -
-                  new Date(a?.announcement?.createdAt).getTime()
-              )
-              ?.map((a, index) => (
-                <div
-                  key={index}
-                  className={`flex items-start px-4 py-2 gap-2 border-b text-sm cursor-pointer hover:bg-gray-100 ${
-                    a?.isRead ? "opacity-60" : ""
-                  }`}
-                  onClick={() => {
-                    router.push(
-                      `${process.env.NEXT_PUBLIC_CLIENT_URL}${a?.announcement?.href}` ||
-                        ""
-                    );
-                    setShowNotificationModal(false);
-                  }}
-                >
-                  <Avatar
-                    img={
-                      a?.user?.avatar ||
-                      "https://cdn-icons-png.freepik.com/512/3607/3607444.png"
-                    }
-                    rounded
-                    size="sm"
-                    alt="avatar"
-                  />
-                  <div className="flex-1">
-                    <p className="text-green font-bold">
-                      {a?.announcement?.title}
-                    </p>
-                    <p className="text-gray-800">{a?.announcement?.content}</p>
-                    <div className="text-xs text-gray-500 mt-1">
-                      {(() => {
-                        const createdAt = a?.announcement?.createdAt;
-                        return createdAt && !isNaN(Date.parse(createdAt))
-                          ? new Date(createdAt).toLocaleString()
-                          : "Không rõ thời gian";
-                      })()}
-                    </div>
-                  </div>
-                </div>
-              ))
-          ) : (
-            <p className="text-center text-sm p-6">No announcement</p>
-          )}
-        </ModalBody>
       </Modal>
     </Navbar>
   );

@@ -1,12 +1,15 @@
 import {
   Navbar,
   NavbarBrand,
+  NavbarToggle,
   Avatar,
+  Button,
   Dropdown,
   DropdownItem,
   Modal,
   ModalHeader,
   ModalBody,
+  ModalFooter,
   Badge,
   NavbarCollapse,
 } from "flowbite-react";
@@ -17,14 +20,37 @@ import { FiBell, FiMenu } from "react-icons/fi";
 // import { useAuth } from "~/context/AuthContext";
 import { useAuthStore } from "~/store/authStore";
 import { useRouter } from "next/navigation";
+import LewisButton from "../../components/partial/LewisButton";
+import LewisTextInput from "../../components/partial/LewisTextInput";
 import { useEffect, useRef, useState } from "react";
+import { classroomService } from "~/services/classroomService";
+import { toast } from "react-toastify";
+import { uploadService } from "~/services/uploadService";
 import { AnnouncementReceiver } from "~/models/AnnouncementReceiver";
 import useUserAnnouncements from "~/hooks/useUserAnnouncements";
+import {
+  BellIcon,
+  LayoutDashboard,
+  Lock,
+  LogIn,
+  LogOut,
+  UserCircle,
+  UserPlus,
+} from "lucide-react";
 
 const AppNavbar = () => {
   const { i18n, t } = useTranslation();
   const currentLang = i18n.language;
   const router = useRouter();
+  const [openSelectModal, setOpenSelectModal] = useState(false);
+  const [modalType, setModalType] = useState<"create" | "join" | null>(null);
+  const [joinCode, setJoinCode] = useState("");
+  const [file, setFile] = useState<File | null>(null); // State to hold file
+  const [form, setForm] = useState({
+    name: "",
+    code: "",
+    thumbnail: "",
+  });
   const {
     announcements,
     markAsRead,
@@ -47,9 +73,47 @@ const AppNavbar = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
   const handleChangeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
     localStorage.setItem("i18nextLng", lang);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]); // Set the selected file
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (modalType === "create") {
+      let fileUrl = "";
+      if (file) {
+        fileUrl = await uploadService.uploadFile(file);
+      }
+      const res = await classroomService.create({
+        ...form,
+        creatorId: user!.id,
+        thumbnail: fileUrl,
+      });
+      if (res) {
+        setForm({
+          name: "",
+          code: "",
+          thumbnail: "",
+        });
+        setModalType(null);
+        router.replace("/teaching");
+      }
+    } else {
+      await classroomService.requestToJoinClass(user!.id, joinCode);
+      setModalType(null);
+      toast.success(`Request to join classroom ${joinCode} successfully`);
+    }
+    setModalType(null);
   };
 
   const { user, setUser, setTokens } = useAuthStore();
@@ -83,9 +147,6 @@ const AppNavbar = () => {
         className="block md:hidden"
         width={40}
         height={40}
-        onClick={() => {
-          router.push("/");
-        }}
       />
       <NavbarCollapse>
         <div className="flex items-center space-x-2">
@@ -95,6 +156,9 @@ const AppNavbar = () => {
               alt="Flowbite Logo"
               width={40}
               height={40}
+              onClick={() => {
+                router.push("/");
+              }}
             />
             <span className="ml-2 self-center whitespace-nowrap text-xl font-semibold dark:text-white">
               {t("home")}
@@ -103,6 +167,14 @@ const AppNavbar = () => {
         </div>
       </NavbarCollapse>
       <div className="flex ml-auto md:order-2 space-x-2">
+        <Button
+          className="w-10 h-10 text-white text-2xl bg-green-700 hover:bg-green-800 
+             focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full 
+             text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 mr-4"
+          onClick={() => setOpenSelectModal(true)}
+        >
+          +
+        </Button>
         <Dropdown
           arrowIcon={false}
           label={
@@ -153,7 +225,10 @@ const AppNavbar = () => {
           {showNotificationDropdown && (
             <div className="absolute right-0 top-full mt-2 w-100 bg-white rounded shadow-lg z-50 text-black">
               <div className="flex items-center justify-between px-4 py-2 border-b font-semibold bg-green text-white">
-                🔔 {t("notifications")}
+                <div className="flex items-center">
+                  <BellIcon className="w-5 h-5 inline-block mr-2" />
+                  {t("notifications")}
+                </div>
                 {/* Hành động */}
                 <div className="flex items-center gap-1 ml-2">
                   <button
@@ -291,14 +366,25 @@ const AppNavbar = () => {
               />
             }
           >
-            <DropdownItem href="/dashboard">👤 {t("dashboard")}</DropdownItem>
+            <DropdownItem href="/dashboard">
+              <LayoutDashboard className="mr-2 h-4 w-4" />
+              {t("dashboard")}
+            </DropdownItem>
+
             <DropdownItem href="/profile">
-              👤 {t("accountInformation")}
+              <UserCircle className="mr-2 h-4 w-4" />
+              {t("accountInformation")}
             </DropdownItem>
+
             <DropdownItem href="/password">
-              🔒 {t("changePassword")}
+              <Lock className="mr-2 h-4 w-4" />
+              {t("changePassword")}
             </DropdownItem>
-            <DropdownItem onClick={handleLogout}>🚪 {t("logout")}</DropdownItem>
+
+            <DropdownItem onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              {t("logout")}
+            </DropdownItem>
           </Dropdown>
         ) : (
           <Dropdown
@@ -310,18 +396,102 @@ const AppNavbar = () => {
               </span>
             }
           >
-            <DropdownItem href="/sign-in">🔑 {t("signin")}</DropdownItem>
-            <DropdownItem href="/sign-up">📝 {t("signup")}</DropdownItem>
+            <DropdownItem href="/sign-in">
+              <LogIn className="mr-2 h-4 w-4" />
+              {t("signin")}
+            </DropdownItem>
+
+            <DropdownItem href="/sign-up">
+              <UserPlus className="mr-2 h-4 w-4" />
+              {t("signup")}
+            </DropdownItem>
           </Dropdown>
         )}
       </div>
-
+      {/* Type modal */}
+      <Modal show={openSelectModal} onClose={() => setOpenSelectModal(false)}>
+        <ModalHeader className="bg-green-500 text-white">
+          {t("selectAction")}
+        </ModalHeader>
+        <ModalBody className="flex justify-around gap-4">
+          <LewisButton
+            onClick={() => {
+              setModalType("create");
+              setOpenSelectModal(false);
+            }}
+          >
+            ➕ {t("createClassroom")}
+          </LewisButton>
+          <LewisButton
+            onClick={() => {
+              setModalType("join");
+              setOpenSelectModal(false);
+            }}
+          >
+            🔑 {t("joinClassroom")}
+          </LewisButton>
+        </ModalBody>
+      </Modal>
+      {/* Create modal */}
+      <Modal show={modalType === "create"} onClose={() => setModalType(null)}>
+        <ModalHeader className="bg-green-500 text-white">
+          {t("createClassroom")}
+        </ModalHeader>
+        <ModalBody>
+          <LewisTextInput
+            name="name"
+            placeholder={t("classroomName")}
+            value={form.name}
+            onChange={handleChange}
+            className="mb-4"
+          />
+          <LewisTextInput
+            name="code"
+            placeholder={t("classroomCode")}
+            value={form.code}
+            onChange={handleChange}
+          />
+          <input
+            name="thumbnail"
+            type="file"
+            onChange={handleFileChange}
+            className="block w-full mt-4 text-sm file:bg-green-700 text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:bg-green file:text-white hover:file:bg-green-600"
+          />
+        </ModalBody>
+        <ModalFooter>
+          <LewisButton onClick={handleSubmit}>{t("create")}</LewisButton>
+          <LewisButton variant="outlined" onClick={() => setModalType(null)}>
+            {t("cancel")}
+          </LewisButton>
+        </ModalFooter>
+      </Modal>
+      {/* Join modal */}
+      <Modal show={modalType === "join"} onClose={() => setModalType(null)}>
+        <ModalHeader className="bg-green-500 text-white">
+          {t("joinClassroom")}
+        </ModalHeader>
+        <ModalBody>
+          <LewisTextInput
+            name="code"
+            placeholder={t("classroomCode")}
+            value={joinCode}
+            onChange={(e) => setJoinCode(e.target.value)}
+          />
+        </ModalBody>
+        <ModalFooter>
+          <LewisButton onClick={handleSubmit}>{t("submit")}</LewisButton>
+          <LewisButton variant="outlined" onClick={() => setModalType(null)}>
+            {t("cancel")}
+          </LewisButton>
+        </ModalFooter>
+      </Modal>
       <Modal
         show={showNotificationModal}
         onClose={() => setShowNotificationModal(false)}
       >
         <ModalHeader className="bg-green-500 text-white">
-          🔔 {t("notifications")}
+          <BellIcon className="w-5 h-5 inline-block mr-2" />
+          {t("notifications")}
         </ModalHeader>
         <ModalBody className="p-0 max-h-[70vh] overflow-y-auto">
           {announcements?.length > 0 ? (
