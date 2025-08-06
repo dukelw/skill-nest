@@ -212,6 +212,19 @@
   "learningPage": {
     "courseContent": "Nội dung khóa học"
   },
+  "statisticPage": {
+    "errorLoading": "Có lỗi xảy ra khi tải dữ liệu",
+    "totalUser": "Tổng người dùng",
+    "totalCourse": "Tổng khóa học",
+    "totalEnrollment": "Tổng lượt ghi danh",
+    "totalClassroom": "Tổng lớp học",
+    "top5Course": "Top 5 khóa học nhiều học viên nhất",
+    "top5User": "Top 5 khóa học nhiều học viên nhất",
+    "monthlyUserGrowth": "Tăng trưởng người dùng theo tháng"
+  },
+  "year": "Năm",
+  "from": "Từ",
+  "to": "Đến",
   "next": "Bài kế",
   "prev": "Bài trước",
   "post": "Đăng",

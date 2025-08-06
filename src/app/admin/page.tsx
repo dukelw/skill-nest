@@ -22,6 +22,7 @@ import {
 } from "react-icons/fa";
 import { statisticService } from "~/services/statisticService";
 import LewisSelect from "~/components/Partial/LewisSelect";
+import { useTranslation } from "react-i18next";
 
 export default function StatisticsPage() {
   const today = new Date();
@@ -43,7 +44,8 @@ export default function StatisticsPage() {
   const [userGrowth, setUserGrowth] = useState<any[]>([]);
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState<number>(currentYear);
-  const yearOptions = Array.from({ length: 6 }, (_, i) => currentYear - i); // 6 năm gần nhất
+  const yearOptions = Array.from({ length: 6 }, (_, i) => currentYear - i);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchGrowth = async () => {
@@ -56,7 +58,7 @@ export default function StatisticsPage() {
         });
         setUserGrowth(fullData);
       } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu tăng trưởng người dùng", error);
+        console.error(`${t("statisticPage.errorLoading")}`, error);
       }
     };
 
@@ -73,7 +75,7 @@ export default function StatisticsPage() {
         const data = await statisticService.getTopCourses(query);
         setTopCourses(data);
       } catch (error) {
-        console.error("Lỗi khi tải top courses", error);
+        console.error(`${t("statisticPage.errorLoading")}`, error);
       }
     };
     fetchTopCourses();
@@ -89,7 +91,7 @@ export default function StatisticsPage() {
         const data = await statisticService.getTopUsers(query);
         setTopUsers(data);
       } catch (error) {
-        console.error("Lỗi khi tải top users", error);
+        console.error(`${t("statisticPage.errorLoading")}`, error);
       }
     };
 
@@ -106,7 +108,7 @@ export default function StatisticsPage() {
         const data = await statisticService.getOverview(query);
         setOverview(data);
       } catch (error) {
-        console.error("Lỗi khi tải tổng quan", error);
+        console.error(`${t("statisticPage.errorLoading")}`, error);
       }
     };
 
@@ -118,25 +120,25 @@ export default function StatisticsPage() {
 
   const cards = [
     {
-      title: "Tổng người dùng",
+      title: t("statisticPage.totalUser"),
       value: overview?.totalUsers ?? "-",
       icon: <FaUsers className="text-white text-2xl" />,
       bg: "bg-green-600",
     },
     {
-      title: "Tổng khóa học",
+      title: t("statisticPage.totalCourse"),
       value: overview?.totalCourses ?? "-",
       icon: <FaBook className="text-white text-2xl" />,
       bg: "bg-blue-600",
     },
     {
-      title: "Tổng lượt ghi danh",
+      title: t("statisticPage.totalEnrollment"),
       value: overview?.totalVisits ?? "-",
       icon: <FaChartLine className="text-white text-2xl" />,
       bg: "bg-yellow-500",
     },
     {
-      title: "Tổng lớp học",
+      title: t("statisticPage.totalClassroom"),
       value: overview?.totalClassrooms ?? "-",
       icon: <FaChalkboardTeacher className="text-white text-2xl" />,
       bg: "bg-indigo-500",
@@ -148,7 +150,9 @@ export default function StatisticsPage() {
       {/* Bộ lọc ngày tổng quan */}
       <div className="flex flex-wrap gap-4 justify-end items-center">
         <div>
-          <label className="block text-sm mb-1 text-gray-700">Từ ngày</label>
+          <label className="block text-sm mb-1 text-gray-700">
+            {t("from")}
+          </label>
           <input
             type="date"
             value={fromDate}
@@ -157,7 +161,7 @@ export default function StatisticsPage() {
           />
         </div>
         <div>
-          <label className="block text-sm mb-1 text-gray-700">Đến ngày</label>
+          <label className="block text-sm mb-1 text-gray-700">{t("to")}</label>
           <input
             type="date"
             value={toDate}
@@ -184,7 +188,9 @@ export default function StatisticsPage() {
 
       <div className="flex flex-wrap gap-4 justify-end items-center">
         <div>
-          <label className="block text-sm mb-1 text-gray-700">Từ ngày</label>
+          <label className="block text-sm mb-1 text-gray-700">
+            {t("from")}
+          </label>
           <input
             type="date"
             value={courseFrom}
@@ -193,7 +199,7 @@ export default function StatisticsPage() {
           />
         </div>
         <div>
-          <label className="block text-sm mb-1 text-gray-700">Đến ngày</label>
+          <label className="block text-sm mb-1 text-gray-700">{t("to")}</label>
           <input
             type="date"
             value={courseTo}
@@ -206,7 +212,7 @@ export default function StatisticsPage() {
         {/* Top Courses Chart */}
         <Card className="p-4">
           <h3 className="text-xl font-semibold mb-4 text-gray-800">
-            Top 5 khóa học nhiều học viên nhất
+            {t("statisticPage.top5Course")}
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart layout="vertical" data={topCourses}>
@@ -222,7 +228,7 @@ export default function StatisticsPage() {
         {/* Top Users Chart */}
         <Card className="p-4">
           <h3 className="text-xl font-semibold mb-4 text-gray-800">
-            Top 5 giáo viên tạo nhiều khóa học nhất
+            {t("statisticPage.top5User")}
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart layout="vertical" data={topUsers}>
@@ -240,7 +246,7 @@ export default function StatisticsPage() {
       <Card className="p-4">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold text-gray-800">
-            Tăng trưởng người dùng theo tháng
+            {t("statisticPage.monthlyUserGrowth")}
           </h3>
           <LewisSelect
             value={year}
@@ -249,7 +255,7 @@ export default function StatisticsPage() {
           >
             {yearOptions.map((y) => (
               <option key={y} value={y}>
-                Năm {y}
+                {t("year")} {y}
               </option>
             ))}
           </LewisSelect>

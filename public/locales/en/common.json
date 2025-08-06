@@ -213,6 +213,19 @@
   "learningPage": {
     "courseContent": "Course content"
   },
+  "statisticPage": {
+    "errorLoading": "Error when loading data",
+    "totalUser": "Total users",
+    "totalCourse": "Total courses",
+    "totalEnrollment": "Total enrollments",
+    "totalClassroom": "Total classrooms",
+    "top5Course": "Top 5 courses with the Highest Enrollment",
+    "top5User": "Top 5 courses with the Highest Enrollment",
+    "monthlyUserGrowth": "Monthly User Growth"
+  },
+  "year": "Year",
+  "from": "From",
+  "to": "To",
   "next": "Next",
   "prev": "Prev",
   "post": "Post",
