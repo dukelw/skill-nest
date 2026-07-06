@@ -24,7 +24,7 @@ export default function GeneralLayout({
     <div
       suppressHydrationWarning
       lang={i18n.language}
-      className="font-sans bg-gray-50 flex w-full"
+      className="font-sans app-shell flex w-full min-h-screen"
     >
       <Head />
       {/* Navbar cố định top */}
@@ -32,7 +32,7 @@ export default function GeneralLayout({
         <Navbar />
       </div>
 
-      <div className="flex pt-16 min-h-screen">
+      <div className="flex pt-16 min-h-screen w-full">
         {/* Sidebar cố định trái */}
         <div className="fixed top-0 left-0 z-40 h-[calc(100vh-64px)]">
           <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} />
@@ -48,7 +48,7 @@ export default function GeneralLayout({
               : "calc(100vw - 96px)",
             marginLeft: isMobile ? "0" : isOpen ? "256px" : "80px",
           }}
-          className="min-h-full overflow-x-hidden"
+          className="min-h-full overflow-x-hidden page-pad"
         >
           {children}
         </div>

@@ -29,10 +29,14 @@ const getColorClasses = (
   hoverColor: string
 ) => {
   if (variant === "outlined") {
-    return `border border-${color} text-${color} bg-transparent hover:bg-${hoverColor} hover:!bg-${hoverColor}`;
+    return `border border-emerald-200 text-emerald-800 bg-white/80 hover:bg-emerald-50 hover:!bg-emerald-50`;
   }
 
-  return `bg-${color} text-white hover:bg-${hoverColor} hover:!bg-${hoverColor} focus:ring-${color}-300`;
+  if (color === "black") {
+    return "bg-[#111827] text-white hover:bg-[#0b1220] hover:!bg-[#0b1220] focus:ring-slate-300";
+  }
+
+  return `bg-gradient-to-r from-emerald-600 to-cyan-600 text-white hover:from-emerald-700 hover:to-cyan-700 focus:ring-emerald-200`;
 };
 
 const LewisButton = ({
@@ -49,7 +53,7 @@ const LewisButton = ({
     <Button
       {...props}
       color="none"
-      className={`focus:outline-none focus:ring-2 hover:opacity-90 font-medium cursor-pointer rounded-lg transition-all duration-200 
+      className={`focus:outline-none focus:ring-2 font-semibold cursor-pointer rounded-xl shadow-sm shadow-emerald-900/10 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-emerald-900/15 
         ${sizeClasses[lewisSize]} 
         ${space ? spacePadding[lewisSize] : ""} 
         ${getColorClasses(color, variant, hoverColor)} 

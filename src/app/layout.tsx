@@ -24,7 +24,7 @@ export default function RootLayout({
       <head>
         <ThemeModeScript />
       </head>
-      <body className="min-h-screen font-sans bg-gray-50 flex">
+      <body className="min-h-screen font-sans text-color flex">
         <ToastContainer />
         {children}
       </body>

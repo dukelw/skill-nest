@@ -55,11 +55,17 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="w-full min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="max-w-md w-full p-6 bg-white rounded shadow-md space-y-5">
-        <h1 className="text-2xl font-bold text-center">
-          {t("resetPasswordPage.resetPassword")}
-        </h1>
+    <div className="auth-stage w-full min-h-screen flex items-center justify-center px-4 py-10">
+      <div className="glass-panel max-w-md w-full rounded-2xl p-7 space-y-5">
+        <div className="text-center">
+          <p className="section-kicker">Account recovery</p>
+          <h1 className="mt-2 text-3xl font-semibold text-[#10201d]">
+            {t("resetPasswordPage.resetPassword")}
+          </h1>
+          <p className="mt-2 text-sm text-gray-600">
+            Verify your email and create a fresh password securely.
+          </p>
+        </div>
 
         {step === 1 && (
           <>

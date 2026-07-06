@@ -12,7 +12,7 @@ const LewisSelect = ({ textColor = "default", ...props }: LewisSelectProps) => {
         colors: {
           light: "!text-color dark:!text-gray-300",
           default:
-            "block w-full border focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50 border-gray-300 bg-gray-50 text-color placeholder-gray-500 focus:border-green-500 focus:ring-green-500 p-2.5 text-sm rounded-lg",
+            "block w-full border focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 border-emerald-100 bg-white/90 text-color placeholder-gray-400 focus:border-emerald-500 focus:ring-emerald-100 p-3 text-sm rounded-xl shadow-sm transition-all",
           white: "!text-white",
           black: "!text-black",
         },

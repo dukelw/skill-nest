@@ -90,23 +90,31 @@ export default function SignIn() {
   return (
     <div
       lang={i18n?.language}
-      className="w-full min-h-screen flex items-center justify-center bg-gray-100 px-4"
+      className="auth-stage w-full min-h-screen flex items-center justify-center px-4 py-10"
     >
-      <div className="max-w-md w-full p-6 bg-white rounded shadow-md space-y-5">
+      <div className="glass-panel max-w-md w-full rounded-2xl p-7 space-y-5">
         <Link
           href="/"
-          className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
+          className="flex items-center gap-1 text-emerald-800 hover:text-emerald-950"
         >
           <HiArrowLeft className="text-xl" />
           <span className="text-sm">{t("back")}</span>
         </Link>
-        <h1 className="text-2xl font-bold text-center">{t("signin")}</h1>
+        <div className="text-center">
+          <p className="section-kicker">Welcome back</p>
+          <h1 className="mt-2 text-3xl font-semibold text-[#10201d]">
+            {t("signin")}
+          </h1>
+          <p className="mt-2 text-sm text-gray-600">
+            Continue to your classrooms, courses, and live learning sessions.
+          </p>
+        </div>
 
         <div className="flex justify-center gap-3">
           <LewisButton
             lewisSize="full"
             space={false}
-            className="flex items-center gap-2"
+            className="flex items-center justify-center gap-2"
             onClick={() => {
               loginWithGoogle();
             }}
@@ -118,7 +126,7 @@ export default function SignIn() {
             lewisSize="full"
             color="black"
             space={false}
-            className="flex items-center gap-2"
+            className="flex items-center justify-center gap-2"
             onClick={() => {
               loginWithGithub();
             }}
@@ -168,7 +176,7 @@ export default function SignIn() {
             </div>
             <Link
               href="/reset-password"
-              className="text-sm text-blue-600 hover:underline"
+              className="text-sm text-emerald-700 hover:text-emerald-900 hover:underline"
             >
               {t("forgotPassword")}
             </Link>
@@ -181,7 +189,7 @@ export default function SignIn() {
 
         <p className="text-sm text-center">
           {t("dontHaveAccount")}{" "}
-          <Link href="/sign-up" className="text-blue-600 hover:underline">
+          <Link href="/sign-up" className="text-emerald-700 hover:text-emerald-900 hover:underline">
             {t("signup")}
           </Link>
         </p>

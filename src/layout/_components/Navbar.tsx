@@ -126,7 +126,10 @@ const AppNavbar = () => {
   }, []);
 
   return (
-    <Navbar className="bg-dark-green" fluid>
+    <Navbar
+      className="border-b border-white/10 bg-[#063f33]/95 text-white shadow-[0_18px_40px_rgba(6,63,51,0.18)] backdrop-blur-xl"
+      fluid
+    >
       <Image
         src="/logo-white.png"
         alt="Flowbite Logo"
@@ -146,17 +149,15 @@ const AppNavbar = () => {
                 router.push("/");
               }}
             />
-            <span className="ml-2 self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+            <span className="ml-2 self-center whitespace-nowrap text-xl font-semibold text-white">
               {t("home")}
             </span>
           </NavbarBrand>
         </div>
       </NavbarCollapse>
-      <div className="flex ml-auto md:order-2 space-x-2">
+      <div className="flex ml-auto md:order-2 items-center gap-2">
         <Button
-          className="w-10 h-10 text-white text-2xl bg-green-700 hover:bg-green-800 
-             focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full 
-             text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 mr-4"
+          className="mr-1 h-10 w-10 rounded-full border border-white/15 bg-white/12 text-2xl text-white shadow-sm transition hover:bg-white/22 focus:outline-none focus:ring-2 focus:ring-emerald-200"
           onClick={() => setOpenSelectModal(true)}
         >
           +

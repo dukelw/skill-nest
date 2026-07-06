@@ -20,16 +20,16 @@ const Sidebar = ({
     <div
       className={`transition-all duration-300 ${
         isOpen ? "w-64" : "w-20"
-      } bg-dark-green text-white flex flex-col h-[60px] md:h-full pt-2.5 md:min-h-screen`}
+      } bg-[#052f28] text-white flex flex-col h-[60px] md:h-full pt-2.5 md:min-h-screen shadow-[18px_0_45px_rgba(6,63,51,0.18)]`}
     >
       <button
         onClick={toggleSidebar}
-        className="rounded-full flex items-center justify-center w-10 h-10 text-white bg-transparent hover:bg-white/10 transition-colors duration-200 ml-4 z-100"
+        className="rounded-full flex items-center justify-center w-10 h-10 text-white bg-white/8 hover:bg-white/16 transition-colors duration-200 ml-4 z-100"
       >
         <FaBars />
       </button>
 
-      <div className="space-y-4 p-4 flex-grow hidden md:block">
+      <div className="space-y-2 p-4 flex-grow hidden md:block">
         {sidebarItems?.map((item: any, index: number) => {
           const Icon = item.icon;
           const isActive =
@@ -43,8 +43,8 @@ const Sidebar = ({
                   isOpen ? "justify-start" : "justify-center"
                 } ${
                   isActive
-                    ? "bg-white text-green-600"
-                    : "text-white hover:bg-white hover:text-green-600"
+                    ? "bg-white text-emerald-700 shadow-lg shadow-emerald-950/10"
+                    : "text-emerald-50 hover:bg-white/12 hover:text-white"
                 }`}
               >
                 <Icon className={`mr-3 ${!isOpen && "mr-0"}`} />
@@ -61,9 +61,9 @@ const Sidebar = ({
           open={isOpen}
           onClose={toggleSidebar}
           position="left"
-          className="w-72 z-40 mt-[60px] bg-dark-green"
+          className="w-72 z-40 mt-[60px] bg-[#052f28]"
         >
-          <div className="w-64 h-full bg-dark-green p-4 pt-0">
+          <div className="w-64 h-full bg-[#052f28] p-4 pt-0">
             {sidebarItems?.map((item: any, index: number) => {
               const Icon = item.icon;
               const isActive =
@@ -75,8 +75,8 @@ const Sidebar = ({
                   <button
                     className={`flex items-center w-full p-2 rounded mb-2 transition-colors duration-200 ${
                       isActive
-                        ? "bg-white text-green-600"
-                        : "text-white hover:bg-white hover:text-green-600"
+                        ? "bg-white text-emerald-700 shadow-lg shadow-emerald-950/10"
+                        : "text-emerald-50 hover:bg-white/12 hover:text-white"
                     }`}
                     onClick={toggleSidebar}
                   >

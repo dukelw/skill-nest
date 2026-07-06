@@ -60,7 +60,9 @@ export default function NotificationDropdown({
       }}
       ref={ref}
     >
-      <FiBell className="text-white" size={24} />
+      <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/10 transition hover:bg-white/18">
+        <FiBell className="text-white" size={22} />
+      </span>
       {unreadCount > 0 && (
         <Badge
           size="xs"
@@ -71,8 +73,8 @@ export default function NotificationDropdown({
       )}
 
       {showDropdown && (
-        <div className="absolute right-0 top-full mt-2 w-100 bg-white rounded shadow-lg z-50 text-black">
-          <div className="flex items-center justify-between px-4 py-2 border-b font-semibold bg-green text-white">
+        <div className="absolute right-0 top-full z-50 mt-3 w-100 overflow-hidden rounded-2xl border border-emerald-100 bg-white text-black shadow-2xl shadow-emerald-950/15">
+          <div className="flex items-center justify-between border-b border-emerald-100 bg-gradient-to-r from-emerald-700 to-cyan-700 px-4 py-3 font-semibold text-white">
             <div className="flex items-center">
               <BellIcon className="w-5 h-5 inline-block mr-2" />
               {t("notifications")}
@@ -110,7 +112,7 @@ export default function NotificationDropdown({
                 .map((a) => (
                   <li
                     key={a.id}
-                    className={`flex items-start px-4 py-2 gap-2 border-b text-sm cursor-pointer hover:bg-gray-100 ${
+                    className={`flex items-start px-4 py-3 gap-3 border-b border-emerald-50 text-sm cursor-pointer hover:bg-emerald-50/70 ${
                       a?.isRead ? "opacity-60" : ""
                     }`}
                     onClick={() => {
@@ -133,7 +135,7 @@ export default function NotificationDropdown({
                     />
 
                     <div className="flex-1">
-                      <p className="text-green font-bold">
+                      <p className="font-bold text-emerald-800">
                         {a?.announcement?.title}
                       </p>
                       <p className="text-gray-800">
@@ -179,7 +181,7 @@ export default function NotificationDropdown({
           </ul>
 
           <div
-            className="text-center text-green-600 text-sm py-2 hover:underline cursor-pointer"
+            className="cursor-pointer bg-emerald-50 py-3 text-center text-sm font-medium text-emerald-700 hover:bg-emerald-100"
             onClick={() => {
               router.push("/notifications");
               setShowDropdown(false);
