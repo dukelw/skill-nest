@@ -3,13 +3,10 @@
 
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Checkbox, Label } from "flowbite-react";
-import { FaGoogle, FaGithub } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
 import Link from "next/link";
-import LewisButton from "~/components/Partial/LewisButton";
 import "../../../i18n/client";
 import { i18n } from "next-i18next";
-import LewisTextInput from "~/components/Partial/LewisTextInput";
 import { toast } from "react-toastify";
 import { authService } from "~/services/authService";
 import { useRouter } from "next/navigation";
@@ -18,6 +15,33 @@ import { useAuthStore } from "~/store/authStore";
 import { loginWithGithub, loginWithGoogle } from "~/lib/actions/auth";
 import { HiArrowLeft } from "react-icons/hi";
 import Cookies from "js-cookie";
+import Image from "next/image";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent, CardHeader } from "~/components/ui/card";
+import { Checkbox } from "~/components/ui/checkbox";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+
+const GoogleMark = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+    <path
+      fill="#4285F4"
+      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+    />
+    <path
+      fill="#34A853"
+      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+    />
+    <path
+      fill="#FBBC05"
+      d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.84z"
+    />
+    <path
+      fill="#EA4335"
+      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06L5.84 9.9C6.71 7.3 9.14 5.38 12 5.38z"
+    />
+  </svg>
+);
 
 export default function SignIn() {
   const { t } = useTranslation();
@@ -34,6 +58,10 @@ export default function SignIn() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+  };
+
+  const handleRememberChange = (checked: boolean | "indeterminate") => {
+    setForm({ ...form, remember: checked === true });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -90,109 +118,145 @@ export default function SignIn() {
   return (
     <div
       lang={i18n?.language}
-      className="auth-stage w-full min-h-screen flex items-center justify-center px-4 py-10"
+      className="auth-stage relative w-full min-h-screen overflow-hidden px-4 py-10"
     >
-      <div className="glass-panel max-w-md w-full rounded-2xl p-7 space-y-5">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.18),transparent_28%),radial-gradient(circle_at_80%_0%,rgba(125,211,252,0.16),transparent_30%)]" />
+      <div className="relative mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center gap-10 lg:grid-cols-[1fr_460px]">
+        <section className="hidden text-white lg:block">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur transition hover:bg-white/16"
+          >
+            <Image src="/logo-white.png" alt="Skill Nest" width={32} height={32} />
+            Skill Nest
+          </Link>
+          <div className="mt-12 max-w-xl">
+            <p className="text-sm font-semibold uppercase text-emerald-100">
+              Modern learning workspace
+            </p>
+            <h1 className="mt-4 text-5xl font-semibold leading-tight">
+              Teach, meet, assign, and learn in one calm place.
+            </h1>
+            <p className="mt-5 text-base text-emerald-50/82">
+              A polished classroom hub for live sessions, course paths, quizzes,
+              and student progress.
+            </p>
+          </div>
+        </section>
+
+        <Card className="w-full p-7">
         <Link
           href="/"
-          className="flex items-center gap-1 text-emerald-800 hover:text-emerald-950"
+          className="inline-flex items-center gap-2 text-sm font-medium text-emerald-800 transition hover:text-emerald-950"
         >
           <HiArrowLeft className="text-xl" />
-          <span className="text-sm">{t("back")}</span>
+          {t("back")}
         </Link>
-        <div className="text-center">
-          <p className="section-kicker">Welcome back</p>
-          <h1 className="mt-2 text-3xl font-semibold text-[#10201d]">
-            {t("signin")}
-          </h1>
-          <p className="mt-2 text-sm text-gray-600">
-            Continue to your classrooms, courses, and live learning sessions.
-          </p>
-        </div>
 
-        <div className="flex justify-center gap-3">
-          <LewisButton
-            lewisSize="full"
-            space={false}
-            className="flex items-center justify-center gap-2"
-            onClick={() => {
-              loginWithGoogle();
-            }}
-          >
-            <FaGoogle className="text-white" />
-            {t("signinWithGoogle")}
-          </LewisButton>
-          <LewisButton
-            lewisSize="full"
-            color="black"
-            space={false}
-            className="flex items-center justify-center gap-2"
-            onClick={() => {
-              loginWithGithub();
-            }}
-          >
-            <FaGithub className="text-white" />
-            {t("signinWithGithub")}
-          </LewisButton>
-        </div>
-
-        <form className="space-y-4">
-          <div>
-            <Label htmlFor="email" />
-            <LewisTextInput
-              id="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder={t("email")}
-              type="email"
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="password" />
-            <LewisTextInput
-              id="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              placeholder={t("password")}
-              type="password"
-              required
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="remember"
-                name="remember"
-                checked={form.remember}
-                onChange={handleChange}
-              />
-              <Label className="text-color" htmlFor="remember">
-                {t("rememberMe")}
-              </Label>
+          <CardHeader className="mt-7 text-center">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-cyan-600 shadow-xl shadow-emerald-900/20">
+              <Image src="/logo-white.png" alt="Skill Nest" width={44} height={44} />
             </div>
-            <Link
-              href="/reset-password"
-              className="text-sm text-emerald-700 hover:text-emerald-900 hover:underline"
-            >
-              {t("forgotPassword")}
-            </Link>
-          </div>
+            <div>
+              <p className="section-kicker">Welcome back</p>
+              <h2 className="mt-2 text-3xl font-semibold text-[#10201d]">
+                {t("signin")}
+              </h2>
+              <p className="mt-2 text-sm text-gray-600">
+                Continue to your classrooms, courses, and live learning sessions.
+              </p>
+            </div>
+          </CardHeader>
 
-          <LewisButton onClick={handleSubmit} lewisSize="full" type="submit">
-            {t("signin")}
-          </LewisButton>
-        </form>
+          <CardContent className="mt-6 space-y-5">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Button
+                variant="secondary"
+                className="h-12 border-slate-200 bg-white"
+                onClick={() => loginWithGoogle()}
+              >
+                <GoogleMark />
+                Google
+              </Button>
+              <Button
+                variant="dark"
+                className="h-12"
+                onClick={() => loginWithGithub()}
+              >
+                <FaGithub className="h-5 w-5" />
+                GitHub
+              </Button>
+            </div>
 
-        <p className="text-sm text-center">
-          {t("dontHaveAccount")}{" "}
-          <Link href="/sign-up" className="text-emerald-700 hover:text-emerald-900 hover:underline">
-            {t("signup")}
-          </Link>
-        </p>
+            <div className="flex items-center gap-3">
+              <div className="h-px flex-1 bg-emerald-100" />
+              <span className="text-xs font-medium text-slate-400">
+                or sign in with email
+              </span>
+              <div className="h-px flex-1 bg-emerald-100" />
+            </div>
+
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              <div className="space-y-2">
+                <Label htmlFor="email">{t("email")}</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="you@skillnest.app"
+                  type="email"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">{t("password")}</Label>
+                <Input
+                  id="password"
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  type="password"
+                  required
+                />
+              </div>
+
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="remember"
+                    checked={form.remember}
+                    onCheckedChange={handleRememberChange}
+                  />
+                  <Label className="text-slate-600" htmlFor="remember">
+                    {t("rememberMe")}
+                  </Label>
+                </div>
+                <Link
+                  href="/reset-password"
+                  className="text-sm font-medium text-emerald-700 hover:text-emerald-900 hover:underline"
+                >
+                  {t("forgotPassword")}
+                </Link>
+              </div>
+
+              <Button className="h-12 w-full" type="submit">
+                {t("signin")}
+              </Button>
+            </form>
+
+            <p className="text-center text-sm text-slate-600">
+              {t("dontHaveAccount")}{" "}
+              <Link
+                href="/sign-up"
+                className="font-semibold text-emerald-700 hover:text-emerald-900 hover:underline"
+              >
+                {t("signup")}
+              </Link>
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
