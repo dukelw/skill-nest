@@ -36,7 +36,7 @@ const getColorClasses = (
     return "bg-[#111827] text-white hover:bg-[#0b1220] hover:!bg-[#0b1220] focus:ring-slate-300";
   }
 
-  return `bg-gradient-to-r from-emerald-600 to-cyan-600 text-white hover:from-emerald-700 hover:to-cyan-700 focus:ring-emerald-200`;
+  return `bg-[#0d5b49] text-white hover:bg-[#0a493b] hover:!bg-[#0a493b] focus:ring-emerald-200`;
 };
 
 const LewisButton = ({

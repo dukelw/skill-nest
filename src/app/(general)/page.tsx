@@ -119,7 +119,7 @@ export default function HomePage() {
     return (
       <div className="space-y-6">
         <section className="relative overflow-hidden rounded-[32px] border border-emerald-100 bg-white shadow-[0_24px_80px_rgba(8,55,45,0.12)]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_14%,rgba(16,168,111,0.18),transparent_30%),radial-gradient(circle_at_82%_10%,rgba(14,165,183,0.16),transparent_32%)]" />
+          <div className="absolute inset-0 bg-[#fbfcf8]" />
           <div className="relative grid min-h-[430px] gap-8 p-8 lg:grid-cols-[1fr_380px] lg:p-10">
             <div className="flex flex-col justify-center">
               <div className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-800">
@@ -136,7 +136,7 @@ export default function HomePage() {
               <div className="mt-7 flex flex-wrap gap-3">
                 <Link
                   href="/sign-in"
-                  className="inline-flex h-12 items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-600 to-cyan-600 px-6 text-sm font-semibold text-white shadow-lg shadow-emerald-900/15 transition hover:-translate-y-0.5 hover:from-emerald-700 hover:to-cyan-700"
+                  className="inline-flex h-12 items-center justify-center rounded-2xl bg-[#0d5b49] px-6 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[#0a493b] hover:shadow-md"
                 >
                   Sign in to continue
                 </Link>

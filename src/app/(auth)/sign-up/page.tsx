@@ -79,7 +79,7 @@ export default function SignUp() {
       lang={i18n?.language}
       className="auth-stage w-full min-h-screen flex items-center justify-center px-4 py-10"
     >
-      <div className="glass-panel max-w-md w-full rounded-2xl p-7 space-y-5">
+      <div className="max-w-md w-full rounded-2xl border border-emerald-100 bg-white p-7 shadow-[0_18px_48px_rgba(15,58,47,0.1)] space-y-5">
         <Link
           href="/"
           className="flex items-center gap-1 text-emerald-800 hover:text-emerald-950"

@@ -118,33 +118,32 @@ export default function SignIn() {
   return (
     <div
       lang={i18n?.language}
-      className="auth-stage relative w-full min-h-screen overflow-hidden px-4 py-10"
+      className="auth-stage w-full min-h-screen px-4 py-10"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.18),transparent_28%),radial-gradient(circle_at_80%_0%,rgba(125,211,252,0.16),transparent_30%)]" />
-      <div className="relative mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center gap-10 lg:grid-cols-[1fr_460px]">
-        <section className="hidden text-white lg:block">
+      <div className="mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center gap-10 lg:grid-cols-[1fr_440px]">
+        <section className="hidden text-[#10201d] lg:block">
           <Link
             href="/"
-            className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur transition hover:bg-white/16"
+            className="inline-flex items-center gap-3 rounded-full border border-emerald-100 bg-white px-4 py-2 text-sm font-medium shadow-sm transition hover:bg-emerald-50"
           >
-            <Image src="/logo-white.png" alt="Skill Nest" width={32} height={32} />
+            <Image src="/logo.png" alt="Skill Nest" width={32} height={32} />
             Skill Nest
           </Link>
           <div className="mt-12 max-w-xl">
-            <p className="text-sm font-semibold uppercase text-emerald-100">
+            <p className="text-sm font-semibold uppercase text-emerald-700">
               Modern learning workspace
             </p>
             <h1 className="mt-4 text-5xl font-semibold leading-tight">
               Teach, meet, assign, and learn in one calm place.
             </h1>
-            <p className="mt-5 text-base text-emerald-50/82">
+            <p className="mt-5 text-base leading-7 text-slate-600">
               A polished classroom hub for live sessions, course paths, quizzes,
               and student progress.
             </p>
           </div>
         </section>
 
-        <Card className="w-full p-7">
+        <Card className="w-full border-emerald-100 bg-white p-7 shadow-[0_18px_48px_rgba(15,58,47,0.1)]">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-sm font-medium text-emerald-800 transition hover:text-emerald-950"
@@ -154,8 +153,8 @@ export default function SignIn() {
         </Link>
 
           <CardHeader className="mt-7 text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-cyan-600 shadow-xl shadow-emerald-900/20">
-              <Image src="/logo-white.png" alt="Skill Nest" width={44} height={44} />
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-100 bg-[#f5f7f2] shadow-sm">
+              <Image src="/logo.png" alt="Skill Nest" width={44} height={44} />
             </div>
             <div>
               <p className="section-kicker">Welcome back</p>

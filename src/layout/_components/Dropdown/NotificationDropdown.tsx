@@ -75,7 +75,7 @@ export default function NotificationDropdown({
 
       {showDropdown && (
         <div className="absolute right-0 top-full z-50 mt-3 w-100 overflow-hidden rounded-2xl border border-emerald-100 bg-white text-black shadow-2xl shadow-emerald-950/15">
-          <div className="flex items-center justify-between border-b border-emerald-100 bg-gradient-to-r from-emerald-700 to-cyan-700 px-4 py-3 font-semibold text-white">
+          <div className="flex items-center justify-between border-b border-emerald-100 bg-[#0d5b49] px-4 py-3 font-semibold text-white">
             <div className="flex items-center">
               <BellIcon className="w-5 h-5 inline-block mr-2" />
               {t("notifications")}
