@@ -1,12 +1,7 @@
 import {
-  Navbar,
-  NavbarBrand,
-  Button,
   Dropdown,
   DropdownItem,
-  NavbarCollapse,
 } from "flowbite-react";
-import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import { authService } from "~/services/authService";
 // import { useAuth } from "~/context/AuthContext";
@@ -23,6 +18,7 @@ import JoinClassroomModal from "./Modal/JoinClassroomModal";
 import NotificationModal from "./Modal/NotificationModal";
 import NotificationDropdown from "./Dropdown/NotificationDropdown";
 import UserDropdown from "./Dropdown/UserDropdown";
+import { Plus } from "lucide-react";
 
 const AppNavbar = () => {
   const { i18n, t } = useTranslation();
@@ -126,46 +122,24 @@ const AppNavbar = () => {
   }, []);
 
   return (
-    <Navbar
-      className="border-b border-white/10 bg-[#063f33]/95 text-white shadow-[0_18px_40px_rgba(6,63,51,0.18)] backdrop-blur-xl"
-      fluid
-    >
-      <Image
-        src="/logo-white.png"
-        alt="Flowbite Logo"
-        className="block md:hidden"
-        width={40}
-        height={40}
-      />
-      <NavbarCollapse>
-        <div className="flex items-center space-x-2">
-          <NavbarBrand href="/">
-            <Image
-              src="/logo-white.png"
-              alt="Flowbite Logo"
-              width={40}
-              height={40}
-              onClick={() => {
-                router.push("/");
-              }}
-            />
-            <span className="ml-2 self-center whitespace-nowrap text-xl font-semibold text-white">
-              {t("home")}
-            </span>
-          </NavbarBrand>
-        </div>
-      </NavbarCollapse>
-      <div className="flex ml-auto md:order-2 items-center gap-2">
-        <Button
-          className="mr-1 h-10 w-10 rounded-full border border-white/15 bg-white/12 text-2xl text-white shadow-sm transition hover:bg-white/22 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+    <header className="flex h-[68px] items-center rounded-[28px] border border-white/12 bg-[#064638]/92 px-4 text-white shadow-[0_18px_50px_rgba(4,54,45,0.2)] backdrop-blur-xl">
+      <div className="hidden md:block">
+        <p className="text-xs font-medium text-emerald-100/75">Workspace</p>
+        <h1 className="text-base font-semibold leading-tight">{t("home")}</h1>
+      </div>
+
+      <div className="ml-auto flex items-center gap-2">
+        <button
+          className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-white/16 focus:outline-none focus:ring-2 focus:ring-emerald-200"
           onClick={() => setOpenSelectModal(true)}
+          aria-label="Create or join"
         >
-          +
-        </Button>
+          <Plus className="h-5 w-5" />
+        </button>
         <Dropdown
           arrowIcon={false}
           label={
-            <span className="text-white font-medium">
+            <span className="flex h-11 items-center rounded-2xl border border-white/10 bg-white/10 px-4 text-sm font-semibold text-white transition hover:bg-white/16">
               {i18n?.language?.toUpperCase()}
             </span>
           }
@@ -230,7 +204,7 @@ const AppNavbar = () => {
         onClose={() => setShowNotificationModal(false)}
         announcements={announcements}
       />
-    </Navbar>
+    </header>
   );
 };
 

@@ -28,7 +28,7 @@ export default function UserDropdown({ user, handleLogout }: Props) {
       inline
       label={
         <Avatar
-          className="ml-1 cursor-pointer rounded-full ring-2 ring-white/20 transition hover:ring-emerald-200"
+          className="ml-1 cursor-pointer rounded-2xl ring-2 ring-white/20 transition hover:ring-emerald-200"
           alt="User Avatar"
           rounded
           img={
@@ -63,7 +63,7 @@ export default function UserDropdown({ user, handleLogout }: Props) {
       arrowIcon={false}
       inline
       label={
-        <span className="rounded-full flex items-center justify-center w-10 h-10 text-white bg-white/10 hover:bg-white/18 border border-white/10 transition-colors duration-200">
+        <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-white transition-colors duration-200 hover:bg-white/18">
           <FiMenu size={22} />
         </span>
       }

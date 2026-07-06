@@ -2,7 +2,7 @@
 
 import Navbar from "~/layout/_components/Navbar";
 import Sidebar from "~/layout/_components/Sidebar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import useIsMobile from "~/hooks/useIsMobile";
 import Head from "./head";
@@ -24,35 +24,35 @@ export default function GeneralLayout({
     <div
       suppressHydrationWarning
       lang={i18n.language}
-      className="font-sans app-shell flex w-full min-h-screen"
+      className="app-shell flex min-h-screen w-full font-sans"
     >
       <Head />
-      {/* Navbar cố định top */}
-      <div className="fixed top-0 right-0 z-50 left-20">
+      <div
+        className="fixed right-3 top-3 z-50 transition-all duration-300"
+        style={{
+          left: isMobile ? "12px" : isOpen ? "288px" : "104px",
+        }}
+      >
         <Navbar />
       </div>
 
-      <div className="flex pt-16 min-h-screen w-full">
-        {/* Sidebar cố định trái */}
-        <div className="fixed top-0 left-0 z-40 h-[calc(100vh-64px)]">
-          <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} />
-        </div>
-
-        {/* Nội dung chính */}
-        <div
-          style={{
-            width: isMobile
-              ? "100vw"
-              : isOpen
-              ? "calc(100vw - 272px)"
-              : "calc(100vw - 96px)",
-            marginLeft: isMobile ? "0" : isOpen ? "256px" : "80px",
-          }}
-          className="min-h-full overflow-x-hidden page-pad"
-        >
-          {children}
-        </div>
+      <div className="fixed left-3 top-3 z-40 h-[calc(100vh-24px)]">
+        <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} />
       </div>
+
+      <main
+        style={{
+          width: isMobile
+            ? "100vw"
+            : isOpen
+            ? "calc(100vw - 312px)"
+            : "calc(100vw - 128px)",
+          marginLeft: isMobile ? "0" : isOpen ? "288px" : "104px",
+        }}
+        className="min-h-screen overflow-x-hidden px-4 pb-6 pt-24 transition-all duration-300 sm:px-6 lg:px-8"
+      >
+        {children}
+      </main>
     </div>
   );
 }

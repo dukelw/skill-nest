@@ -60,7 +60,7 @@ export default function NotificationDropdown({
       }}
       ref={ref}
     >
-      <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/10 transition hover:bg-white/18">
+      <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 transition hover:bg-white/18">
         <FiBell className="text-white" size={22} />
       </span>
       {unreadCount > 0 && (

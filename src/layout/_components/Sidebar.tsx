@@ -1,7 +1,8 @@
 "use client";
 
-import { Drawer, DrawerItems } from "flowbite-react";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Drawer } from "flowbite-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaBars } from "react-icons/fa";
@@ -16,80 +17,103 @@ const Sidebar = ({
 }) => {
   const sidebarItems = staticSidebarItems();
   const pathName = usePathname();
-  return (
-    <div
-      className={`transition-all duration-300 ${
-        isOpen ? "w-64" : "w-20"
-      } bg-[#052f28] text-white flex flex-col h-[60px] md:h-full pt-2.5 md:min-h-screen shadow-[18px_0_45px_rgba(6,63,51,0.18)]`}
-    >
-      <button
-        onClick={toggleSidebar}
-        className="rounded-full flex items-center justify-center w-10 h-10 text-white bg-white/8 hover:bg-white/16 transition-colors duration-200 ml-4 z-100"
-      >
-        <FaBars />
-      </button>
 
-      <div className="space-y-2 p-4 flex-grow hidden md:block">
-        {sidebarItems?.map((item: any, index: number) => {
-          const Icon = item.icon;
-          const isActive =
-            item.href === "/"
-              ? pathName === item.href
-              : pathName.startsWith(item.href);
-          return (
-            <Link className="cursor-pointer" href={item.href} key={index}>
-              <button
-                className={`flex items-center w-full p-2 rounded mb-2 cursor-pointer transition-colors duration-200 ${
-                  isOpen ? "justify-start" : "justify-center"
-                } ${
-                  isActive
-                    ? "bg-white text-emerald-700 shadow-lg shadow-emerald-950/10"
-                    : "text-emerald-50 hover:bg-white/12 hover:text-white"
-                }`}
-              >
-                <Icon className={`mr-3 ${!isOpen && "mr-0"}`} />
-                {isOpen && <span>{item.label}</span>}
-              </button>
-            </Link>
-          );
-        })}
+  const renderItems = (onItemClick?: () => void) =>
+    sidebarItems?.map((item: any, index: number) => {
+      const Icon = item.icon;
+      const isActive =
+        item.href === "/" ? pathName === item.href : pathName.startsWith(item.href);
+
+      return (
+        <Link className="block" href={item.href} key={index}>
+          <button
+            className={`group flex h-12 w-full items-center rounded-2xl px-3 text-sm font-semibold transition-all duration-200 ${
+              isOpen ? "justify-start" : "justify-center"
+            } ${
+              isActive
+                ? "bg-white text-emerald-900 shadow-lg shadow-emerald-950/15"
+                : "text-emerald-50/86 hover:bg-white/10 hover:text-white"
+            }`}
+            onClick={onItemClick}
+          >
+            <span
+              className={`flex h-9 w-9 items-center justify-center rounded-xl transition ${
+                isActive
+                  ? "bg-emerald-50 text-emerald-700"
+                  : "bg-white/6 text-emerald-50 group-hover:bg-white/12"
+              }`}
+            >
+              <Icon className="h-4 w-4" />
+            </span>
+            {isOpen && <span className="ml-3 truncate">{item.label}</span>}
+          </button>
+        </Link>
+      );
+    });
+
+  return (
+    <aside
+      className={`hidden h-full flex-col overflow-hidden rounded-[28px] border border-white/10 bg-[#043a31]/95 text-white shadow-[0_24px_70px_rgba(3,47,39,0.26)] backdrop-blur-xl transition-all duration-300 md:flex ${
+        isOpen ? "w-64" : "w-20"
+      }`}
+    >
+      <div className={`flex h-20 items-center ${isOpen ? "justify-between px-4" : "justify-center"}`}>
+        <Link href="/" className={`flex items-center ${isOpen ? "gap-3" : "gap-0"}`}>
+          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/12 shadow-inner shadow-white/10">
+            <Image src="/logo-white.png" alt="Skill Nest" width={38} height={38} />
+          </span>
+          {isOpen && (
+            <span className="text-lg font-bold leading-tight text-white">
+              Skill Nest
+            </span>
+          )}
+        </Link>
+        {isOpen && (
+          <button
+            onClick={toggleSidebar}
+            className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/8 text-white transition hover:bg-white/14"
+            aria-label="Toggle sidebar"
+          >
+            <FaBars />
+          </button>
+        )}
       </div>
-      {/* Overlay + drawer */}
+
+      {!isOpen && (
+        <button
+          onClick={toggleSidebar}
+          className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/8 text-white transition hover:bg-white/14"
+          aria-label="Toggle sidebar"
+        >
+          <FaBars />
+        </button>
+      )}
+
+      <nav className="flex-1 space-y-2 px-3 pb-5">{renderItems()}</nav>
+
+      {isOpen && (
+        <div className="m-3 rounded-3xl border border-white/10 bg-white/8 p-4">
+          <p className="text-xs font-semibold uppercase text-emerald-100">
+            Learning hub
+          </p>
+          <p className="mt-1 text-xs text-emerald-50/70">
+            Organize classes, tasks, meetings, and courses in one flow.
+          </p>
+        </div>
+      )}
+
       <div className="md:hidden">
         <Drawer
           backdrop={false}
           open={isOpen}
           onClose={toggleSidebar}
           position="left"
-          className="w-72 z-40 mt-[60px] bg-[#052f28]"
+          className="z-40 mt-[72px] w-72 bg-[#043a31]"
         >
-          <div className="w-64 h-full bg-[#052f28] p-4 pt-0">
-            {sidebarItems?.map((item: any, index: number) => {
-              const Icon = item.icon;
-              const isActive =
-                item.href === "/"
-                  ? pathName === item.href
-                  : pathName.startsWith(item.href);
-              return (
-                <Link className="cursor-pointer" href={item.href} key={index}>
-                  <button
-                    className={`flex items-center w-full p-2 rounded mb-2 transition-colors duration-200 ${
-                      isActive
-                        ? "bg-white text-emerald-700 shadow-lg shadow-emerald-950/10"
-                        : "text-emerald-50 hover:bg-white/12 hover:text-white"
-                    }`}
-                    onClick={toggleSidebar}
-                  >
-                    <Icon className="mr-3" />
-                    <span>{item.label}</span>
-                  </button>
-                </Link>
-              );
-            })}
-          </div>
+          <div className="h-full bg-[#043a31] p-4">{renderItems(toggleSidebar)}</div>
         </Drawer>
       </div>
-    </div>
+    </aside>
   );
 };
 
