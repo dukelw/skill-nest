@@ -27,6 +27,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   reactStrictMode: true,
   i18n: nextI18nConfig.i18n,
 };

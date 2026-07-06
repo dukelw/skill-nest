@@ -53,7 +53,7 @@ export default function Quiz() {
     const totalQuestions = assignment?.questions?.length ?? 0;
     const grade = totalQuestions ? (correctCount * 10) / totalQuestions : 0;
 
-    if (!assignment?.id) return;
+    if (!assignment?.id || !user?.id) return;
 
     const answerString = Object.entries(answers)
       ?.map(([qid, ans]) => `${qid}:${ans}`)
@@ -61,7 +61,7 @@ export default function Quiz() {
 
     await submissionService.createSubmission({
       assignmentId: assignment.id,
-      userId: user?.id,
+      userId: user.id,
       fileUrl: answerString,
       grade,
     });

@@ -4,16 +4,16 @@ type Props = {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  limit: number;
-  total: number;
+  limit?: number;
+  total?: number;
 };
 
 export const LewisPagination: React.FC<Props> = ({
   currentPage,
   totalPages,
   onPageChange,
-  limit,
-  total,
+  limit = 0,
+  total = 0,
 }) => {
   if (totalPages <= 1) return null;
 
@@ -33,13 +33,15 @@ export const LewisPagination: React.FC<Props> = ({
 
   return (
     <div className="flex items-center justify-between mt-4 text-sm">
-      <p className="text-gray-600">
-        Showing{" "}
-        <span className="text-green-600 font-medium">
-          {Math.min(currentPage * limit, total)}
-        </span>{" "}
-        of <span className="text-green-600 font-medium">{total}</span>
-      </p>
+      {total > 0 && limit > 0 && (
+        <p className="text-gray-600">
+          Showing{" "}
+          <span className="text-green-600 font-medium">
+            {Math.min(currentPage * limit, total)}
+          </span>{" "}
+          of <span className="text-green-600 font-medium">{total}</span>
+        </p>
+      )}
 
       <div className="flex items-center space-x-1">
         <button
@@ -75,3 +77,5 @@ export const LewisPagination: React.FC<Props> = ({
     </div>
   );
 };
+
+export default LewisPagination;

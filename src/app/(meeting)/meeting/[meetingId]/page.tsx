@@ -45,7 +45,7 @@ const MeetingPage = () => {
             <MeetingSetup setIsSetupComplete={setIsSetupComplete} />
           ) : (
             <div>
-              <MeetingRoom meetingId={meetingId?.toString()} />
+              <MeetingRoom meetingId={id} />
             </div>
           )}
         </StreamTheme>

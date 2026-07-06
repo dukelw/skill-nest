@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { authService } from "~/services/authService";
 import { useAuthStore } from "~/store/authStore";
 import { Spinner } from "flowbite-react";
 
-export default function SignInSuccessPage() {
+function SignInSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { setUser } = useAuthStore();
@@ -33,5 +33,19 @@ export default function SignInSuccessPage() {
     <div className="flex justify-center items-center min-h-[300px] w-full">
       <Spinner size="xl" aria-label="Sign in..." />
     </div>
+  );
+}
+
+export default function SignInSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-[300px] w-full">
+          <Spinner size="xl" aria-label="Sign in..." />
+        </div>
+      }
+    >
+      <SignInSuccessContent />
+    </Suspense>
   );
 }
