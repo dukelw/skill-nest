@@ -12,8 +12,9 @@ import { classroomService } from "~/services/classroomService";
 import { useAuthStore } from "~/store/authStore";
 import { useClassroomStore } from "~/store/classroomStore";
 import Link from "next/link";
-import { Users } from "lucide-react";
+import { LockKeyhole, Presentation, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import EmptyState from "~/components/EmptyState";
 
 export default function Teaching() {
   const { teacherClassrooms, setTeacherClassrooms } = useClassroomStore();
@@ -34,9 +35,14 @@ export default function Teaching() {
 
   if (!user) {
     return (
-      <p className="text-gray-500 p-4 text-center">
-        {t("teachingPage.authError")}
-      </p>
+      <EmptyState
+        icon={LockKeyhole}
+        eyebrow="Teaching dashboard"
+        title="Sign in to manage your classes"
+        description="Your teaching classrooms, members, and shared learning activity will appear here."
+        actionLabel="Sign in"
+        actionHref="/sign-in"
+      />
     );
   }
 
@@ -49,7 +55,18 @@ export default function Teaching() {
   }
 
   if (!teacherClassrooms || teacherClassrooms.length === 0) {
-    return <p className="text-gray-500 p-4">{t("teachingPage.teaching")}</p>;
+    return (
+      <EmptyState
+        icon={Presentation}
+        eyebrow="No teaching spaces"
+        title="Create your first classroom"
+        description="Start a teaching space to organize learners, announcements, assignments, and meetings."
+        actionLabel="Create from home"
+        actionHref="/"
+        secondaryLabel="Browse courses"
+        secondaryHref="/course"
+      />
+    );
   }
 
   return (

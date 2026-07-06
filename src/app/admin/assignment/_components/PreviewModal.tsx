@@ -17,9 +17,11 @@ import {
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import { fallbackUserAvatar } from "~/constant";
+import EmptyState from "~/components/EmptyState";
 import Assignment from "~/models/Assignment";
 import { AssignmentType } from "~/models/AssignmentType";
 import Submission from "~/models/Submission";
+import { FileCheck2 } from "lucide-react";
 
 interface Props {
   show: boolean;
@@ -135,7 +137,13 @@ export default function PreviewAssignmentModal({ show, onClose, data }: Props) {
                 </Table>
               </div>
             ) : (
-              <p>No submissions found.</p>
+              <EmptyState
+                compact
+                icon={FileCheck2}
+                eyebrow="No submissions"
+                title="No submissions found"
+                description="When students submit this assignment, their files, timestamps, and grades will appear here."
+              />
             )}
           </div>
         </div>

@@ -157,8 +157,9 @@ textarea {
 @layer components {
   .app-shell {
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(246, 251, 249, 0.92)),
-      radial-gradient(circle at 72% 0%, rgba(14, 165, 183, 0.1), transparent 28%);
+      radial-gradient(circle at 18% 18%, rgba(16, 168, 111, 0.12), transparent 28%),
+      radial-gradient(circle at 82% 12%, rgba(14, 165, 183, 0.1), transparent 30%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(240, 249, 245, 0.96));
   }
 
   .glass-panel {

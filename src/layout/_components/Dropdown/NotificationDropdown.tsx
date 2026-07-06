@@ -6,6 +6,7 @@ import { BellIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { FiBell } from "react-icons/fi";
+import EmptyState from "~/components/EmptyState";
 
 type AnnouncementReceiver = {
   id: number;
@@ -176,7 +177,15 @@ export default function NotificationDropdown({
                   </li>
                 ))
             ) : (
-              <p className="text-center text-sm p-6">No announcement</p>
+              <li className="p-3">
+                <EmptyState
+                  compact
+                  icon={BellIcon}
+                  eyebrow="All caught up"
+                  title="No notifications"
+                  description="Classroom updates, announcements, and reminders will appear here."
+                />
+              </li>
             )}
           </ul>
 

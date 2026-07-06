@@ -22,7 +22,7 @@ import { classroomService } from "~/services/classroomService";
 import { useAuthStore } from "~/store/authStore";
 import Classroom from "~/models/Classroom";
 import { uploadService } from "~/services/uploadService";
-import { Users } from "lucide-react";
+import { CalendarDays, GraduationCap, MonitorPlay, Sparkles, Users } from "lucide-react";
 
 export default function HomePage() {
   const { t } = useTranslation();
@@ -98,10 +98,111 @@ export default function HomePage() {
   };
 
   if (!user) {
+    const featureCards = [
+      {
+        icon: GraduationCap,
+        title: "Structured classes",
+        text: "Keep courses, classrooms, members, and learning paths in one clean workspace.",
+      },
+      {
+        icon: CalendarDays,
+        title: "Tasks with rhythm",
+        text: "Plan assignments, deadlines, and classroom activity without the scattered tabs.",
+      },
+      {
+        icon: MonitorPlay,
+        title: "Meet and teach",
+        text: "Launch lessons, live sessions, and course content from a focused learning hub.",
+      },
+    ];
+
     return (
-      <p className="text-gray-500 p-4 text-center">
-        Please sign in to see your classrooms.
-      </p>
+      <div className="space-y-6">
+        <section className="relative overflow-hidden rounded-[32px] border border-emerald-100 bg-white shadow-[0_24px_80px_rgba(8,55,45,0.12)]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_14%,rgba(16,168,111,0.18),transparent_30%),radial-gradient(circle_at_82%_10%,rgba(14,165,183,0.16),transparent_32%)]" />
+          <div className="relative grid min-h-[430px] gap-8 p-8 lg:grid-cols-[1fr_380px] lg:p-10">
+            <div className="flex flex-col justify-center">
+              <div className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-800">
+                <Sparkles className="h-4 w-4" />
+                Skill Nest workspace
+              </div>
+              <h1 className="mt-6 max-w-3xl text-4xl font-semibold leading-tight text-[#10201d] lg:text-5xl">
+                Build a calmer, smarter place for every class.
+              </h1>
+              <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600">
+                Sign in to manage classrooms, course content, assignments, meetings,
+                and learning progress from one polished dashboard.
+              </p>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <Link
+                  href="/sign-in"
+                  className="inline-flex h-12 items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-600 to-cyan-600 px-6 text-sm font-semibold text-white shadow-lg shadow-emerald-900/15 transition hover:-translate-y-0.5 hover:from-emerald-700 hover:to-cyan-700"
+                >
+                  Sign in to continue
+                </Link>
+                <Link
+                  href="/course"
+                  className="inline-flex h-12 items-center justify-center rounded-2xl border border-emerald-100 bg-white/80 px-6 text-sm font-semibold text-emerald-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-50"
+                >
+                  Explore courses
+                </Link>
+              </div>
+            </div>
+
+            <div className="hidden items-center lg:flex">
+              <div className="w-full rounded-[28px] border border-emerald-100 bg-white/82 p-5 shadow-2xl shadow-emerald-950/12 backdrop-blur">
+                <div className="rounded-3xl bg-[#043a31] p-5 text-white">
+                  <p className="text-sm text-emerald-100">Today in Skill Nest</p>
+                  <div className="mt-5 space-y-3">
+                    {[
+                      ["Live class", "Product design sprint", "09:30"],
+                      ["Assignment", "Research notes", "Due today"],
+                      ["Course", "UI foundations", "12 lessons"],
+                    ].map(([label, title, meta]) => (
+                      <div
+                        key={title}
+                        className="rounded-2xl border border-white/10 bg-white/10 p-4"
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-xs font-semibold uppercase text-emerald-100">
+                            {label}
+                          </p>
+                          <span className="rounded-full bg-white/12 px-3 py-1 text-xs">
+                            {meta}
+                          </span>
+                        </div>
+                        <p className="mt-2 font-semibold">{title}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-4 md:grid-cols-3">
+          {featureCards.map((feature) => {
+            const Icon = feature.icon;
+            return (
+              <div
+                key={feature.title}
+                className="rounded-[26px] border border-emerald-100 bg-white/86 p-5 shadow-[0_18px_50px_rgba(8,55,45,0.08)]"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <h3 className="mt-4 text-lg font-semibold text-[#10201d]">
+                  {feature.title}
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  {feature.text}
+                </p>
+              </div>
+            );
+          })}
+        </section>
+      </div>
     );
   }
 

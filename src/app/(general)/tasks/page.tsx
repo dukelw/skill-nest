@@ -22,7 +22,8 @@ import { classroomService } from "~/services/classroomService";
 import Classroom from "~/models/Classroom";
 import Loader from "~/components/Partial/Loader";
 import { useTranslation } from "react-i18next";
-import { CheckCircleIcon } from "lucide-react";
+import { CheckCircleIcon, ClipboardList, LockKeyhole } from "lucide-react";
+import EmptyState from "~/components/EmptyState";
 
 export default function Tasks() {
   const { studentClassrooms, setStudentClassrooms } = useClassroomStore();
@@ -84,9 +85,14 @@ export default function Tasks() {
 
   if (!user) {
     return (
-      <p className="text-gray-500 p-4 text-center">
-        Please sign in to see your tasks.
-      </p>
+      <EmptyState
+        icon={LockKeyhole}
+        eyebrow="Tasks are private"
+        title="Sign in to see your assignments"
+        description="Your homework, quizzes, due dates, and submissions will appear here once you are signed in."
+        actionLabel="Sign in"
+        actionHref="/sign-in"
+      />
     );
   }
 
@@ -95,7 +101,18 @@ export default function Tasks() {
   }
 
   if (!studentClassrooms || studentClassrooms.length === 0) {
-    return <p className="text-gray-500 p-4">You have no assignment yet.</p>;
+    return (
+      <EmptyState
+        icon={ClipboardList}
+        eyebrow="No tasks yet"
+        title="Your task board is clear"
+        description="Join a classroom to receive homework, quizzes, documents, and deadlines in one organized place."
+        actionLabel="Browse classrooms"
+        actionHref="/classroom"
+        secondaryLabel="Explore courses"
+        secondaryHref="/course"
+      />
+    );
   }
 
   return (
@@ -115,8 +132,19 @@ export default function Tasks() {
           <div className="w-full h-px bg-gray-700 my-4" />
 
           <div className="space-y-4">
-            {classroom?.assignments
-              .filter((c: Assignment) => c.type !== AssignmentType.DOCUMENT)
+            {classroom?.assignments.filter(
+              (c: Assignment) => c.type !== AssignmentType.DOCUMENT
+            ).length === 0 ? (
+              <EmptyState
+                compact
+                icon={ClipboardList}
+                eyebrow="Nothing assigned"
+                title={`No tasks in ${classroom.name}`}
+                description="When your teacher publishes homework or quizzes, they will show up in this section."
+              />
+            ) : (
+              classroom?.assignments
+                .filter((c: Assignment) => c.type !== AssignmentType.DOCUMENT)
               .sort(
                 (a, b) =>
                   new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
@@ -238,7 +266,8 @@ export default function Tasks() {
                     </div>
                   </div>
                 );
-              })}
+              })
+            )}
           </div>
         </div>
       ))}

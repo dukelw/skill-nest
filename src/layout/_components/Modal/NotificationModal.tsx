@@ -4,6 +4,7 @@ import { Modal, ModalBody, ModalHeader, Avatar } from "flowbite-react";
 import { BellIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
+import EmptyState from "~/components/EmptyState";
 
 type AnnouncementItem = {
   user?: { avatar?: string };
@@ -85,7 +86,15 @@ export default function NotificationModal({
               </div>
             ))
         ) : (
-          <p className="text-center text-sm p-6">No announcement</p>
+          <div className="p-4">
+            <EmptyState
+              compact
+              icon={BellIcon}
+              eyebrow="All caught up"
+              title="No notifications"
+              description="New announcements and classroom reminders will show up here."
+            />
+          </div>
         )}
       </ModalBody>
     </Modal>

@@ -20,11 +20,12 @@ import LewisTextInput from "~/components/Partial/LewisTextInput";
 import { courseService } from "~/services/courseService";
 import { useAuthStore } from "~/store/authStore";
 import { uploadService } from "~/services/uploadService";
-import { Users } from "lucide-react";
+import { BookOpen, LockKeyhole, Users } from "lucide-react";
 import { Course } from "~/models/Course";
 import CourseCreateModal from "./_components/CourseModal";
 import { formatDuration } from "~/utils/format";
 import Loader from "~/components/Partial/Loader";
+import EmptyState from "~/components/EmptyState";
 
 export default function CourseOverview() {
   const { t } = useTranslation();
@@ -97,9 +98,14 @@ export default function CourseOverview() {
 
   if (!user) {
     return (
-      <p className="text-gray-500 p-4 text-center">
-        Please sign in to see your courses.
-      </p>
+      <EmptyState
+        icon={LockKeyhole}
+        eyebrow="Course library"
+        title="Sign in to see your courses"
+        description="Your enrollments, created courses, lessons, and reviews will appear here after sign-in."
+        actionLabel="Sign in"
+        actionHref="/sign-in"
+      />
     );
   }
 
@@ -190,15 +196,16 @@ export default function CourseOverview() {
         </div>
       </section>
       {hasNoClasses ? (
-        <div className="glass-panel flex min-h-[420px] flex-col items-center justify-center rounded-2xl p-8 text-center">
-          <Image
-            src={`https://res.cloudinary.com/dukelewis-workspace/image/upload/v1746546890/uploads/rvllbvnf3l3yatsrtz9a.svg`}
-            alt="Empty"
-            width={400}
-            height={400}
-          />
-          <p className="mt-1 text-gray-600">{t("noCurrentClass")}</p>
-        </div>
+        <EmptyState
+          icon={BookOpen}
+          eyebrow="No courses yet"
+          title="Start your course library"
+          description="Create a course, add chapters and lessons, or join a course shared by your teacher."
+          actionLabel={t("courseComponent.createCourse")}
+          onAction={() => setModalType("create")}
+          secondaryLabel={t("courseComponent.joinCourse")}
+          secondaryHref="/course"
+        />
       ) : (
         <>
           {newCourses.length > 0 && (

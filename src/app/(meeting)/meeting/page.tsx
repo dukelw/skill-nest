@@ -1,7 +1,7 @@
 "use client";
 
 import { Breadcrumb, BreadcrumbItem } from "flowbite-react";
-import { CalendarPlus, PlayCircle, Plus, VideoIcon } from "lucide-react";
+import { CalendarPlus, LockKeyhole, PlayCircle, Plus, VideoIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ActionCard from "~/components/Meeting/ActionCard";
@@ -10,6 +10,7 @@ import MeetingModal from "~/components/Meeting/MeetingModal";
 import LewisButton from "~/components/Partial/LewisButton";
 import { useGetCalls } from "~/hooks/useGetCalls";
 import { useAuthStore } from "~/store/authStore";
+import EmptyState from "~/components/EmptyState";
 
 type ModalType = "new" | "join" | "schedule" | null;
 
@@ -21,9 +22,14 @@ export default function MeetingPage() {
 
   if (!user) {
     return (
-      <p className="text-gray-500 p-4 text-center">
-        Please sign in to see your meeting.
-      </p>
+      <EmptyState
+        icon={LockKeyhole}
+        eyebrow="Meeting room"
+        title="Sign in to manage meetings"
+        description="Schedule lessons, join live rooms, and review recordings after you sign in."
+        actionLabel="Sign in"
+        actionHref="/sign-in"
+      />
     );
   }
 

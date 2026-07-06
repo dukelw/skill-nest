@@ -6,9 +6,10 @@ import { classroomService } from "~/services/classroomService";
 import { useAuthStore } from "~/store/authStore";
 import { useClassroomStore } from "~/store/classroomStore";
 import Link from "next/link";
-import { Users } from "lucide-react";
+import { BookOpenCheck, LockKeyhole, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Loader from "~/components/Partial/Loader";
+import EmptyState from "~/components/EmptyState";
 
 export default function Classroom() {
   const { studentClassrooms, setStudentClassrooms } = useClassroomStore();
@@ -29,9 +30,14 @@ export default function Classroom() {
 
   if (!user) {
     return (
-      <p className="text-gray-500 p-4 text-center">
-        Please sign in to see your classroom.
-      </p>
+      <EmptyState
+        icon={LockKeyhole}
+        eyebrow="Classrooms are private"
+        title="Sign in to see your classrooms"
+        description="Your joined classrooms, classmates, lessons, and assignments will appear here."
+        actionLabel="Sign in"
+        actionHref="/sign-in"
+      />
     );
   }
 
@@ -41,9 +47,16 @@ export default function Classroom() {
 
   if (!studentClassrooms || studentClassrooms.length === 0) {
     return (
-      <p className="text-gray-500 p-4 text-center">
-        You have no student classrooms yet.
-      </p>
+      <EmptyState
+        icon={BookOpenCheck}
+        eyebrow="No classrooms yet"
+        title="Join a classroom to start learning"
+        description="Once a teacher accepts your request, your classroom stream, people, assets, and grades will live here."
+        actionLabel="Go home"
+        actionHref="/"
+        secondaryLabel="Explore courses"
+        secondaryHref="/course"
+      />
     );
   }
 

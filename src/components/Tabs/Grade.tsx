@@ -17,6 +17,8 @@ import Submission from "~/models/Submission";
 import { classroomService } from "~/services/classroomService";
 import LewisTextInput from "../Partial/LewisTextInput";
 import { useTranslation } from "react-i18next";
+import EmptyState from "../EmptyState";
+import { FileCheck2 } from "lucide-react";
 
 export default function Grade() {
   const { classroom } = useClassroomStore();
@@ -183,7 +185,13 @@ export default function Grade() {
         <ModalBody>
           <h2 className="font-semibold mb-2">Đã nộp ({submissions.length})</h2>
           {submissions.length === 0 ? (
-            <p>{t("gradeComponent.nosubmitted")}</p>
+            <EmptyState
+              compact
+              icon={FileCheck2}
+              eyebrow="No submissions"
+              title={t("gradeComponent.nosubmitted")}
+              description="Student submissions and grading actions will appear here after the first upload."
+            />
           ) : (
             <ul className="space-y-2 mb-4">
               {submissions?.map((s: Submission) => {

@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { useGetCalls } from "~/hooks/useGetCalls";
 import Loader from "../Partial/Loader";
 import { useAuthStore } from "~/store/authStore";
+import EmptyState from "../EmptyState";
+import { CalendarClock, LockKeyhole, Video } from "lucide-react";
 
 const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
   const { user } = useAuthStore();
@@ -30,10 +32,24 @@ const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
     switch (type) {
       case "upcoming":
         return (
-          <p className="text-color text-xl font-semibold">No upcoming calls</p>
+          <EmptyState
+            compact
+            icon={CalendarClock}
+            eyebrow="No meetings scheduled"
+            title="Your calendar is quiet"
+            description="Schedule a meeting or start a room when you are ready to teach or collaborate."
+          />
         );
       case "recordings":
-        <p className="text-color text-xl font-semibold">No recordings</p>;
+        return (
+          <EmptyState
+            compact
+            icon={Video}
+            eyebrow="No recordings"
+            title="Recordings will appear here"
+            description="After a meeting is recorded, the replay will be collected in this space."
+          />
+        );
       default:
         return "";
     }
@@ -56,7 +72,17 @@ const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
       fetchRecordings();
     }
   }, [type, callRecordings]);
-  if (!user) return "Please sign in first to see your meeting.";
+  if (!user) {
+    return (
+      <EmptyState
+        compact
+        icon={LockKeyhole}
+        eyebrow="Private meetings"
+        title="Sign in to see your meeting list"
+        description="Upcoming calls and recordings are tied to your account."
+      />
+    );
+  }
 
   if (isLoading) return <Loader />;
 
@@ -93,7 +119,7 @@ const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
           />
         ))
       ) : (
-        <h1 className="text-2xl font-bold text-white">{noCallsMessage}</h1>
+        noCallsMessage
       )}
     </div>
   );

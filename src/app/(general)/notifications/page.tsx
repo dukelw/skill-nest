@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { Avatar, Button } from "flowbite-react";
 import LewisPagination from "~/components/Partial/LewisPagination";
 import useUserAnnouncements from "~/hooks/useUserAnnouncements";
+import EmptyState from "~/components/EmptyState";
+import { BellIcon } from "lucide-react";
 
 const PAGE_SIZE = 4;
 
@@ -106,7 +108,12 @@ export default function NotificationPage() {
           ))}
         </ul>
       ) : (
-        <p className="text-center text-gray-600 mt-8">{t("noNotification")}</p>
+        <EmptyState
+          icon={BellIcon}
+          eyebrow="All caught up"
+          title={t("noNotification") || "No notifications"}
+          description="Announcements, class updates, and reminders will be collected here when they arrive."
+        />
       )}
 
       {announcements.length > PAGE_SIZE && (

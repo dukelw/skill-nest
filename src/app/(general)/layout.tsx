@@ -28,15 +28,15 @@ export default function GeneralLayout({
     >
       <Head />
       <div
-        className="fixed right-3 top-3 z-50 transition-all duration-300"
+        className="fixed right-3 top-2.5 z-50 transition-all duration-300"
         style={{
-          left: isMobile ? "12px" : isOpen ? "288px" : "104px",
+          left: isMobile ? "10px" : isOpen ? "276px" : "100px",
         }}
       >
         <Navbar />
       </div>
 
-      <div className="fixed left-3 top-3 z-40 h-[calc(100vh-24px)]">
+      <div className="fixed left-2.5 top-2.5 z-40 h-[calc(100vh-20px)]">
         <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} />
       </div>
 
@@ -45,9 +45,9 @@ export default function GeneralLayout({
           width: isMobile
             ? "100vw"
             : isOpen
-            ? "calc(100vw - 312px)"
-            : "calc(100vw - 128px)",
-          marginLeft: isMobile ? "0" : isOpen ? "288px" : "104px",
+            ? "calc(100vw - 300px)"
+            : "calc(100vw - 124px)",
+          marginLeft: isMobile ? "0" : isOpen ? "276px" : "100px",
         }}
         className="min-h-screen overflow-x-hidden px-4 pb-6 pt-24 transition-all duration-300 sm:px-6 lg:px-8"
       >
