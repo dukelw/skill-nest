@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 import staticSidebarItems from "~/static/SideBarItem";
+import useIsMobile from "~/hooks/useIsMobile";
 
 const Sidebar = ({
   isOpen,
@@ -17,6 +18,7 @@ const Sidebar = ({
 }) => {
   const sidebarItems = staticSidebarItems();
   const pathName = usePathname();
+  const isMobile = useIsMobile();
 
   const renderItems = (onItemClick?: () => void) =>
     sidebarItems?.map((item: any, index: number) => {
@@ -106,17 +108,17 @@ const Sidebar = ({
         </div>
       )}
 
-      <div className="md:hidden">
+      {isMobile && (
         <Drawer
           backdrop={false}
           open={isOpen}
           onClose={toggleSidebar}
           position="left"
-          className="z-40 mt-[72px] w-72 bg-white"
+          className="mt-16 w-72 bg-white"
         >
           <div className="h-full bg-white p-4">{renderItems(toggleSidebar)}</div>
         </Drawer>
-      </div>
+      )}
     </aside>
   );
 };

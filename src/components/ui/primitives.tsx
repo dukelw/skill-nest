@@ -179,8 +179,8 @@ export function Modal({
   return (
     <Dialog.Root open={!!show} onOpenChange={(open) => !open && onClose?.()}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-slate-950/45 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[90vh] w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-slate-200 bg-white text-slate-900 shadow-xl focus:outline-none">
+        <Dialog.Overlay className="fixed inset-0 z-[1000] bg-slate-950/45 backdrop-blur-sm" />
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-[1001] max-h-[90vh] w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-slate-200 bg-white text-slate-900 shadow-xl focus:outline-none">
           {children}
           <Dialog.Close className="absolute right-4 top-4 rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
             <X className="h-4 w-4" />
@@ -350,8 +350,8 @@ export function Drawer({
   return (
     <Dialog.Root open={!!open} onOpenChange={(isOpen) => !isOpen && onClose?.()}>
       <Dialog.Portal>
-        {backdrop && <Dialog.Overlay className="fixed inset-0 z-50 bg-slate-950/40" />}
-        <Dialog.Content className={cn("fixed left-0 top-0 z-50 h-full w-80 bg-white p-4 shadow-xl", className)}>
+        {backdrop && <Dialog.Overlay className="fixed inset-0 z-[900] bg-slate-950/40" />}
+        <Dialog.Content className={cn("fixed left-0 top-0 z-[901] h-full bg-white p-4 shadow-xl", className)}>
           {children}
         </Dialog.Content>
       </Dialog.Portal>

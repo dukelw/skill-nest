@@ -33,7 +33,9 @@ export default function EmptyState({
   return (
     <section
       className={`relative overflow-hidden rounded-lg border border-[#dcf5e2] bg-white text-center shadow-sm ${
-        compact ? "p-6" : "p-8 sm:p-10"
+        compact
+          ? "p-6"
+          : "flex min-h-[calc(100vh-8rem)] items-center justify-center p-8 sm:p-10"
       }`}
     >
       <div className="absolute inset-0 bg-[#fbfdfb]" />

@@ -69,19 +69,19 @@ export default function Teaching() {
   }
 
   return (
-    <div className="md:pl-6 md:pr-2 md:py-6 p-6 mx-auto">
+    <div className="p-6">
       <Breadcrumb aria-label="Breadcrumb" className="mb-4">
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
         <BreadcrumbItem href="/teaching">Teaching</BreadcrumbItem>
       </Breadcrumb>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {teacherClassrooms?.map((classroom) => (
           <Link
             href={`/teaching/${classroom.id}`}
             key={classroom.id}
             className="classroom-card group"
           >
-            <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
+            <div className="relative aspect-video overflow-hidden bg-slate-100">
               <Image
                 src={
                   classroom.thumbnail ||
@@ -96,7 +96,7 @@ export default function Teaching() {
                 {classroom.members?.length || 0}
               </div>
             </div>
-            <div className="space-y-3 p-4">
+            <div className="space-y-3 p-5">
               <div>
                 <h5 className="truncate text-base font-semibold text-slate-950">
                   {classroom.name}

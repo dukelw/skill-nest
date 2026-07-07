@@ -62,19 +62,19 @@ export default function Classroom() {
   }
 
   return (
-    <div className="p-6 gap-4">
+    <div className="p-6">
       <Breadcrumb aria-label="Breadcrumb" className="mb-4">
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
         <BreadcrumbItem href="/classroom">Classroom</BreadcrumbItem>
       </Breadcrumb>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {studentClassrooms?.map((classroom) => (
           <Link
             href={`/classroom/${classroom.id}`}
             key={classroom.id}
             className="classroom-card group"
           >
-            <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
+            <div className="relative aspect-video overflow-hidden bg-slate-100">
               <Image
                 src={
                   classroom.thumbnail ||
@@ -89,7 +89,7 @@ export default function Classroom() {
                 {classroom.members?.length || 0}
               </div>
             </div>
-            <div className="space-y-3 p-4">
+            <div className="space-y-3 p-5">
               <div>
                 <h5 className="truncate text-base font-semibold text-slate-950">
                   {classroom.name}

@@ -9,6 +9,7 @@ import dashboardSidebarItems from "~/static/DashboardSideBarItem";
 import adminSidebarItems from "~/static/AdminSideBarItem";
 import { useAuthStore } from "~/store/authStore";
 import { UserRole } from "~/models/UserRole";
+import useIsMobile from "~/hooks/useIsMobile";
 
 const Sidebar = ({
   isOpen,
@@ -23,6 +24,7 @@ const Sidebar = ({
       ? adminSidebarItems()
       : dashboardSidebarItems();
   const pathName = usePathname();
+  const isMobile = useIsMobile();
   return (
     <div
       className={`app-sidebar flex h-screen flex-col overflow-hidden transition-all duration-300 ${
@@ -63,14 +65,13 @@ const Sidebar = ({
           );
         })}
       </div>
-      {/* Overlay + drawer */}
-      <div className="md:hidden">
+      {isMobile && (
         <Drawer
           backdrop={false}
           open={isOpen}
           onClose={toggleSidebar}
           position="left"
-          className="z-40 mt-16 w-72 bg-white"
+          className="mt-16 w-72 bg-white"
         >
           <div className="h-full w-64 bg-white p-4">
             {sidebarItems?.map((item: any, index: number) => {
@@ -95,7 +96,7 @@ const Sidebar = ({
             })}
           </div>
         </Drawer>
-      </div>
+      )}
     </div>
   );
 };
