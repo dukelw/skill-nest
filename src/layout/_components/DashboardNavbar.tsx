@@ -72,7 +72,7 @@ const AppNavbar = () => {
   }, []);
 
   return (
-    <Navbar className="border-b border-slate-200 bg-white text-slate-900" fluid>
+    <Navbar className="app-header h-16 bg-white text-slate-900" fluid>
       <Image
         src="/logo.png"
         alt="Skill Nest Logo"

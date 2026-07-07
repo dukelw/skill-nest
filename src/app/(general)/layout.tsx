@@ -19,37 +19,34 @@ export default function GeneralLayout({
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+  const sidebarWidth = isOpen ? 260 : 84;
 
   return (
     <div
       suppressHydrationWarning
       lang={i18n.language}
-      className="app-shell flex min-h-screen w-full font-sans"
+      className="app-shell min-h-screen w-full font-sans"
     >
       <Head />
       <div
-        className="fixed right-3 top-2.5 z-50 transition-all duration-300"
+        className="fixed right-0 top-0 z-50 transition-all duration-300"
         style={{
-          left: isMobile ? "10px" : isOpen ? "276px" : "100px",
+          left: isMobile ? "0" : `${sidebarWidth}px`,
         }}
       >
         <Navbar />
       </div>
 
-      <div className="fixed left-2.5 top-2.5 z-40 h-[calc(100vh-20px)]">
+      <div className="fixed left-0 top-0 z-40 h-screen">
         <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} />
       </div>
 
       <main
         style={{
-          width: isMobile
-            ? "100vw"
-            : isOpen
-            ? "calc(100vw - 300px)"
-            : "calc(100vw - 124px)",
-          marginLeft: isMobile ? "0" : isOpen ? "276px" : "100px",
+          width: isMobile ? "100vw" : `calc(100vw - ${sidebarWidth}px)`,
+          marginLeft: isMobile ? "0" : `${sidebarWidth}px`,
         }}
-        className="min-h-screen overflow-x-hidden px-4 pb-6 pt-24 transition-all duration-300 sm:px-6 lg:px-8"
+        className="app-main min-h-screen overflow-x-hidden px-4 pb-6 pt-20 transition-all duration-300 sm:px-6 lg:px-8"
       >
         {children}
       </main>

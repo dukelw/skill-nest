@@ -20,36 +20,38 @@ export default function GeneralLayout({
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+  const sidebarWidth = isOpen ? 260 : 84;
 
   return (
     <div
       suppressHydrationWarning
       lang={i18n.language}
-      className="font-sans bg-gray-50 flex"
+      className="app-shell min-h-screen w-full font-sans"
     >
       <Head />
       {/* Navbar cố định top */}
-      <div className={`fixed top-0 right-0 z-50 left-20`}>
+      <div
+        className="fixed right-0 top-0 z-50 transition-all duration-300"
+        style={{
+          left: isMobile ? "0" : `${sidebarWidth}px`,
+        }}
+      >
         <Navbar />
       </div>
 
-      <div className="flex pt-16 min-h-screen">
+      <div>
         {/* Sidebar cố định trái */}
-        <div className="fixed top-0 left-0 z-40 h-[calc(100vh-64px)]">
+        <div className="fixed left-0 top-0 z-40 h-screen">
           <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} />
         </div>
 
         {/* Nội dung chính */}
         <div
           style={{
-            width: isMobile
-              ? "100vw"
-              : isOpen
-              ? "calc(100vw - 272px)"
-              : "calc(100vw - 96px)",
-            marginLeft: isMobile ? "0" : isOpen ? "256px" : "80px",
+            width: isMobile ? "100vw" : `calc(100vw - ${sidebarWidth}px)`,
+            marginLeft: isMobile ? "0" : `${sidebarWidth}px`,
           }}
-          className="min-h-full overflow-x-hidden"
+          className="app-main min-h-screen overflow-x-hidden pt-16 transition-all duration-300"
         >
           <StreamVideoProvider>{children}</StreamVideoProvider>
         </div>

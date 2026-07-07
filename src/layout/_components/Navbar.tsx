@@ -122,9 +122,9 @@ const AppNavbar = () => {
   }, []);
 
   return (
-    <header className="flex min-h-14 items-center rounded-lg border border-slate-200 bg-white px-4 text-slate-900 shadow-sm">
+    <header className="app-header flex h-16 items-center px-6">
       <div className="hidden md:block">
-        <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+        <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">
           Workspace
         </p>
         <h1 className="text-base font-semibold leading-tight text-slate-950">
@@ -134,7 +134,7 @@ const AppNavbar = () => {
 
       <div className="ml-auto flex items-center gap-2">
         <button
-          className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-800 shadow-sm transition hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+          className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-[#baeac6] bg-[#f2fbf4] text-[#257a35] transition hover:bg-[#dcf5e2] focus:outline-none focus:ring-2 focus:ring-[#baeac6]"
           onClick={() => setOpenSelectModal(true)}
           aria-label="Create or join"
         >
@@ -143,7 +143,7 @@ const AppNavbar = () => {
         <Dropdown
           arrowIcon={false}
           label={
-            <span className="flex h-9 items-center rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
+            <span className="flex h-9 items-center rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:bg-[#f7faf8]">
               {i18n?.language?.toUpperCase()}
             </span>
           }

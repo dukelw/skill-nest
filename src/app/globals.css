@@ -1,17 +1,17 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..800;1,14..32,400..800&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 :root {
-  --background: #f8faf8;
-  --foreground: #12201b;
+  --background: #ffffff;
+  --foreground: #111827;
 
-  --text-black: #12201b;
+  --text-black: #111827;
   --text-white: #FFFFFF;
-  --text-color: #12201b;
+  --text-color: #111827;
 
   --cyan: #0ea5b7;
-  --green: #2b9a3d;
-  --dark-green: #0d3f2a;
+  --green: #36b24a;
+  --dark-green: #1e5028;
   --orange: #c15a1a;
   --yellow: #a86d00;
   --red: #ef4444;
@@ -21,16 +21,18 @@
   --light: #f2fbf4;
   --surface: #ffffff;
   --surface-strong: #ffffff;
-  --border-soft: #e4e9e5;
-  --shadow-soft: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow-lift: 0 10px 24px rgba(15, 23, 42, 0.12);
+  --surface-muted: #f7faf8;
+  --muted-text: #64748b;
+  --border-soft: #e5ebe6;
+  --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-lift: 0 8px 20px rgba(15, 23, 42, 0.08);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --font-roboto: var(--font-roboto);
 }
 
@@ -129,10 +131,13 @@
 }
 
 body {
-  background: #f8faf8;
+  background: #ffffff;
   color: var(--text-black);
-  font-family: "Inter", sans-serif;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   min-height: 100vh;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
 }
 
 ::selection {
@@ -161,7 +166,21 @@ summary,
 
 @layer components {
   .app-shell {
-    background: #f8faf8;
+    background: #ffffff;
+  }
+
+  .app-sidebar {
+    @apply border-r border-slate-200 bg-white text-slate-900;
+    box-shadow: 1px 0 0 rgba(15, 23, 42, 0.03);
+  }
+
+  .app-header {
+    @apply border-b border-slate-200 bg-white text-slate-900;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .app-main {
+    background: #fbfdfb;
   }
 
   .glass-panel {
