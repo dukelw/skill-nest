@@ -89,6 +89,11 @@ export default function People() {
   const handleGetRequest = async () => {
     const res = await classroomService.getRequest(Number(classroom!.id));
     setRequests(res);
+    window.dispatchEvent(
+      new CustomEvent("classroom:requests-updated", {
+        detail: { count: res?.length ?? 0 },
+      })
+    );
   };
 
   useEffect(() => {
@@ -124,47 +129,51 @@ export default function People() {
         </div>
 
         {requests?.length > 0 ? (
-          <div className="space-y-3">
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {requests?.map((m: Request, index: number) => (
-              <div
+              <article
                 key={index}
-                className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-[#f7fbf7] p-3 sm:flex-row sm:items-center sm:justify-between"
+                className="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm transition hover:border-emerald-200 hover:shadow-md"
               >
-                <div className="flex min-w-0 items-center gap-3">
-                <Avatar
-                  img={
-                    m?.user?.avatar ||
-                    "https://cdn-icons-png.freepik.com/512/3607/3607444.png"
-                  }
-                  rounded
-                  className="w-10 h-10"
-                />
-                  <span className="min-w-0">
-                    <span className="block truncate text-sm font-bold text-slate-950">
+                <div className="flex min-w-0 items-start gap-3">
+                  <Avatar
+                    img={
+                      m?.user?.avatar ||
+                      "https://cdn-icons-png.freepik.com/512/3607/3607444.png"
+                    }
+                    rounded
+                    className="h-12 w-12"
+                  />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-base font-bold text-slate-950">
                       {m?.user?.name || "Guest"}
                     </span>
-                    <span className="block truncate text-xs text-slate-500">
+                    <span className="mt-1 block truncate text-sm text-slate-500">
                       {m.user.email}
                     </span>
+                    <span className="mt-3 inline-flex rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700">
+                      Pending approval
+                    </span>
                   </span>
-              </div>
-
-                <div className="flex items-center justify-end gap-2">
-                <LewisButton
-                  lewisSize="small"
-                  color="red"
-                  onClick={() => handleReject(m.userId)}
-                >
-                  {t("reject")}
-                </LewisButton>
-                <LewisButton
-                  lewisSize="small"
-                  onClick={() => handleAccept(m.userId)}
-                >
-                  {t("accept")}
-                </LewisButton>
                 </div>
-              </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleReject(m.userId)}
+                    className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-red-200 bg-red-50 px-3 text-sm font-bold text-red-700 transition hover:bg-red-100"
+                  >
+                    {t("reject")}
+                  </button>
+                  <LewisButton
+                    lewisSize="small"
+                    onClick={() => handleAccept(m.userId)}
+                    className="h-10"
+                  >
+                    {t("accept")}
+                  </LewisButton>
+                </div>
+              </article>
             ))}
           </div>
         ) : (

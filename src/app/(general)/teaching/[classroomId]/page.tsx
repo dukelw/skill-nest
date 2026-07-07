@@ -15,6 +15,7 @@ import { BookOpen, ClipboardCheck, Users } from "lucide-react";
 
 export default function ClientClassroomDetail() {
   const [activeTab, setActiveTab] = useState("stream");
+  const [pendingRequestCount, setPendingRequestCount] = useState(0);
   const { classroomId } = useParams();
   const { classroom, setClassroom } = useClassroomStore();
   const router = useRouter();
@@ -39,19 +40,72 @@ export default function ClientClassroomDetail() {
     if (classroomId) fetchClassroom();
   }, [classroomId, router]);
 
-  if (!classroom) return <Loader />;
+  useEffect(() => {
+    const fetchPendingRequests = async () => {
+      try {
+        const res = await classroomService.getRequest(Number(classroomId));
+        setPendingRequestCount(res?.length ?? 0);
+      } catch (error) {
+        console.error("Error fetching classroom requests:", error);
+      }
+    };
 
-  const tabs = [
-    { name: t("teachingDetailPage.stream"), key: "stream" },
-    { name: t("teachingDetailPage.assignments"), key: "assignments" },
-    { name: t("teachingDetailPage.people"), key: "people" },
-    { name: t("teachingDetailPage.grades"), key: "grades" },
-  ];
+    if (classroomId) fetchPendingRequests();
+
+    const syncPendingRequests = (event: Event) => {
+      const detail = (event as CustomEvent<{ count?: number }>).detail;
+      setPendingRequestCount(detail?.count ?? 0);
+    };
+
+    window.addEventListener("classroom:requests-updated", syncPendingRequests);
+    return () =>
+      window.removeEventListener(
+        "classroom:requests-updated",
+        syncPendingRequests
+      );
+  }, [classroomId]);
+
+  if (!classroom) return <Loader />;
 
   const studentCount =
     classroom.members?.filter((member) => member.role === "STUDENT").length ?? 0;
   const assignmentCount = classroom.assignments?.length ?? 0;
   const submissionCount = classroom.submissions?.length ?? 0;
+  const activeAssignmentCount =
+    classroom.assignments?.filter((assignment) => {
+      const isGradable = assignment.type !== "DOCUMENT";
+      return isGradable && new Date(assignment.dueDate).getTime() >= Date.now();
+    }).length ?? 0;
+  const ungradedSubmissionCount =
+    classroom.assignments?.reduce((total, assignment) => {
+      if (assignment.type === "DOCUMENT") return total;
+      return (
+        total +
+        (assignment.submissions?.filter((submission) => submission.grade === null)
+          .length ?? 0)
+      );
+    }, 0) ?? 0;
+
+  const tabTitle = (label: string, count?: number) => (
+    <span className="inline-flex items-center gap-2">
+      <span>{label}</span>
+      {!!count && (
+        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-bold text-emerald-800">
+          {count}
+        </span>
+      )}
+    </span>
+  );
+
+  const tabs = [
+    { name: tabTitle(t("teachingDetailPage.stream")), key: "stream" },
+    {
+      name: tabTitle(t("teachingDetailPage.assignments"), activeAssignmentCount),
+      key: "assignments",
+    },
+    { name: tabTitle(t("teachingDetailPage.people"), pendingRequestCount), key: "people" },
+    { name: tabTitle(t("teachingDetailPage.grades"), ungradedSubmissionCount), key: "grades" },
+  ];
 
   return (
     <div className="space-y-5 p-4 sm:p-6">

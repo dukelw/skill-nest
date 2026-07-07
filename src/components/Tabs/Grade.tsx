@@ -116,49 +116,49 @@ export default function Grade() {
             return (
               <div
                 key={assignment?.id}
-                className="grid grid-cols-1 overflow-hidden rounded-xl border border-slate-200 bg-[#f7fbf7] shadow-sm transition hover:border-emerald-200 md:grid-cols-12"
+                className="grid grid-cols-1 overflow-hidden rounded-xl border border-emerald-100 bg-white shadow-sm transition hover:border-emerald-200 hover:shadow-md md:grid-cols-12"
               >
-                <div className="col-span-12 md:col-span-8 md:mr-4 p-6">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-semibold">
+                <div className="col-span-12 p-5 md:col-span-8">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <h3 className="text-xl font-bold text-slate-950">
                       {assignment.title}
                     </h3>
                     <span
-                      className={`px-2 py-1 text-sm font-semibold rounded-md ${
+                      className={`w-fit rounded-full px-2.5 py-1 text-xs font-bold ${
                         assignment.type === "HOMEWORK"
-                          ? "bg-orange text-white"
+                          ? "bg-orange-100 text-orange-700"
                           : assignment.type === "QUIZ"
-                          ? "bg-yellow text-white"
-                          : "bg-green text-white"
+                          ? "bg-amber-100 text-amber-800"
+                          : "bg-emerald-100 text-emerald-800"
                       }`}
                     >
                       {assignment.type}
                     </span>
                   </div>
                   <p className="mt-2">{assignment.description}</p>
-                  <div className="mt-2 flex-col justify-between items-center">
-                    <p className="text-sm text-gray-500">
+                  <div className="mt-4 grid gap-2 rounded-xl border border-slate-100 bg-[#f7fbf7] p-3 sm:grid-cols-2">
+                    <p className="text-sm font-medium text-slate-500">
                       {t("dueDate")}:{" "}
                       {new Date(assignment.dueDate).toLocaleString()}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm font-medium text-slate-500">
                       {t("gradeComponent.submit")}: {submissionCount} /{" "}
                       {studentCount}
                     </p>
                   </div>
                 </div>
 
-                <div className="col-span-12 bg-[#eef7ef] px-6 py-4 md:col-span-4 md:border-l md:border-emerald-200">
-                  <h4 className="mb-4 hidden text-center font-bold text-emerald-800 md:block">
+                <div className="col-span-12 border-t border-emerald-100 bg-[#eef7ef] p-5 md:col-span-4 md:border-l md:border-t-0">
+                  <h4 className="mb-3 text-xs font-bold uppercase tracking-wide text-emerald-700">
                     {t("actions")}
                   </h4>
-                  <div className="flex justify-end items-center">
+                  <div className="flex flex-wrap justify-end gap-2">
                     {assignment.fileUrl && (
                       <a
                         href={assignment.fileUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm inline-block bg-blue-600 hover:bg-blue-500 text-white py-2.5 px-4 rounded-md"
+                        className="inline-flex h-10 items-center rounded-lg bg-sky-600 px-3 text-sm font-bold text-white transition hover:bg-sky-700"
                       >
                         {t("attached")}
                       </a>
@@ -166,7 +166,7 @@ export default function Grade() {
                     {assignment.type === AssignmentType.QUIZ &&
                       classroom?.creatorId === user?.id && (
                         <LewisButton
-                          className="ml-2"
+                          className=""
                           space={false}
                           lewisSize="small"
                           color="pink"
@@ -176,7 +176,7 @@ export default function Grade() {
                       )}
                     {classroom?.creatorId === user?.id && (
                       <LewisButton
-                        className="ml-2 text-sm"
+                        className="text-sm"
                         space={false}
                         onClick={() => handleViewSubmissions(assignment?.id)}
                       >

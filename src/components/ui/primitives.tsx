@@ -169,6 +169,7 @@ export function Avatar({
 export function Modal({
   show,
   onClose,
+  size = "xl",
   children,
 }: {
   show?: boolean;
@@ -176,11 +177,28 @@ export function Modal({
   size?: string;
   children: React.ReactNode;
 }) {
+  const sizeClass =
+    size === "sm"
+      ? "max-w-sm"
+      : size === "md"
+        ? "max-w-md"
+        : size === "lg"
+          ? "max-w-lg"
+          : size === "2xl"
+            ? "max-w-2xl"
+            : size === "3xl"
+              ? "max-w-3xl"
+              : size === "4xl"
+                ? "max-w-4xl"
+                : size === "5xl"
+                  ? "max-w-5xl"
+                  : "max-w-xl";
+
   return (
     <Dialog.Root open={!!show} onOpenChange={(open) => !open && onClose?.()}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-[1000] bg-slate-950/45 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-[1001] max-h-[90vh] w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-emerald-100 bg-[#f7fbf7] text-slate-900 shadow-xl focus:outline-none">
+        <Dialog.Content className={cn("fixed left-1/2 top-1/2 z-[1001] max-h-[90vh] w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-emerald-100 bg-[#f7fbf7] text-slate-900 shadow-xl focus:outline-none", sizeClass)}>
           {children}
           <Dialog.Close className="absolute right-4 top-4 rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
             <X className="h-4 w-4" />
@@ -322,7 +340,7 @@ export function Tabs({
           <button
             key={item.key ?? index}
             className={cn(
-              "rounded-t-lg border-b-2 px-4 py-2.5 text-sm font-semibold transition",
+              "rounded-t-lg border-b-2 px-4 py-3 text-[15px] font-bold transition",
               active === index
                 ? "border-emerald-700 bg-emerald-50 text-emerald-800"
                 : "border-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-900"

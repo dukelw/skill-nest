@@ -64,12 +64,20 @@ const Sidebar = ({
           isOpen ? "justify-between px-5" : "justify-center"
         }`}
       >
-        <Link href="/" className={`flex items-center ${isOpen ? "gap-3" : "gap-0"}`}>
-          <span className={`flex h-10 items-center justify-center rounded-lg border border-emerald-100 bg-[#eef7ef] shadow-sm ${isOpen ? "w-10" : "w-10"}`}>
-            <Image src="/logo-small.png" alt="Skill Nest" width={34} height={34} />
-          </span>
-          {isOpen && (
-            <Image src="/logo-big.png" alt="Skill Nest" width={120} height={34} className="h-8 w-auto object-contain" />
+        <Link href="/" className={`flex items-center ${isOpen ? "" : "justify-center"}`}>
+          {isOpen ? (
+            <Image
+              src="/logo-big.png"
+              alt="Skill Nest"
+              width={178}
+              height={52}
+              className="h-12 w-auto object-contain"
+              priority
+            />
+          ) : (
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-emerald-100 bg-[#eef7ef] shadow-sm">
+              <Image src="/logo-small.png" alt="Skill Nest" width={34} height={34} />
+            </span>
           )}
         </Link>
         {isOpen && (

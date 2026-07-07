@@ -39,6 +39,26 @@ const getColorClasses = (
     return "bg-[#111827] text-white hover:bg-[#0b1220] hover:!bg-[#0b1220] focus:ring-slate-300";
   }
 
+  if (color === "red") {
+    return "bg-red-600 text-white hover:bg-red-700 hover:!bg-red-700 focus:ring-red-200 shadow-red-900/10 hover:shadow-red-900/15";
+  }
+
+  if (color === "blue") {
+    return "bg-sky-600 text-white hover:bg-sky-700 hover:!bg-sky-700 focus:ring-sky-200 shadow-sky-900/10 hover:shadow-sky-900/15";
+  }
+
+  if (color === "pink") {
+    return "bg-rose-600 text-white hover:bg-rose-700 hover:!bg-rose-700 focus:ring-rose-200 shadow-rose-900/10 hover:shadow-rose-900/15";
+  }
+
+  if (color === "orange") {
+    return "bg-orange-600 text-white hover:bg-orange-700 hover:!bg-orange-700 focus:ring-orange-200 shadow-orange-900/10 hover:shadow-orange-900/15";
+  }
+
+  if (color === "yellow") {
+    return "bg-amber-500 text-slate-950 hover:bg-amber-400 hover:!bg-amber-400 focus:ring-amber-200 shadow-amber-900/10 hover:shadow-amber-900/15";
+  }
+
   return `bg-[#0d5b49] text-white hover:bg-[#0a493b] hover:!bg-[#0a493b] focus:ring-emerald-200`;
 };
 

@@ -39,16 +39,34 @@ export default function StudentClassroomDetail() {
 
   if (!classroom) return <Loader />;
 
-  const tabs = [
-    { name: t("teachingDetailPage.stream"), key: "stream" },
-    { name: t("teachingDetailPage.assignments"), key: "assignments" },
-    { name: t("teachingDetailPage.people"), key: "people" },
-  ];
-
   const studentCount =
     classroom.members?.filter((member) => member.role === "STUDENT").length ?? 0;
   const teacherCount =
     classroom.members?.filter((member) => member.role === "TEACHER").length ?? 0;
+  const activeAssignmentCount =
+    classroom.assignments?.filter((assignment) => {
+      const isGradable = assignment.type !== "DOCUMENT";
+      return isGradable && new Date(assignment.dueDate).getTime() >= Date.now();
+    }).length ?? 0;
+  const tabTitle = (label: string, count?: number) => (
+    <span className="inline-flex items-center gap-2">
+      <span>{label}</span>
+      {!!count && (
+        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-bold text-emerald-800">
+          {count}
+        </span>
+      )}
+    </span>
+  );
+
+  const tabs = [
+    { name: tabTitle(t("teachingDetailPage.stream")), key: "stream" },
+    {
+      name: tabTitle(t("teachingDetailPage.assignments"), activeAssignmentCount),
+      key: "assignments",
+    },
+    { name: tabTitle(t("teachingDetailPage.people"), classroom.members?.length ?? 0), key: "people" },
+  ];
 
   return (
     <div className="space-y-5 p-4 sm:p-6">
