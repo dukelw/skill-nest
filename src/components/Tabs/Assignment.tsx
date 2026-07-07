@@ -733,7 +733,10 @@ export default function Assignments() {
           {t("confirmDelete")}
         </ModalHeader>
         <ModalBody>
-          <p>{t("assignmentComponent.confirmStatement")}</p>
+          <p>
+            Are you sure you want to delete this assignment? This action cannot
+            be undone.
+          </p>
         </ModalBody>
         <ModalFooter>
           <Button
@@ -746,7 +749,7 @@ export default function Assignments() {
               setSelectedAssignmentId(null);
             }}
           >
-            {t("imsure")}
+            Delete assignment
           </Button>
           <Button color="gray" onClick={() => setIsConfirmDeleteOpen(false)}>
             {t("cancel")}

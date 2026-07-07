@@ -12,6 +12,17 @@ import { Card as ShadCard } from "./card";
 import { Checkbox as ShadCheckbox } from "./checkbox";
 import { Label as ShadLabel } from "./label";
 
+function cleanupDialogPointerLock() {
+  if (typeof window === "undefined") return;
+
+  window.setTimeout(() => {
+    const hasOpenDialog = document.querySelector('[role="dialog"][data-state="open"]');
+    if (!hasOpenDialog) {
+      document.body.style.pointerEvents = "";
+    }
+  }, 0);
+}
+
 export type ButtonProps = Omit<ShadButtonProps, "size" | "color"> & {
   color?: string;
   pill?: boolean;
@@ -194,13 +205,26 @@ export function Modal({
                   ? "max-w-5xl"
                   : "max-w-xl";
 
+  React.useEffect(() => {
+    if (!show) cleanupDialogPointerLock();
+    return cleanupDialogPointerLock;
+  }, [show]);
+
   return (
-    <Dialog.Root open={!!show} onOpenChange={(open) => !open && onClose?.()}>
+    <Dialog.Root
+      open={!!show}
+      onOpenChange={(open) => {
+        if (!open) {
+          onClose?.();
+          cleanupDialogPointerLock();
+        }
+      }}
+    >
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-[1000] bg-slate-950/45 backdrop-blur-sm" />
         <Dialog.Content className={cn("fixed left-1/2 top-1/2 z-[1001] max-h-[90vh] w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-emerald-100 bg-[#f7fbf7] text-slate-900 shadow-xl focus:outline-none", sizeClass)}>
           {children}
-          <Dialog.Close className="absolute right-4 top-4 rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
+          <Dialog.Close className="absolute right-4 top-4 cursor-pointer rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
             <X className="h-4 w-4" />
           </Dialog.Close>
         </Dialog.Content>
@@ -383,8 +407,21 @@ export function Drawer({
   backdrop?: boolean;
   position?: string;
 }) {
+  React.useEffect(() => {
+    if (!open) cleanupDialogPointerLock();
+    return cleanupDialogPointerLock;
+  }, [open]);
+
   return (
-    <Dialog.Root open={!!open} onOpenChange={(isOpen) => !isOpen && onClose?.()}>
+    <Dialog.Root
+      open={!!open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          onClose?.();
+          cleanupDialogPointerLock();
+        }
+      }}
+    >
       <Dialog.Portal>
         {backdrop && <Dialog.Overlay className="fixed inset-0 z-[900] bg-slate-950/40" />}
         <Dialog.Content className={cn("fixed left-0 top-0 z-[901] h-full bg-white p-4 shadow-xl", className)}>

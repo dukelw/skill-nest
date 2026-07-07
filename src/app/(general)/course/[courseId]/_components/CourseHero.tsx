@@ -8,6 +8,8 @@ import { courseService } from "~/services/courseService";
 import { useCourseStore } from "~/store/courseStore";
 import { formatDuration } from "~/utils/format";
 
+const DEFAULT_COURSE_THUMBNAIL = "/logo-bg.png";
+
 export default function CourseHero({
   course,
   currentUser,
@@ -47,7 +49,7 @@ export default function CourseHero({
         {/* Thumbnail */}
         <div className="relative w-full max-h-[200px] aspect-video overflow-hidden rounded-xl">
           <Image
-            src={course.thumbnail ?? ""}
+            src={course.thumbnail || DEFAULT_COURSE_THUMBNAIL}
             alt={course.title}
             fill
             className="object-contain h-full w-full rounded-xl"

@@ -18,6 +18,8 @@ import { useAuthStore } from "~/store/authStore";
 import { Course } from "~/models/Course";
 import { ImagePlus, Plus, Trash2 } from "lucide-react";
 
+const DEFAULT_COURSE_THUMBNAIL = "/logo-bg.png";
+
 type Props = {
   show: boolean;
   onClose: () => void;
@@ -102,7 +104,7 @@ export default function CourseModal({
 
     setIsSubmitting(true);
     try {
-      let thumbnailUrl = form.thumbnail;
+      let thumbnailUrl = form.thumbnail || DEFAULT_COURSE_THUMBNAIL;
 
       // Nếu có file mới, upload để lấy thumbnail mới
       if (file) {
@@ -263,18 +265,15 @@ export default function CourseModal({
           </div>
           <div className="flex flex-col gap-4">
             <div className="overflow-hidden rounded-xl border border-emerald-100 bg-[#eef7ef] shadow-sm">
-              {form.thumbnail || file ? (
-                <img
-                  src={file ? URL.createObjectURL(file) : form.thumbnail}
-                  alt="Current thumbnail"
-                  className="h-48 w-full object-cover"
-                />
-              ) : (
-                <div className="flex h-48 flex-col items-center justify-center text-center text-slate-500">
-                  <ImagePlus className="h-8 w-8 text-emerald-700" />
-                  <p className="mt-2 text-sm font-bold">No thumbnail selected</p>
-                </div>
-              )}
+              <img
+                src={
+                  file
+                    ? URL.createObjectURL(file)
+                    : form.thumbnail || DEFAULT_COURSE_THUMBNAIL
+                }
+                alt="Current thumbnail"
+                className="h-48 w-full object-cover"
+              />
             </div>
 
             <div className="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm">
@@ -314,7 +313,11 @@ export default function CourseModal({
                 className="mb-0"
                 disabled={isSubmitting}
               />
-              <LewisButton onClick={addGoal} disabled={isSubmitting} className="h-11">
+              <LewisButton
+                onClick={addGoal}
+                disabled={isSubmitting}
+                className="h-11 cursor-pointer"
+              >
                 <Plus className="h-4 w-4" />
                 Add goal
               </LewisButton>
@@ -358,6 +361,7 @@ export default function CourseModal({
           variant="outlined"
           onClick={onClose}
           disabled={isSubmitting}
+          className="cursor-pointer"
         >
           Cancel
         </LewisButton>

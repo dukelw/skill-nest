@@ -3,20 +3,41 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import LewisTextInput from "~/components/Partial/LewisTextInput";
+import { toast } from "sonner";
 import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Breadcrumb,
   BreadcrumbItem,
 } from "~/components/ui/primitives";
+import LewisButton from "~/components/Partial/LewisButton";
+import LewisTextInput from "~/components/Partial/LewisTextInput";
+import LoadingButton from "~/components/Partial/LoadingButton";
 import { assignmentService } from "~/services/assignmentService";
 import { uploadService } from "~/services/uploadService";
-import { toast } from "sonner";
 import { useClassroomStore } from "~/store/classroomStore";
+import {
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  FileText,
+  Plus,
+  Trash2,
+} from "lucide-react";
+
+const ANSWER_LABELS = ["A", "B", "C", "D"];
+
+type QuizQuestion = {
+  questionText: string;
+  options: string[];
+  correctAnswer: string;
+  showCorrectAnswer: boolean;
+};
+
+const createEmptyQuestion = (showCorrectAnswer: boolean): QuizQuestion => ({
+  questionText: "",
+  options: ["", "", "", ""],
+  correctAnswer: "",
+  showCorrectAnswer,
+});
 
 export default function QuizCreatoryPage() {
   const { classroomId } = useParams();
@@ -26,28 +47,19 @@ export default function QuizCreatoryPage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [questions, setQuestions] = useState([
-    {
-      questionText: "",
-      options: ["", "", "", ""],
-      correctAnswer: "",
-      showCorrectAnswer: false,
-    },
+  const [questions, setQuestions] = useState<QuizQuestion[]>([
+    createEmptyQuestion(false),
   ]);
   const [showResult, setShowResult] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [file, setFile] = useState<File | null>(null); // State to hold file
+  const [file, setFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddQuestion = () => {
-    setQuestions([
-      ...questions,
-      {
-        questionText: "",
-        options: ["", "", "", ""],
-        correctAnswer: "",
-        showCorrectAnswer: showResult,
-      },
-    ]);
+    setQuestions((prev) => [...prev, createEmptyQuestion(showResult)]);
+  };
+
+  const handleRemoveQuestion = (index: number) => {
+    setQuestions((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleQuestionChange = (
@@ -56,7 +68,7 @@ export default function QuizCreatoryPage() {
     value: any
   ) => {
     setQuestions((prev) =>
-      prev?.map((q, i) =>
+      prev.map((q, i) =>
         i === index
           ? {
               ...q,
@@ -67,177 +79,341 @@ export default function QuizCreatoryPage() {
     );
   };
 
-  // Handle file input change
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]); // Set the selected file
+  const handleShowResultToggle = () => {
+    const nextValue = !showResult;
+    setShowResult(nextValue);
+    setQuestions((prev) =>
+      prev.map((question) => ({
+        ...question,
+        showCorrectAnswer: nextValue,
+      }))
+    );
+  };
+
+  const validateQuiz = () => {
+    if (!title.trim()) {
+      toast.error("Title is required.");
+      return false;
     }
+    if (!dueDate) {
+      toast.error("Due date is required.");
+      return false;
+    }
+    if (!questions.length) {
+      toast.error("At least one question is required.");
+      return false;
+    }
+
+    for (let i = 0; i < questions.length; i++) {
+      const question = questions[i];
+      if (!question.questionText.trim()) {
+        toast.error(`Question ${i + 1} is missing.`);
+        return false;
+      }
+      if (question.options.some((option) => !option.trim())) {
+        toast.error(`All options for Question ${i + 1} are required.`);
+        return false;
+      }
+      if (!ANSWER_LABELS.includes(question.correctAnswer)) {
+        toast.error(`Question ${i + 1} needs a correct answer.`);
+        return false;
+      }
+    }
+
+    return true;
   };
 
   const handleSubmit = async () => {
-    if (!title.trim()) return toast.error("Title is required.");
-    if (!dueDate) return toast.error("Due date is required.");
-    if (!questions.length)
-      return toast.error("At least one question is required.");
+    if (!validateQuiz()) return;
 
-    for (let i = 0; i < questions.length; i++) {
-      const q = questions[i];
-      if (!q.questionText.trim())
-        return toast.error(`Question ${i + 1} is missing.`);
-      if (q.options.some((opt) => !opt.trim())) {
-        return toast.error(`All options for Question ${i + 1} are required.`);
-      }
-      if (!["A", "B", "C", "D"].includes(q.correctAnswer)) {
-        return toast.error(
-          `Question ${i + 1} must have a correct answer selected.`
-        );
-      }
-    }
-    let fileUrl = "";
-
-    if (file) {
-      fileUrl = await uploadService.uploadFile(file);
-    }
-    const latestQuestions = [...questions];
+    setIsSubmitting(true);
     try {
+      const fileUrl = file ? await uploadService.uploadFile(file) : "";
+
       await assignmentService.createAssignment({
         classroomId: Number(classroomId),
-        title,
-        description,
+        title: title.trim(),
+        description: description.trim(),
         dueDate: new Date(dueDate),
         type: "QUIZ",
-        questions: latestQuestions,
+        questions,
         fileUrl,
       });
 
+      toast.success("Quiz created successfully.");
       router.push(`/teaching/${classroomId}`);
-    } catch (error) {
-      alert("Failed to create quiz");
+    } catch (error: any) {
       console.error(error);
+      toast.error(
+        error?.response?.data?.message || error?.message || "Failed to create quiz."
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  const completedQuestions = questions.filter(
+    (question) =>
+      question.questionText.trim() &&
+      question.correctAnswer &&
+      question.options.every((option) => option.trim())
+  ).length;
+
   return (
-    <div className="w-full mx-auto p-6 space-y-6">
+    <div className="space-y-6 p-4 sm:p-6">
       <Breadcrumb aria-label="Breadcrumb" className="mb-4">
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
         <BreadcrumbItem href="/teaching">Teaching</BreadcrumbItem>
-        <BreadcrumbItem>{classroom?.name}</BreadcrumbItem>
+        <BreadcrumbItem>{classroom?.name || "Create quiz"}</BreadcrumbItem>
       </Breadcrumb>
-      {/* MODAL ADD ASSIGNMENT */}
-      <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <ModalHeader className="bg-green">{"Create Assignment"}</ModalHeader>
-        <ModalBody>
+
+      <section className="rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm">
+        <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+          Quiz builder
+        </p>
+        <div className="mt-2 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            {/* Title */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Title</label>
-              <LewisTextInput
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="mt-2"
-              />
-            </div>
-
-            {/* Description */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Description</label>
-              <LewisTextInput
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="mt-2"
-              />
-            </div>
-
-            {/* Due Date */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Due Date</label>
-              <input
-                type="datetime-local" // Change from "date" to "datetime-local"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-                className="block w-full mt-2 border rounded-md p-2"
-              />
-            </div>
-
-            {/* File Upload */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Upload File</label>
-              <LewisTextInput
-                type="file"
-                onChange={handleFileChange}
-                className="block w-full mt-2"
-              />
-            </div>
+            <h1 className="text-3xl font-extrabold tracking-tight text-slate-950">
+              Create quiz
+            </h1>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+              Build the quiz in one flow: set the title, deadline, questions,
+              answers and optional attachment before publishing.
+            </p>
           </div>
-        </ModalBody>
-        <ModalFooter>
-          <>
-            <Button className="bg-green" onClick={handleSubmit}>
-              Create Assignment
-            </Button>
-            <Button color="gray" onClick={() => setIsModalOpen(false)}>
-              Cancel
-            </Button>
-          </>
-        </ModalFooter>
-      </Modal>
-      <h1 className="text-2xl font-bold">Create Quiz</h1>
-      <Button
-        color={showResult ? "success" : "gray"}
-        onClick={() => setShowResult(!showResult)}
-      >
-        {showResult ? "Show answer" : "Hide answer"}
-      </Button>
+          <div className="grid grid-cols-2 gap-2 rounded-xl border border-emerald-100 bg-[#eef7ef] p-3 text-sm font-bold text-slate-700">
+            <span>{questions.length} questions</span>
+            <span>{completedQuestions} ready</span>
+          </div>
+        </div>
+      </section>
 
-      <div className="space-y-6">
-        {questions?.map((q, i) => (
-          <div
-            key={i}
-            className="p-4 border border-green-500 rounded space-y-2"
-          >
-            <LewisTextInput
-              placeholder={`Question ${i + 1}`}
-              value={q.questionText}
-              onChange={(e) =>
-                handleQuestionChange(i, "questionText", e.target.value)
-              }
-            />
-            {["A", "B", "C", "D"]?.map((label, j) => (
-              <div key={j} className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name={`correct-${i}`}
-                  aria-label={label}
-                  value={label}
-                  checked={q.correctAnswer === label}
-                  onChange={() =>
-                    handleQuestionChange(i, "correctAnswer", label)
+      <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+        <main className="space-y-4">
+          {questions.map((question, questionIndex) => (
+            <section
+              key={questionIndex}
+              className="overflow-hidden rounded-xl border border-emerald-100 bg-white shadow-sm"
+            >
+              <div className="flex flex-col gap-3 border-b border-emerald-100 bg-[#f7fbf7] p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+                    Question {questionIndex + 1}
+                  </p>
+                  <h2 className="mt-1 text-lg font-extrabold text-slate-950">
+                    Multiple choice
+                  </h2>
+                </div>
+                {questions.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveQuestion(questionIndex)}
+                    className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 text-sm font-bold text-red-700 transition hover:bg-red-100"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Remove
+                  </button>
+                )}
+              </div>
+
+              <div className="space-y-4 p-4">
+                <LewisTextInput
+                  placeholder={`Question ${questionIndex + 1}`}
+                  value={question.questionText}
+                  onChange={(event) =>
+                    handleQuestionChange(
+                      questionIndex,
+                      "questionText",
+                      event.target.value
+                    )
                   }
                 />
+
+                <div className="grid gap-3 md:grid-cols-2">
+                  {ANSWER_LABELS.map((label, optionIndex) => {
+                    const isCorrect = question.correctAnswer === label;
+                    const nextOptions = [...question.options];
+
+                    return (
+                      <label
+                        key={label}
+                        className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition ${
+                          isCorrect
+                            ? "border-emerald-300 bg-emerald-50"
+                            : "border-slate-200 bg-[#f7fbf7] hover:border-emerald-200"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name={`correct-${questionIndex}`}
+                          aria-label={label}
+                          value={label}
+                          checked={isCorrect}
+                          onChange={() =>
+                            handleQuestionChange(
+                              questionIndex,
+                              "correctAnswer",
+                              label
+                            )
+                          }
+                          className="h-4 w-4 cursor-pointer accent-emerald-700"
+                        />
+                        <span
+                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-extrabold ${
+                            isCorrect
+                              ? "bg-emerald-700 text-white"
+                              : "bg-white text-emerald-800"
+                          }`}
+                        >
+                          {label}
+                        </span>
+                        <LewisTextInput
+                          placeholder={`Option ${label}`}
+                          value={question.options[optionIndex]}
+                          onChange={(event) => {
+                            nextOptions[optionIndex] = event.target.value;
+                            handleQuestionChange(
+                              questionIndex,
+                              "options",
+                              nextOptions
+                            );
+                          }}
+                          className="mb-0"
+                        />
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            </section>
+          ))}
+
+          <button
+            type="button"
+            onClick={handleAddQuestion}
+            className="flex min-h-16 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-emerald-300 bg-[#eef7ef] text-sm font-extrabold text-emerald-800 transition hover:bg-emerald-50"
+          >
+            <Plus className="h-4 w-4" />
+            Add question
+          </button>
+        </main>
+
+        <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+          <section className="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm">
+            <h2 className="text-lg font-extrabold text-slate-950">
+              Quiz settings
+            </h2>
+            <p className="mt-1 text-sm leading-6 text-slate-600">
+              These details become the assignment students see in the classroom.
+            </p>
+
+            <div className="mt-4 space-y-4">
+              <div>
+                <label className="mb-1 block text-sm font-bold text-slate-700">
+                  Title
+                </label>
                 <LewisTextInput
-                  placeholder={`Option ${label}`}
-                  value={q.options[j]}
-                  onChange={(e) => {
-                    const newOptions = [...q.options];
-                    newOptions[j] = e.target.value;
-                    handleQuestionChange(i, "options", newOptions);
-                  }}
+                  value={title}
+                  onChange={(event) => setTitle(event.target.value)}
+                  placeholder="Quiz title"
+                  className="mb-0"
                 />
               </div>
-            ))}
-          </div>
-        ))}
-      </div>
 
-      <div className="flex items-center justify-between">
-        <Button onClick={handleAddQuestion}>Add Question</Button>
-        <Button
-          className="bg-green text-white"
-          onClick={() => setIsModalOpen(true)}
-        >
-          Create
-        </Button>
+              <div>
+                <label className="mb-1 block text-sm font-bold text-slate-700">
+                  Description
+                </label>
+                <textarea
+                  value={description}
+                  onChange={(event) => setDescription(event.target.value)}
+                  placeholder="What should students prepare?"
+                  rows={4}
+                  className="w-full resize-none rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-bold text-slate-700">
+                  Due date
+                </label>
+                <input
+                  type="datetime-local"
+                  value={dueDate}
+                  onChange={(event) => setDueDate(event.target.value)}
+                  className="block h-11 w-full cursor-pointer rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+                />
+              </div>
+
+              <label className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-dashed border-emerald-200 bg-[#eef7ef] px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-emerald-50">
+                <span className="flex min-w-0 items-center gap-2">
+                  <FileText className="h-4 w-4 shrink-0 text-emerald-700" />
+                  <span className="truncate">
+                    {file?.name || "Optional attachment"}
+                  </span>
+                </span>
+                <span className="rounded-lg bg-white px-3 py-1 text-xs text-emerald-800">
+                  Browse
+                </span>
+                <input
+                  type="file"
+                  onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+                  className="sr-only"
+                />
+              </label>
+            </div>
+          </section>
+
+          <section className="rounded-xl border border-emerald-100 bg-[#f7fbf7] p-4 shadow-sm">
+            <button
+              type="button"
+              onClick={handleShowResultToggle}
+              className="flex w-full cursor-pointer items-center justify-between rounded-xl border border-emerald-100 bg-white p-3 text-left transition hover:bg-emerald-50"
+            >
+              <span>
+                <span className="block text-sm font-extrabold text-slate-950">
+                  Reveal correct answers
+                </span>
+                <span className="mt-1 block text-xs font-semibold text-slate-500">
+                  {showResult ? "Students can review answers." : "Answers stay hidden."}
+                </span>
+              </span>
+              {showResult ? (
+                <Eye className="h-5 w-5 text-emerald-700" />
+              ) : (
+                <EyeOff className="h-5 w-5 text-slate-400" />
+              )}
+            </button>
+
+            <div className="mt-4 space-y-2 text-sm font-semibold text-slate-600">
+              <p className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-700" />
+                Pick one correct answer for every question.
+              </p>
+              <p className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-700" />
+                Empty options are blocked before publishing.
+              </p>
+            </div>
+          </section>
+
+          <div className="flex justify-end gap-2">
+            <LewisButton
+              variant="outlined"
+              onClick={() => router.push(`/teaching/${classroomId}`)}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </LewisButton>
+            <LoadingButton
+              onClick={handleSubmit}
+              loading={isSubmitting}
+              loadingText="Publishing..."
+            >
+              Publish quiz
+            </LoadingButton>
+          </div>
+        </aside>
       </div>
     </div>
   );

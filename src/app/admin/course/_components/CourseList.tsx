@@ -25,6 +25,8 @@ import { toast } from "sonner";
 import ConfirmModal from "~/components/Modal/ConfirmModal";
 import LessonModal from "./LessonModal";
 
+const DEFAULT_COURSE_THUMBNAIL = "/logo-bg.png";
+
 interface Props {
   data: Course[];
   userId: number;
@@ -164,7 +166,7 @@ export default function CourseList({ data, userId }: Props) {
                 <TableCell>
                   <div className="relative w-16 h-10 rounded overflow-hidden border border-green-200">
                     <Image
-                      src={course.thumbnail ?? ""}
+                      src={course.thumbnail || DEFAULT_COURSE_THUMBNAIL}
                       alt={course.title}
                       fill
                       className="object-cover"

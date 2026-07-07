@@ -50,6 +50,23 @@ export const assignmentService = {
     return res.data;
   },
 
+  async updateAssignment(
+    assignmentId: number,
+    data: {
+      title?: string;
+      description?: string;
+      dueDate?: Date;
+      fileUrl?: string;
+      type?: "HOMEWORK" | "QUIZ" | "DOCUMENT";
+    }
+  ) {
+    const res: AxiosResponse = await api.patch(
+      `${API_URL}/${assignmentId}`,
+      data
+    );
+    return res.data;
+  },
+
   async deleteAssignments(ids: number[]) {
     const res: AxiosResponse = await api.delete(`${API_URL}`, {
       data: { ids },

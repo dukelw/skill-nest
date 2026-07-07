@@ -26,6 +26,8 @@ import { formatDuration } from "~/utils/format";
 import Loader from "~/components/Partial/Loader";
 import EmptyState from "~/components/EmptyState";
 
+const DEFAULT_COURSE_THUMBNAIL = "/logo-bg.png";
+
 export default function CourseOverview() {
   const { t } = useTranslation();
   const { user } = useAuthStore();
@@ -118,10 +120,7 @@ export default function CourseOverview() {
       >
         <div className="relative aspect-[16/9] overflow-hidden bg-emerald-50">
           <Image
-            src={
-              course.thumbnail ||
-              "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg"
-            }
+            src={course.thumbnail || DEFAULT_COURSE_THUMBNAIL}
             alt={`${course.title} thumbnail`}
             fill
             className="object-cover transition duration-300 group-hover:scale-105"

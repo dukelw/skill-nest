@@ -17,23 +17,21 @@ import { Lesson } from "~/models/Lesson";
 import { useTranslation } from "react-i18next";
 
 export default function LessonPage() {
-  const { course } = useCourseStore();
+  const { course, lesson, setLesson } = useCourseStore();
   const router = useRouter();
   const { lessonId: lessonIdParam } = useParams();
   const lessonId = Number(lessonIdParam);
 
   const [openChapterIds, setOpenChapterIds] = useState<number[]>([]);
-  const { lesson, setLesson } = useCourseStore();
   const { t } = useTranslation();
 
-  const getPrevLessonId = () => {
-    if (!course || !course.chapters) return null;
+  const getFlatLessons = () =>
+    course?.chapters?.flatMap((chapter: Chapter) => chapter.lessons) ?? [];
 
-    const flatLessons = course.chapters.flatMap(
-      (chapter: Chapter) => chapter.lessons
-    );
+  const getPrevLessonId = () => {
+    const flatLessons = getFlatLessons();
     const currentIndex = flatLessons.findIndex(
-      (l: Lesson) => l.id === lessonId
+      (item: Lesson) => item.id === lessonId
     );
 
     if (currentIndex > 0) return flatLessons[currentIndex - 1].id;
@@ -41,17 +39,14 @@ export default function LessonPage() {
   };
 
   const getNextLessonId = () => {
-    if (!course || !course.chapters) return null;
-
-    const flatLessons = course.chapters.flatMap(
-      (chapter: Chapter) => chapter.lessons
-    );
-    const currentIndex = flatLessons?.findIndex(
-      (l: Lesson) => l.id === lessonId
+    const flatLessons = getFlatLessons();
+    const currentIndex = flatLessons.findIndex(
+      (item: Lesson) => item.id === lessonId
     );
 
-    if (currentIndex < flatLessons.length - 1)
+    if (currentIndex >= 0 && currentIndex < flatLessons.length - 1) {
       return flatLessons[currentIndex + 1].id;
+    }
 
     return null;
   };
@@ -65,8 +60,8 @@ export default function LessonPage() {
     fetchData();
     if (!course) return;
 
-    const chapterWithLesson = course?.chapters?.find((chapter) =>
-      chapter.lessons.some((lesson) => lesson.id === lessonId)
+    const chapterWithLesson = course.chapters?.find((chapter) =>
+      chapter.lessons.some((item) => item.id === lessonId)
     );
 
     if (chapterWithLesson) {
@@ -83,22 +78,29 @@ export default function LessonPage() {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] min-h-screen">
-      {/* Left - Video + nội dung */}
-      <div className="max-h-screen overflow-y-auto">
-        <div className="relative w-full aspect-video">
-          <ReactPlayer
-            src={lesson?.contentUrl || ""}
-            width="100%"
-            height="100%"
-            controls
-          />
+    <div className="grid h-[calc(100vh-56px)] grid-cols-1 overflow-hidden bg-[#f4f8f5] md:grid-cols-[minmax(0,1fr)_340px]">
+      <main className="flex min-h-0 flex-col overflow-y-auto">
+        <div className="bg-[#111827] p-3 sm:p-4">
+          <div className="relative mx-auto aspect-video max-h-[calc(100vh-230px)] min-h-[260px] w-full overflow-hidden rounded-xl bg-black shadow-sm">
+            <ReactPlayer
+              src={lesson?.contentUrl || ""}
+              width="100%"
+              height="100%"
+              controls
+            />
+          </div>
         </div>
 
-        <div className="px-6 py-2">
-          {/* Ghi chú & hỏi đáp */}
-          <div className="flex items-center justify-between gap-4">
-            <h1 className="text-xl font-bold">{lesson?.name}</h1>
+        <section className="border-b border-emerald-100 bg-white px-5 py-4 shadow-sm">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+                Current lesson
+              </p>
+              <h1 className="mt-1 text-2xl font-extrabold text-slate-950">
+                {lesson?.name}
+              </h1>
+            </div>
 
             <LewisButton
               size="sm"
@@ -106,14 +108,13 @@ export default function LessonPage() {
               className="flex items-center gap-2"
               space={false}
             >
-              <MessageCircle className="w-4 h-4" />
+              <MessageCircle className="h-4 w-4" />
               {t("Q&A")}
             </LewisButton>
           </div>
-        </div>
+        </section>
 
-        {/* Điều hướng */}
-        <div className="flex justify-between py-6 md:pt-2 px-6 border-t">
+        <div className="mt-auto flex justify-between gap-3 border-t border-emerald-100 bg-white px-5 py-4">
           <LewisButton
             space={false}
             onClick={() => {
@@ -121,9 +122,9 @@ export default function LessonPage() {
               if (prevId) router.push(`/learning/${prevId}`);
             }}
             disabled={!getPrevLessonId()}
-            className="flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="h-4 w-4" />
             {t("prev")}
           </LewisButton>
 
@@ -134,66 +135,78 @@ export default function LessonPage() {
               if (nextId) router.push(`/learning/${nextId}`);
             }}
             disabled={!getNextLessonId()}
-            className="flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {t("next")}
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="h-4 w-4" />
           </LewisButton>
         </div>
-      </div>
+      </main>
 
-      {/* Right - Danh sách bài học */}
-      <div className="p-6 md:p-0">
-        <h2 className="text-xl font-bold text-gray-800 py-2 flex items-center gap-2">
-          <GraduationCap className="w-5 h-5 ml-2" />
-          {t("learningPage.courseContent")}
-        </h2>
+      <aside className="min-h-0 overflow-y-auto border-l border-emerald-100 bg-white">
+        <div className="sticky top-0 z-10 border-b border-emerald-100 bg-white px-5 py-4">
+          <h2 className="flex items-center gap-2 text-lg font-extrabold text-slate-950">
+            <GraduationCap className="h-5 w-5 text-emerald-700" />
+            {t("learningPage.courseContent")}
+          </h2>
+        </div>
 
-        {course?.chapters?.map((chapter) => (
-          <div key={chapter.id}>
-            {/* Chapter Header */}
-            <button
-              onClick={() => toggleChapter(chapter.id)}
-              className="w-full text-left p-4 bg-gray-100 hover:bg-gray-200 transition font-semibold text-sm text-gray-800"
+        <div className="space-y-3 p-4">
+          {course?.chapters?.map((chapter) => (
+            <section
+              key={chapter.id}
+              className="overflow-hidden rounded-xl border border-emerald-100 bg-[#f7fbf7]"
             >
-              {chapter.order}. {chapter.title}
-            </button>
+              <button
+                onClick={() => toggleChapter(chapter.id)}
+                className="flex w-full cursor-pointer items-center justify-between gap-3 px-4 py-3 text-left text-sm font-extrabold text-slate-800 transition hover:bg-emerald-50"
+              >
+                <span className="line-clamp-2">
+                  {chapter.order}. {chapter.title}
+                </span>
+                <span className="text-xs font-bold text-emerald-700">
+                  {chapter.lessons?.length ?? 0}
+                </span>
+              </button>
 
-            {/* Lessons */}
-            {openChapterIds.includes(chapter.id) && (
-              <ul className="space-y-2 pl-2">
-                {chapter.lessons.map((lesson) => {
-                  const isActive = lesson.id === lessonId;
-                  return (
-                    <li
-                      key={lesson.id}
-                      onClick={() => router.push(`/learning/${lesson.id}`)}
-                      className={`p-2 rounded-lg cursor-pointer flex justify-between items-center transition
-                  ${
-                    isActive ? "bg-green-600 text-white" : "hover:bg-gray-100"
-                  }`}
-                    >
-                      <div className="flex flex-col">
-                        <span className="text-sm">{lesson.name}</span>
-                        <span
-                          className={`text-xs ${
-                            isActive ? "text-white/80" : "text-gray-500"
-                          }`}
-                        >
-                          {Math.floor(lesson.duration / 60)
-                            .toString()
-                            .padStart(2, "0")}
-                          :{(lesson.duration % 60).toString().padStart(2, "0")}
-                        </span>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
-        ))}
-      </div>
+              {openChapterIds.includes(chapter.id) && (
+                <ul className="space-y-2 border-t border-emerald-100 p-2">
+                  {chapter.lessons.map((item) => {
+                    const isActive = item.id === lessonId;
+                    return (
+                      <li
+                        key={item.id}
+                        onClick={() => router.push(`/learning/${item.id}`)}
+                        className={`flex cursor-pointer items-center justify-between rounded-lg p-3 transition ${
+                          isActive
+                            ? "bg-emerald-700 text-white shadow-sm"
+                            : "bg-white text-slate-700 hover:bg-emerald-50"
+                        }`}
+                      >
+                        <div className="flex min-w-0 flex-col">
+                          <span className="line-clamp-2 text-sm font-bold">
+                            {item.name}
+                          </span>
+                          <span
+                            className={`text-xs ${
+                              isActive ? "text-white/80" : "text-slate-500"
+                            }`}
+                          >
+                            {Math.floor(item.duration / 60)
+                              .toString()
+                              .padStart(2, "0")}
+                            :{(item.duration % 60).toString().padStart(2, "0")}
+                          </span>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </section>
+          ))}
+        </div>
+      </aside>
     </div>
   );
 }

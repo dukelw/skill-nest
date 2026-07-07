@@ -42,6 +42,9 @@ export default function Asset() {
   const [selectedAssignmentId, setSelectedAssignmentId] = useState<
     number | null
   >(null);
+  const [editingAssignmentId, setEditingAssignmentId] = useState<number | null>(
+    null
+  );
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isConfirmAttempOpen, setIsConfirmAttempOpen] = useState(false);
   const [visibleCommentBox, setVisibleCommentBox] = useState<number | null>(
@@ -81,6 +84,35 @@ export default function Asset() {
     setShowTypeSelection(false);
   };
 
+  const resetAssignmentForm = () => {
+    setTitle("");
+    setDescription("");
+    setDueDate("");
+    setFile(null);
+    setEditingAssignmentId(null);
+    setAssignmentType("HOMEWORK");
+    setShowTypeSelection(true);
+  };
+
+  const formatDateTimeLocal = (value: string | Date) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+    return offsetDate.toISOString().slice(0, 16);
+  };
+
+  const handleEditClick = (assignment: any) => {
+    setEditingAssignmentId(assignment.id);
+    setSelectedAssignmentId(assignment.id);
+    setAssignmentType(assignment.type);
+    setTitle(assignment.title ?? "");
+    setDescription(assignment.description ?? "");
+    setDueDate(formatDateTimeLocal(assignment.dueDate));
+    setFile(null);
+    setShowTypeSelection(false);
+    setIsModalOpen(true);
+  };
+
   const handleGetClassroomDetail = async () => {
     const res = await classroomService.getDetail(Number(classroomId));
     setClassroom(res);
@@ -94,7 +126,7 @@ export default function Asset() {
   };
 
   // Handle creating assignment
-  const handleCreateAssignment = async () => {
+  const handleSaveAssignment = async () => {
     if (creatingAssignment) return;
     setCreatingAssignment(true);
     try {
@@ -104,24 +136,27 @@ export default function Asset() {
         fileUrl = await uploadService.uploadFile(file);
       }
 
-      const newAssignmentData = {
-        title,
-        description,
-        dueDate: new Date(dueDate),
-        classroomId: Number(classroomId),
-        type: assignmentType,
-        fileUrl,
-      };
-
-      const res = await assignmentService.createAssignment(newAssignmentData);
+      const res = editingAssignmentId
+        ? await assignmentService.updateAssignment(editingAssignmentId, {
+            title,
+            description,
+            dueDate: new Date(dueDate),
+            type: assignmentType,
+            ...(fileUrl ? { fileUrl } : {}),
+          })
+        : await assignmentService.createAssignment({
+            title,
+            description,
+            dueDate: new Date(dueDate),
+            classroomId: Number(classroomId),
+            type: assignmentType,
+            fileUrl,
+          });
 
       if (res) {
         await handleGetClassroomDetail();
         setIsModalOpen(false);
-        setTitle("");
-        setDescription("");
-        setDueDate("");
-        setFile(null);
+        resetAssignmentForm();
       }
     } finally {
       setCreatingAssignment(false);
@@ -557,6 +592,7 @@ export default function Asset() {
                         className="ml-2"
                         space={false}
                         lewisSize="small"
+                        onClick={() => handleEditClick(assignment)}
                       >
                         {t("edit")}
                       </LewisButton>
@@ -581,11 +617,21 @@ export default function Asset() {
       </div>
 
       {/* MODAL ADD ASSIGNMENT */}
-      <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Modal
+        show={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          resetAssignmentForm();
+        }}
+      >
         <ModalHeader className="modal-titlebar">
           <div>
             <h2 className="text-base font-bold text-slate-950">
-              {showTypeSelection ? "Select material type" : "Create material"}
+              {showTypeSelection
+                ? "Select material type"
+                : editingAssignmentId
+                  ? "Edit material"
+                  : "Create material"}
             </h2>
             <p className="mt-1 text-xs font-normal text-slate-500">
               Choose how this classroom resource should appear to students.
@@ -678,12 +724,18 @@ export default function Asset() {
             <>
               <LoadingButton
                 loading={creatingAssignment}
-                loadingText="Creating..."
-                onClick={handleCreateAssignment}
+                loadingText={editingAssignmentId ? "Saving..." : "Creating..."}
+                onClick={handleSaveAssignment}
               >
-                {t("create")}
+                {editingAssignmentId ? t("save") || "Save" : t("create")}
               </LoadingButton>
-              <Button color="gray" onClick={() => setShowTypeSelection(true)} disabled={creatingAssignment}>
+              <Button
+                color="gray"
+                onClick={() =>
+                  editingAssignmentId ? resetAssignmentForm() : setShowTypeSelection(true)
+                }
+                disabled={creatingAssignment}
+              >
                 {t("cancel")}
               </Button>
             </>
@@ -700,7 +752,10 @@ export default function Asset() {
           {t("confirmDelete")}
         </ModalHeader>
         <ModalBody>
-          <p>{t("confirmStatement")}</p>
+          <p>
+            Are you sure you want to delete this material? This action cannot be
+            undone.
+          </p>
         </ModalBody>
         <ModalFooter>
           <Button
@@ -713,7 +768,7 @@ export default function Asset() {
               setSelectedAssignmentId(null);
             }}
           >
-            {t("imsure")}
+            Delete material
           </Button>
           <Button color="gray" onClick={() => setIsConfirmDeleteOpen(false)}>
             {t("cancel")}
