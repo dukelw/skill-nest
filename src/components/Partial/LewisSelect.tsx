@@ -1,4 +1,4 @@
-import { Select, SelectProps } from "flowbite-react";
+import { Select, SelectProps } from "~/components/ui/primitives";
 
 type LewisSelectProps = SelectProps & {
   textColor?: "white" | "black" | "light" | "default";

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Modal, ModalHeader, ModalBody, Label } from "flowbite-react";
+import { Modal, ModalHeader, ModalBody, Label } from "~/components/ui/primitives";
 import LewisButton from "~/components/Partial/LewisButton";
 import LewisTextInput from "../Partial/LewisTextInput";
 import { useAuthStore } from "~/store/authStore";
 import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 interface MeetingModalProps {

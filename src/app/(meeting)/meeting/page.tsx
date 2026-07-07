@@ -1,6 +1,6 @@
 "use client";
 
-import { Breadcrumb, BreadcrumbItem } from "flowbite-react";
+import { Breadcrumb, BreadcrumbItem } from "~/components/ui/primitives";
 import { CalendarPlus, LockKeyhole, PlayCircle, Plus, VideoIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

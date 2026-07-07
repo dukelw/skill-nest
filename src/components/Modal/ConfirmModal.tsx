@@ -1,6 +1,6 @@
 "use client";
 
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "flowbite-react";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "~/components/ui/primitives";
 import LewisButton from "~/components/Partial/LewisButton";
 
 type ConfirmModalProps = {

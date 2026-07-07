@@ -10,9 +10,9 @@ import {
   TableHeadCell,
   TableRow,
   Button,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import { Eye, Pencil } from "lucide-react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { fallbackUserAvatar } from "~/constant";
 import Assignment from "~/models/Assignment";
 import { assignmentService } from "~/services/assignmentService";

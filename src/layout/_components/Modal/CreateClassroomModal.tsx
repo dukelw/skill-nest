@@ -1,5 +1,6 @@
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "flowbite-react";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "~/components/ui/primitives";
 import { useTranslation } from "react-i18next";
+import { Upload } from "lucide-react";
 import LewisButton from "~/components/Partial/LewisButton";
 import LewisTextInput from "~/components/Partial/LewisTextInput";
 
@@ -23,11 +24,18 @@ export default function CreateClassroomModal({
   const { t } = useTranslation();
 
   return (
-    <Modal show={show} onClose={onClose}>
-      <ModalHeader className="bg-green-500 text-white">
-        {t("createClassroom")}
+    <Modal show={show} onClose={onClose} size="lg">
+      <ModalHeader className="modal-titlebar">
+        <div>
+          <h2 className="text-base font-semibold text-slate-950">
+            {t("createClassroom")}
+          </h2>
+          <p className="mt-1 text-xs font-normal text-slate-500">
+            Set up the name, class code, and cover image.
+          </p>
+        </div>
       </ModalHeader>
-      <ModalBody>
+      <ModalBody className="modal-body-pad">
         <LewisTextInput
           name="name"
           placeholder={t("classroomName")}
@@ -41,18 +49,35 @@ export default function CreateClassroomModal({
           value={form.code}
           onChange={onChange}
         />
-        <input
-          name="thumbnail"
-          type="file"
-          onChange={onFileChange}
-          className="block w-full mt-4 text-sm file:bg-green-700 text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:bg-green file:text-white hover:file:bg-green-600"
-        />
+        <label className="file-input-card">
+          <span className="flex items-center gap-2">
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white text-emerald-700 shadow-sm">
+              <Upload className="h-4 w-4" />
+            </span>
+            <span>
+              <span className="block font-medium text-slate-800">
+                Choose cover image
+              </span>
+              <span className="text-xs text-slate-500">PNG, JPG, or WEBP</span>
+            </span>
+          </span>
+          <span className="rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700">
+            Browse
+          </span>
+          <input
+            name="thumbnail"
+            type="file"
+            accept="image/*"
+            onChange={onFileChange}
+            className="sr-only"
+          />
+        </label>
       </ModalBody>
-      <ModalFooter>
-        <LewisButton onClick={onSubmit}>{t("create")}</LewisButton>
+      <ModalFooter className="modal-footer-actions">
         <LewisButton variant="outlined" onClick={onClose}>
           {t("cancel")}
         </LewisButton>
+        <LewisButton onClick={onSubmit}>{t("create")}</LewisButton>
       </ModalFooter>
     </Modal>
   );

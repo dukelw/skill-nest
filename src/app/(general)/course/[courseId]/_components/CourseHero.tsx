@@ -1,7 +1,7 @@
 import { Check } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useMemo } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import LewisButton from "~/components/Partial/LewisButton";
 import { Course } from "~/models/Course";
 import { courseService } from "~/services/courseService";

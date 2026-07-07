@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { userService } from "~/services/userService";
-import { Breadcrumb, BreadcrumbItem } from "flowbite-react";
+import { Breadcrumb, BreadcrumbItem } from "~/components/ui/primitives";
 import User from "~/models/User";
 import { LewisPagination } from "~/components/Partial/LewisPagination";
 import { useAuthStore } from "~/store/authStore";

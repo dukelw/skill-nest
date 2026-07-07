@@ -10,7 +10,7 @@ import {
   TableHeadCell,
   TableRow,
   Button,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import { ChevronDown, ChevronUp, Plus, Pencil, Trash } from "lucide-react";
 import { Course } from "~/models/Course";
 import { Chapter } from "~/models/Chapter";
@@ -21,7 +21,7 @@ import { courseService } from "~/services/courseService";
 import { useCourseStore } from "~/store/courseStore";
 import UpdateChapterModal from "./UpdateChapterModal";
 import CreateChapterModal from "~/app/(general)/course/[courseId]/_components/CreateChapterModal";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import ConfirmModal from "~/components/Modal/ConfirmModal";
 import LessonModal from "./LessonModal";
 

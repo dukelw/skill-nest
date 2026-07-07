@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "flowbite-react";
+import { Button } from "~/components/ui/primitives";
 import { CheckCircle } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";

@@ -4,7 +4,7 @@ import {
   Dropdown,
   DropdownItem,
   NavbarCollapse,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import { authService } from "~/services/authService";
@@ -75,7 +75,7 @@ const AppNavbar = () => {
     <Navbar className="bg-dark-green" fluid>
       <Image
         src="/logo-white.png"
-        alt="Flowbite Logo"
+        alt="Skill Nest Logo"
         className="block md:hidden"
         width={40}
         height={40}
@@ -88,7 +88,7 @@ const AppNavbar = () => {
           <NavbarBrand href="/">
             <Image
               src="/logo-white.png"
-              alt="Flowbite Logo"
+              alt="Skill Nest Logo"
               width={40}
               height={40}
             />

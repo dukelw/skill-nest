@@ -1,6 +1,6 @@
 "use client";
 
-import { Dropdown, DropdownItem, Avatar } from "flowbite-react";
+import { Dropdown, DropdownItem, Avatar } from "~/components/ui/primitives";
 import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard,
@@ -15,27 +15,34 @@ import { FiMenu } from "react-icons/fi";
 interface Props {
   user?: {
     avatar?: string;
+    name?: string;
+    email?: string;
   } | null;
   handleLogout?: () => void;
 }
 
 export default function UserDropdown({ user, handleLogout }: Props) {
   const { t } = useTranslation();
+  const initial = (user?.name || user?.email || "U").trim().charAt(0).toUpperCase();
+  const avatarUrl = user?.avatar?.trim();
 
   return user ? (
     <Dropdown
       arrowIcon={false}
       inline
       label={
-        <Avatar
-          className="ml-1 cursor-pointer rounded-2xl ring-2 ring-white/20 transition hover:ring-emerald-200"
-          alt="User Avatar"
-          rounded
-          img={
-            user?.avatar ||
-            "https://cdn-icons-png.freepik.com/512/3607/3607444.png"
-          }
-        />
+        avatarUrl ? (
+          <Avatar
+            className="ml-1 cursor-pointer rounded-2xl ring-2 ring-white/20 transition hover:ring-emerald-200"
+            alt="User Avatar"
+            rounded
+            img={avatarUrl}
+          />
+        ) : (
+          <span className="ml-1 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-700 text-sm font-semibold text-white ring-2 ring-white/20 transition hover:ring-emerald-200">
+            {initial}
+          </span>
+        )
       }
     >
       <DropdownItem href="/dashboard">

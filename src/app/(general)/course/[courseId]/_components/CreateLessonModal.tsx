@@ -6,11 +6,11 @@ import {
   ModalFooter,
   ModalHeader,
   Spinner,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import { useState } from "react";
 import { Chapter } from "~/models/Chapter";
 import { courseService } from "~/services/courseService";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import LewisTextInput from "~/components/Partial/LewisTextInput";
 import LewisButton from "~/components/Partial/LewisButton";
 import LewisSelect from "~/components/Partial/LewisSelect";

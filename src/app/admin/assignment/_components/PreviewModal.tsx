@@ -13,7 +13,7 @@ import {
   TableRow,
   TableCell,
   Badge,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import { fallbackUserAvatar } from "~/constant";

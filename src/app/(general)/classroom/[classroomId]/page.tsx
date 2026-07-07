@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { classroomService } from "~/services/classroomService";
-import { Breadcrumb, BreadcrumbItem, TabItem, Tabs } from "flowbite-react";
-import { customFlowbiteTheme } from "~/lib/flowbite-theme";
+import { Breadcrumb, BreadcrumbItem, TabItem, Tabs } from "~/components/ui/primitives";
 import People from "~/components/Tabs/People";
 import Assignment from "~/components/Tabs/Assignment";
 import { useClassroomStore } from "~/store/classroomStore";
@@ -46,16 +45,14 @@ export default function StudentClassroomDetail() {
   ];
 
   return (
-    <div className="p-6 space-y-3">
+    <div className="space-y-4 p-4 sm:p-6">
       <Breadcrumb aria-label="Breadcrumb" className="mb-4">
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
         <BreadcrumbItem href="/classroom">Classroom</BreadcrumbItem>
         <BreadcrumbItem>{classroom.name}</BreadcrumbItem>
       </Breadcrumb>
       {/* Tabs */}
-      <Tabs
-        theme={customFlowbiteTheme.tabs}
-        aria-label="Classroom tabs"
+      <Tabs        aria-label="Classroom tabs"
         onActiveTabChange={(tabIndex) => {
           setActiveTab(tabs[tabIndex].key);
         }}

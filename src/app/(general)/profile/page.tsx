@@ -2,14 +2,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Avatar, Breadcrumb, BreadcrumbItem } from "flowbite-react";
+import { Avatar, Breadcrumb, BreadcrumbItem } from "~/components/ui/primitives";
 import LewisTextInput from "~/components/Partial/LewisTextInput";
 import { userService } from "~/services/userService";
 import { useAuthStore } from "~/store/authStore";
 import LewisButton from "~/components/Partial/LewisButton";
 import { uploadService } from "~/services/uploadService";
 import { authService } from "~/services/authService";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 
 export default function ProfilePage() {

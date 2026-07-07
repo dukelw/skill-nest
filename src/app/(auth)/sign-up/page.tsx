@@ -3,14 +3,14 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Label, Checkbox } from "flowbite-react";
+import { Label, Checkbox } from "~/components/ui/primitives";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import Link from "next/link";
 import LewisButton from "~/components/Partial/LewisButton";
 import "../../../i18n/client";
 import { i18n } from "next-i18next";
 import LewisTextInput from "~/components/Partial/LewisTextInput";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { authService } from "~/services/authService";
 import { useRouter } from "next/navigation";
 import { loginWithGithub, loginWithGoogle } from "~/lib/actions/auth";

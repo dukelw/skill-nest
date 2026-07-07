@@ -1,4 +1,4 @@
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "flowbite-react";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "~/components/ui/primitives";
 import { useTranslation } from "react-i18next";
 import LewisButton from "~/components/Partial/LewisButton";
 import LewisTextInput from "~/components/Partial/LewisTextInput";
@@ -21,11 +21,18 @@ export default function JoinClassroomModal({
   const { t } = useTranslation();
 
   return (
-    <Modal show={show} onClose={onClose}>
-      <ModalHeader className="bg-green-500 text-white">
-        {t("joinClassroom")}
+    <Modal show={show} onClose={onClose} size="md">
+      <ModalHeader className="modal-titlebar">
+        <div>
+          <h2 className="text-base font-semibold text-slate-950">
+            {t("joinClassroom")}
+          </h2>
+          <p className="mt-1 text-xs font-normal text-slate-500">
+            Enter the code your teacher shared with you.
+          </p>
+        </div>
       </ModalHeader>
-      <ModalBody>
+      <ModalBody className="modal-body-pad">
         <LewisTextInput
           name="code"
           placeholder={t("classroomCode")}
@@ -33,11 +40,11 @@ export default function JoinClassroomModal({
           onChange={(e) => setJoinCode(e.target.value)}
         />
       </ModalBody>
-      <ModalFooter>
-        <LewisButton onClick={onSubmit}>{t("submit")}</LewisButton>
+      <ModalFooter className="modal-footer-actions">
         <LewisButton variant="outlined" onClick={onClose}>
           {t("cancel")}
         </LewisButton>
+        <LewisButton onClick={onSubmit}>{t("submit")}</LewisButton>
       </ModalFooter>
     </Modal>
   );

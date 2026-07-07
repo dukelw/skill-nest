@@ -5,7 +5,7 @@ import { StreamCall, StreamTheme } from "@stream-io/video-react-sdk";
 import { useParams } from "next/navigation";
 
 import { useAuthStore } from "~/store/authStore";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import MeetingSetup from "~/components/Meeting/MeetingSetup";
 import MeetingRoom from "~/components/Meeting/MeetingRoom";
 import { useGetCallById } from "~/hooks/useGetCallById";

@@ -5,12 +5,12 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from "flowbite-react";
-import { Avatar } from "flowbite-react";
+} from "~/components/ui/primitives";
+import { Avatar } from "~/components/ui/primitives";
 import LewisTextInput from "~/components/Partial/LewisTextInput";
 import { uploadService } from "~/services/uploadService";
 import { userService } from "~/services/userService";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import User from "~/models/User";
 import { fallbackUserAvatar } from "~/constant";
 import { useTranslation } from "react-i18next";

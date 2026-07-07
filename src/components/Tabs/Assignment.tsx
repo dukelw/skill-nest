@@ -8,7 +8,7 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import { useParams, useRouter } from "next/navigation";
 import { assignmentService } from "~/services/assignmentService";
 import { uploadService } from "~/services/uploadService"; // Import the uploadService

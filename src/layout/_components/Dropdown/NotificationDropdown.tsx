@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { Avatar, Badge } from "flowbite-react";
+import { Avatar, Badge } from "~/components/ui/primitives";
 import { BellIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";

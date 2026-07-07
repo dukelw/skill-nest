@@ -12,10 +12,10 @@ import {
   ModalFooter,
   Breadcrumb,
   BreadcrumbItem,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import { assignmentService } from "~/services/assignmentService";
 import { uploadService } from "~/services/uploadService";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useClassroomStore } from "~/store/classroomStore";
 
 export default function QuizCreatoryPage() {

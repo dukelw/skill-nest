@@ -5,7 +5,7 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import { useParams, useRouter } from "next/navigation";
 import { useClassroomStore } from "~/store/classroomStore";
 import { AssignmentType } from "~/models/AssignmentType";

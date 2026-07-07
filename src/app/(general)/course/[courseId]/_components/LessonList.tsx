@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { Lesson } from "~/models/Lesson";
 import { courseService } from "~/services/courseService";
 import { useAuthStore } from "~/store/authStore";

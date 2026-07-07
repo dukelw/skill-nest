@@ -7,10 +7,10 @@ import {
   ModalFooter,
   ModalHeader,
   Spinner,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import LewisTextInput from "~/components/Partial/LewisTextInput";
 import LewisButton from "~/components/Partial/LewisButton";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { courseService } from "~/services/courseService";
 import { useTranslation } from "react-i18next";
 

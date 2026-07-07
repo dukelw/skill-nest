@@ -9,7 +9,7 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import { useRouter } from "next/navigation";
 import { uploadService } from "~/services/uploadService";
 import { useClassroomStore } from "~/store/classroomStore";

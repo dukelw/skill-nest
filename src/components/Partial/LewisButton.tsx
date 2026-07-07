@@ -1,6 +1,9 @@
-import { Button, ButtonProps } from "flowbite-react";
+import { Button } from "~/components/ui/primitives";
+import type React from "react";
 
-type LewisButtonProps = ButtonProps & {
+type LewisButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "color"> & {
+  href?: string;
+  size?: string;
   lewisSize?: "small" | "medium" | "large" | "full";
   color?: "green" | "pink" | "blue" | "red" | "orange" | "yellow" | "black";
   variant?: "contained" | "outlined";
@@ -9,18 +12,18 @@ type LewisButtonProps = ButtonProps & {
 };
 
 const sizeClasses = {
-  xsmall: "text-sm min-w-12 max-w-24",
-  small: "text-sm min-w-16 max-w-32",
-  medium: "text-base min-w-32 max-w-48",
-  large: "text-lg min-w-48 max-w-60",
+  xsmall: "text-xs min-w-10",
+  small: "text-xs min-w-14",
+  medium: "text-sm min-w-20",
+  large: "text-sm min-w-28",
   full: "w-full",
 };
 
 const spacePadding = {
-  small: "px-3 py-1.5 me-2 mb-2",
-  medium: "px-4 py-2 me-2 mb-2",
-  large: "px-5 py-3 me-2 mb-2",
-  full: "me-2 mb-2",
+  small: "px-3 py-1.5",
+  medium: "px-4 py-2",
+  large: "px-5 py-2.5",
+  full: "",
 };
 
 const getColorClasses = (
@@ -47,13 +50,14 @@ const LewisButton = ({
   hoverColor = "dark-green",
   space = true,
   className = "",
+  size: _size,
   ...props
 }: LewisButtonProps) => {
   return (
     <Button
       {...props}
       color="none"
-      className={`focus:outline-none focus:ring-2 font-semibold cursor-pointer rounded-xl shadow-sm shadow-emerald-900/10 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-emerald-900/15 
+      className={`focus:outline-none focus:ring-2 font-semibold cursor-pointer rounded-lg shadow-sm shadow-emerald-900/10 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-emerald-900/15 
         ${sizeClasses[lewisSize]} 
         ${space ? spacePadding[lewisSize] : ""} 
         ${getColorClasses(color, variant, hoverColor)} 

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { courseService } from "~/services/courseService";
 import { useAuthStore } from "~/store/authStore";
 import { useCourseStore } from "~/store/courseStore";
-import { Breadcrumb, BreadcrumbItem } from "flowbite-react";
+import { Breadcrumb, BreadcrumbItem } from "~/components/ui/primitives";
 import CourseList from "./_components/CourseList";
 import LewisButton from "~/components/Partial/LewisButton";
 import CourseModal from "~/app/(general)/course/_components/CourseModal";

@@ -4,7 +4,7 @@ import { Suspense, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { authService } from "~/services/authService";
 import { useAuthStore } from "~/store/authStore";
-import { Spinner } from "flowbite-react";
+import { Spinner } from "~/components/ui/primitives";
 
 function SignInSuccessContent() {
   const searchParams = useSearchParams();

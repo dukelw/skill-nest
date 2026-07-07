@@ -7,7 +7,7 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useState } from "react";
 import RichTextEditor from "../Editor/RichTextEditor";
@@ -22,7 +22,14 @@ import { uploadService } from "~/services/uploadService";
 import useSocket from "~/hooks/useSocket";
 import MeetingModal from "../Meeting/MeetingModal";
 import { useTranslation } from "react-i18next";
-import { MegaphoneIcon, UsersIcon } from "lucide-react";
+import {
+  CalendarClock,
+  Hash,
+  MegaphoneIcon,
+  Upload,
+  UsersIcon,
+  Video,
+} from "lucide-react";
 
 type ModalType = "new" | "join" | "schedule" | null;
 
@@ -123,18 +130,25 @@ export default function Stream() {
 
   return (
     <div className="space-y-6">
-      {/* Modal Flowbite */}
-      <Modal show={openModal} onClose={() => setModalType(null)}>
+      {/* Classroom modal */}
+      <Modal show={openModal} onClose={() => setModalType(null)} size="md">
         {modalType === "student" && (
           <>
-            <ModalHeader className="bg-green-500 text-white">
-              {t("streamComponent.studentList")}
+            <ModalHeader className="modal-titlebar">
+              <div>
+                <h2 className="text-base font-semibold text-slate-950">
+                  {t("streamComponent.studentList")}
+                </h2>
+                <p className="mt-1 text-xs font-normal text-slate-500">
+                  Choose who should receive this post.
+                </p>
+              </div>
             </ModalHeader>
-            <ModalBody>
+            <ModalBody className="modal-body-pad">
               {classroom?.members?.map((member) => (
                 <label
                   key={member.id}
-                  className="flex items-center space-x-2 px-3 py-2 rounded hover:bg-green-100 cursor-pointer"
+                  className="flex items-center gap-3 rounded-lg border border-slate-100 px-3 py-2 text-sm transition hover:border-emerald-200 hover:bg-emerald-50"
                 >
                   <input
                     type="checkbox"
@@ -158,18 +172,27 @@ export default function Stream() {
                 </label>
               ))}
             </ModalBody>
-            <ModalFooter>
-              <button onClick={() => setModalType(null)}>{t("close")}</button>
+            <ModalFooter className="modal-footer-actions">
+              <LewisButton variant="outlined" onClick={() => setModalType(null)}>
+                {t("close")}
+              </LewisButton>
             </ModalFooter>
           </>
         )}
 
         {modalType === "code" && (
           <>
-            <ModalHeader className="bg-green-500 text-white">
-              {t("streamComponent.changeCode")}
+            <ModalHeader className="modal-titlebar">
+              <div>
+                <h2 className="text-base font-semibold text-slate-950">
+                  {t("streamComponent.changeCode")}
+                </h2>
+                <p className="mt-1 text-xs font-normal text-slate-500">
+                  Update the code students use to request access.
+                </p>
+              </div>
             </ModalHeader>
-            <ModalBody>
+            <ModalBody className="modal-body-pad">
               <LewisTextInput
                 type="text"
                 placeholder={t("streamComponent.enterNewCode")}
@@ -177,12 +200,8 @@ export default function Stream() {
                 onChange={(e) => setCode(e.target.value)}
               />
             </ModalBody>
-            <ModalFooter>
-              <LewisButton
-                color="red"
-                lewisSize="small"
-                onClick={() => setModalType(null)}
-              >
+            <ModalFooter className="modal-footer-actions">
+              <LewisButton variant="outlined" onClick={() => setModalType(null)}>
                 {t("cancel")}
               </LewisButton>
               <LewisButton onClick={handleChange}>Lưu</LewisButton>
@@ -192,24 +211,43 @@ export default function Stream() {
 
         {modalType === "avatar" && (
           <>
-            <ModalHeader className="bg-green-500 text-white">
-              {t("streamComponent.changeThumb")}
+            <ModalHeader className="modal-titlebar">
+              <div>
+                <h2 className="text-base font-semibold text-slate-950">
+                  {t("streamComponent.changeThumb")}
+                </h2>
+                <p className="mt-1 text-xs font-normal text-slate-500">
+                  Choose a new classroom cover image.
+                </p>
+              </div>
             </ModalHeader>
-            <ModalBody>
-              <input
-                placeholder={t("thumbnail")}
-                name="thumbnail"
-                type="file"
-                onChange={handleFileChange}
-                className="block w-full mt-4 text-sm file:bg-green-700 text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:bg-green file:text-white hover:file:bg-green-600"
-              />
+            <ModalBody className="modal-body-pad">
+              <label className="file-input-card">
+                <span className="flex items-center gap-2">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white text-emerald-700 shadow-sm">
+                    <Upload className="h-4 w-4" />
+                  </span>
+                  <span>
+                    <span className="block font-medium text-slate-800">
+                      {file?.name || t("thumbnail")}
+                    </span>
+                    <span className="text-xs text-slate-500">PNG, JPG, or WEBP</span>
+                  </span>
+                </span>
+                <span className="rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700">
+                  Browse
+                </span>
+                <input
+                  name="thumbnail"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="sr-only"
+                />
+              </label>
             </ModalBody>
-            <ModalFooter>
-              <LewisButton
-                color="red"
-                lewisSize="small"
-                onClick={() => setModalType(null)}
-              >
+            <ModalFooter className="modal-footer-actions">
+              <LewisButton variant="outlined" onClick={() => setModalType(null)}>
                 {t("cancel")}
               </LewisButton>
               <LewisButton onClick={handleChange}>Cập nhật</LewisButton>
@@ -225,7 +263,7 @@ export default function Stream() {
       />
 
       {/* Thumbnail */}
-      <div className="w-full h-[320px] relative rounded overflow-hidden shadow">
+      <div className="relative h-[300px] w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-sm">
         {/* Background Image */}
         <Image
           alt="Thumbnail"
@@ -233,13 +271,17 @@ export default function Stream() {
             classroom?.thumbnail ||
             "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg"
           }
-          layout="fill"
-          objectFit="cover"
+          fill
+          className="object-cover"
         />
+        <div className="absolute inset-0 bg-black/25" />
 
         {/* Classroom Name - Bottom Left */}
-        <div className="absolute bottom-4 left-4">
-          <h2 className="text-xl font-semibold text-white drop-shadow-md">
+        <div className="absolute bottom-5 left-5 right-5">
+          <p className="mb-2 inline-flex rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">
+            {classroom?.code}
+          </p>
+          <h2 className="text-2xl font-semibold text-white drop-shadow-md">
             {classroom?.name}
           </h2>
         </div>
@@ -250,7 +292,7 @@ export default function Stream() {
             <Dropdown
               label=""
               renderTrigger={() => (
-                <button className="p-2 bg-white bg-opacity-80 rounded-full hover:bg-opacity-100 shadow">
+                <button className="rounded-full bg-white/95 p-2 shadow-sm transition hover:bg-white hover:shadow-md">
                   <HiOutlineDotsVertical className="text-gray-700 w-5 h-5" />
                 </button>
               )}
@@ -268,22 +310,27 @@ export default function Stream() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
         {/* Class Info - 3/12 */}
         <div className="col-span-12 md:col-span-3 space-y-4">
           {/* Block 1: Class Code - nền xám */}
-          <div className="bg-gray-50 p-4 rounded shadow">
+          <div className="detail-panel p-4">
             <div className="flex justify-between items-center">
-              <div>
-                <p className="text-gray-500 text-sm">
+              <div className="flex items-start gap-3">
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700">
+                  <Hash className="h-4 w-4" />
+                </span>
+                <div>
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
                   {t("streamComponent.classCode")}
                 </p>
-                <h4 className="text-lg font-semibold">{classroom?.code}</h4>
+                <h4 className="mt-1 text-base font-semibold text-slate-950">{classroom?.code}</h4>
+                </div>
               </div>
               <Dropdown
                 label=""
                 renderTrigger={() => (
-                  <button className="p-2 rounded hover:bg-gray-100">
+                  <button className="rounded-lg p-2 transition hover:bg-slate-100">
                     <HiOutlineDotsVertical className="text-gray-500 w-5 h-5" />
                   </button>
                 )}
@@ -312,14 +359,19 @@ export default function Stream() {
               </Dropdown>
             </div>
           </div>
-          <div className="bg-gray-50 p-4 rounded shadow">
+          <div className="detail-panel p-4">
             <div className="w-full">
-              <p className="text-gray-500 text-sm">
-                {t("streamComponent.meeting")}
-              </p>
-              <div className="w-full flex items-center justify-between mt-2">
+              <div className="flex items-center gap-3">
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700">
+                  <Video className="h-4 w-4" />
+                </span>
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  {t("streamComponent.meeting")}
+                </p>
+              </div>
+              <div className="mt-3 flex w-full items-center justify-end gap-2">
                 {classroom?.creatorId === user?.id ? (
-                  <div className="w-full flex items-center justify-around">
+                  <>
                     <LewisButton
                       lewisSize="small"
                       space={false}
@@ -334,7 +386,7 @@ export default function Stream() {
                     >
                       {t("streamComponent.schedule")}
                     </LewisButton>
-                  </div>
+                  </>
                 ) : (
                   <LewisButton
                     lewisSize="full"
@@ -349,14 +401,16 @@ export default function Stream() {
           </div>
 
           {/* Block 2: Upcoming Items - nền trắng hoặc trong suốt */}
-          <div className="bg-gray-50 p-4 rounded shadow">
-            <h3 className="text-sm text-gray-600 font-medium mb-2">
+          <div className="detail-panel p-4">
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-800">
+              <CalendarClock className="h-4 w-4 text-emerald-700" />
               {t("streamComponent.upcoming")}
             </h3>
             <ul className="space-y-2 text-sm text-gray-700">
               {filteredAssignments?.map((a) => (
-                <li key={a.id}>
-                  - {a.title} (
+                <li key={a.id} className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-2">
+                  <p className="font-medium text-slate-800">{a.title}</p>
+                  <p className="mt-1 text-xs text-slate-500">
                   {new Date(a.dueDate).toLocaleString("vi-VN", {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -364,34 +418,36 @@ export default function Stream() {
                     month: "2-digit",
                     year: "numeric",
                   })}
-                  )
+                  </p>
                 </li>
               ))}
+              {filteredAssignments?.length === 0 && (
+                <li className="text-sm text-slate-500">No upcoming items.</li>
+              )}
             </ul>
           </div>
         </div>
 
         {/* New Content - 9/12 */}
-        <div className="col-span-12 md:col-span-9 p-6 bg-white rounded shadow space-y-4">
+        <div className="col-span-12 space-y-4 md:col-span-9">
           {classroom?.creatorId === user?.id && (
-            <>
-              <h2 className="text-xl font-semibold">
-                {t("streamComponent.createNew")}
-              </h2>
-
-              <div className="flex flex-wrap items-center gap-2">
-                <input
-                  value={classroom?.name}
-                  readOnly
-                  className="rounded px-2 py-2 bg-gray-100 cursor-default select-none outline-none w-full sm:w-auto"
-                />
-
+            <section className="detail-panel space-y-4 p-5">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold text-slate-950">
+                    {t("streamComponent.createNew")}
+                  </h2>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Share an update with the whole class or selected members.
+                  </p>
+                </div>
                 <LewisButton
                   space={false}
-                  className="py-0 sm:ml-auto"
+                  lewisSize="small"
+                  className="sm:ml-auto"
                   onClick={() => setModalType("student")}
                 >
-                  <UsersIcon className="h-5 w-5 mr-2 text-white" />
+                  <UsersIcon className="mr-2 h-4 w-4 text-white" />
                   {selectedStudentIds.length === 0
                     ? t("streamComponent.allMembers")
                     : `${selectedStudentIds.length} ${t(
@@ -400,15 +456,23 @@ export default function Stream() {
                 </LewisButton>
               </div>
 
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  value={classroom?.name}
+                  readOnly
+                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600 outline-none sm:w-auto"
+                />
+              </div>
+
               <div className="mx-auto mt-2">
                 <RichTextEditor content={content} onChange={setContent} />
 
                 {content !== "" && (
-                  <h2 className="text-xl font-bold mt-2">Preview:</h2>
+                  <h2 className="mt-4 text-sm font-semibold text-slate-700">Preview</h2>
                 )}
                 {content !== "" && (
                   <div
-                    className="prose border border-green-500 p-3 mt-2"
+                    className="prose mt-2 rounded-lg border border-emerald-100 bg-emerald-50/40 p-3 text-sm"
                     dangerouslySetInnerHTML={{ __html: content }}
                   />
                 )}
@@ -416,8 +480,8 @@ export default function Stream() {
 
               {/* Footer actions */}
               <div className="flex justify-end items-center pt-2">
-                <div className="flex space-x-2">
-                  <LewisButton lewisSize="small" color="red">
+                <div className="flex gap-2">
+                  <LewisButton lewisSize="small" variant="outlined">
                     {t("cancel")}
                   </LewisButton>
                   <LewisButton
@@ -429,11 +493,11 @@ export default function Stream() {
                   </LewisButton>
                 </div>
               </div>
-            </>
+            </section>
           )}
-          <>
-            <h2 className="text-lg font-semibold flex items-center gap-2">
-              <MegaphoneIcon className="h-5 w-5 text-green-600" />
+          <section className="detail-panel space-y-4 p-5">
+            <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-950">
+              <MegaphoneIcon className="h-5 w-5 text-emerald-700" />
               {t("streamComponent.allNoti")}
             </h2>
             {classroom?.creatorId === user?.id && (
@@ -465,7 +529,8 @@ export default function Stream() {
                 )}
                 <span
                   onClick={handleDeleteNotification}
-                  className="text-sm text-red-600 cursor-pointer"
+                  role="button"
+                  className="text-sm font-medium text-red-600 transition hover:text-red-700"
                 >
                   {t("delete")}
                 </span>
@@ -492,11 +557,11 @@ export default function Stream() {
                 return (
                   <div
                     key={n.id}
-                    className="border border-gray-200 p-4 rounded hover:shadow transition"
+                    className="rounded-xl border border-slate-200 bg-white p-4 transition hover:border-emerald-100 hover:shadow-sm"
                   >
                     <div className="flex justify-between items-center"></div>
                     <div className="w-full flex justify-between items-center">
-                      <h3 className="text-base font-semibold mb-1">
+                      <h3 className="mb-1 text-base font-semibold text-slate-950">
                         {n.title}
                       </h3>
                       {/* Checkbox và nút xóa chỉ hiển thị nếu người tạo lớp */}
@@ -523,17 +588,17 @@ export default function Stream() {
                       )}
                     </div>
                     <div
-                      className="prose text-sm text-gray-700"
+                      className="prose text-sm text-slate-700"
                       dangerouslySetInnerHTML={{ __html: n.content }}
                     />
-                    <p className="text-xs text-gray-400 mt-2">
+                    <p className="mt-3 text-xs text-slate-400">
                       {t("streamComponent.sendAt")}:{" "}
                       {new Date(n.createdAt).toLocaleString("vi-VN")}
                     </p>
                   </div>
                 );
               })}
-          </>
+          </section>
         </div>
       </div>
     </div>

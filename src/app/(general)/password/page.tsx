@@ -6,8 +6,8 @@ import { useTranslation } from "react-i18next";
 import LewisTextInput from "~/components/Partial/LewisTextInput";
 import LewisButton from "~/components/Partial/LewisButton";
 import { userService } from "~/services/userService";
-import { toast } from "react-toastify";
-import { Breadcrumb, BreadcrumbItem } from "flowbite-react";
+import { toast } from "sonner";
+import { Breadcrumb, BreadcrumbItem } from "~/components/ui/primitives";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function ChangePasswordPage() {

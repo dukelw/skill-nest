@@ -4,17 +4,15 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import {
   Modal,
   ModalBody,
   ModalFooter,
   ModalHeader,
-  Card,
   Spinner,
-  Badge,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 
 import LewisButton from "~/components/Partial/LewisButton";
 import LewisTextInput from "~/components/Partial/LewisTextInput";
@@ -22,7 +20,7 @@ import { classroomService } from "~/services/classroomService";
 import { useAuthStore } from "~/store/authStore";
 import Classroom from "~/models/Classroom";
 import { uploadService } from "~/services/uploadService";
-import { CalendarDays, GraduationCap, MonitorPlay, Sparkles, Users } from "lucide-react";
+import { CalendarDays, GraduationCap, MonitorPlay, Sparkles, Upload, Users } from "lucide-react";
 
 export default function HomePage() {
   const { t } = useTranslation();
@@ -216,38 +214,42 @@ export default function HomePage() {
 
   const renderClassCards = (classes: Classroom[], prefix: string) =>
     classes?.map((classroom) => (
-      <Link href={`/${prefix}/${classroom.id}`} key={classroom.id}>
-        <Card
-          className="card-polished w-full overflow-hidden hover:cursor-pointer"
-          imgAlt={`${classroom.name} thumbnail`}
-          imgSrc={
-            classroom.thumbnail ||
-            "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg"
-          }
-        >
-          <div className="flex items-center justify-between">
-            <h5 className="text-xl font-semibold text-emerald-800 truncate">
+      <Link
+        href={`/${prefix}/${classroom.id}`}
+        key={classroom.id}
+        className="classroom-card group"
+      >
+        <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
+          <Image
+            src={
+              classroom.thumbnail ||
+              "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg"
+            }
+            alt={`${classroom.name} thumbnail`}
+            fill
+            className="object-cover transition duration-300 group-hover:scale-105"
+          />
+          <div className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-xs font-semibold text-slate-700 shadow-sm">
+            <Users className="h-3.5 w-3.5 text-emerald-700" />
+            {classroom.members?.length || 0}
+          </div>
+        </div>
+        <div className="space-y-3 p-4">
+          <div>
+            <h5 className="truncate text-base font-semibold text-slate-950">
               {classroom.name}
             </h5>
-            <Badge color="success" className="ml-2 inline-flex items-center gap-1 rounded-full">
-              <Users size={14} className="inline-block" />
-              <span className="inline-block ml-1">
-                {classroom.members?.length || 0}
-              </span>
-            </Badge>
+            <p className="mt-1 text-xs font-medium uppercase tracking-wide text-emerald-700">
+              {classroom.code}
+            </p>
           </div>
-          <div className="flex items-center gap-3 mt-3">
-            <div>
-              <p className="text-sm text-gray-700">
-                <strong>Code:</strong> {classroom.code}
-              </p>
-              <p className="text-xs text-gray-500">
-                Created:{" "}
-                {new Date(classroom.createdAt).toLocaleDateString("en-GB")}
-              </p>
-            </div>
+          <div className="flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500">
+            <span>Created</span>
+            <span className="font-medium text-slate-700">
+              {new Date(classroom.createdAt).toLocaleDateString("en-GB")}
+            </span>
           </div>
-        </Card>
+        </div>
       </Link>
     ));
 
@@ -327,11 +329,18 @@ export default function HomePage() {
       )}
 
       {/* Create modal */}
-      <Modal show={modalType === "create"} onClose={() => setModalType(null)}>
-        <ModalHeader className="bg-green-500 text-white">
-          {t("createClassroom")}
+      <Modal show={modalType === "create"} onClose={() => setModalType(null)} size="lg">
+        <ModalHeader className="modal-titlebar">
+          <div>
+            <h2 className="text-base font-semibold text-slate-950">
+              {t("createClassroom")}
+            </h2>
+            <p className="mt-1 text-xs font-normal text-slate-500">
+              Create a focused learning space with a clean cover image.
+            </p>
+          </div>
         </ModalHeader>
-        <ModalBody>
+        <ModalBody className="modal-body-pad">
           <LewisTextInput
             name="name"
             placeholder={t("classroomName")}
@@ -345,27 +354,51 @@ export default function HomePage() {
             value={form.code}
             onChange={handleChange}
           />
-          <input
-            name="thumbnail"
-            type="file"
-            onChange={handleFileChange}
-            className="block w-full mt-4 text-sm file:bg-green-700 text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:bg-green file:text-white hover:file:bg-green-600"
-          />
+          <label className="file-input-card">
+            <span className="flex items-center gap-2">
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white text-emerald-700 shadow-sm">
+                <Upload className="h-4 w-4" />
+              </span>
+              <span>
+                <span className="block font-medium text-slate-800">
+                  {file?.name || "Choose cover image"}
+                </span>
+                <span className="text-xs text-slate-500">PNG, JPG, or WEBP</span>
+              </span>
+            </span>
+            <span className="rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700">
+              Browse
+            </span>
+            <input
+              name="thumbnail"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="sr-only"
+            />
+          </label>
         </ModalBody>
-        <ModalFooter>
-          <LewisButton onClick={handleSubmit}>{t("create")}</LewisButton>
+        <ModalFooter className="modal-footer-actions">
           <LewisButton variant="outlined" onClick={() => setModalType(null)}>
             {t("cancel")}
           </LewisButton>
+          <LewisButton onClick={handleSubmit}>{t("create")}</LewisButton>
         </ModalFooter>
       </Modal>
 
       {/* Join modal */}
-      <Modal show={modalType === "join"} onClose={() => setModalType(null)}>
-        <ModalHeader className="bg-green-500 text-white">
-          {t("joinClassroom")}
+      <Modal show={modalType === "join"} onClose={() => setModalType(null)} size="md">
+        <ModalHeader className="modal-titlebar">
+          <div>
+            <h2 className="text-base font-semibold text-slate-950">
+              {t("joinClassroom")}
+            </h2>
+            <p className="mt-1 text-xs font-normal text-slate-500">
+              Send a join request with the class code.
+            </p>
+          </div>
         </ModalHeader>
-        <ModalBody>
+        <ModalBody className="modal-body-pad">
           <LewisTextInput
             name="code"
             placeholder={t("classroomCode")}
@@ -373,11 +406,11 @@ export default function HomePage() {
             onChange={(e) => setJoinCode(e.target.value)}
           />
         </ModalBody>
-        <ModalFooter>
-          <LewisButton onClick={handleSubmit}>{t("submit")}</LewisButton>
+        <ModalFooter className="modal-footer-actions">
           <LewisButton variant="outlined" onClick={() => setModalType(null)}>
             {t("cancel")}
           </LewisButton>
+          <LewisButton onClick={handleSubmit}>{t("submit")}</LewisButton>
         </ModalFooter>
       </Modal>
     </div>

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import LewisButton from "~/components/Partial/LewisButton";
 import LewisTextInput from "~/components/Partial/LewisTextInput";
 import { authService } from "~/services/authService";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 export default function ResetPasswordPage() {

@@ -10,11 +10,11 @@ import {
   TableHeadCell,
   TableRow,
   Button,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import { Pencil, Lock, UnlockIcon } from "lucide-react";
 import { Course } from "~/models/Course";
 import { courseService } from "~/services/courseService";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import ConfirmModal from "~/components/Modal/ConfirmModal";
 import User from "~/models/User";
 import { fallbackUserAvatar } from "~/constant";

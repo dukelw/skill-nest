@@ -1,4 +1,4 @@
-import { TextInput, TextInputProps } from "flowbite-react";
+import { TextInput, TextInputProps } from "~/components/ui/primitives";
 
 type LewisTextInputProps = TextInputProps & {
   textColor?: "white" | "black" | "light" | "default";
@@ -11,11 +11,11 @@ const LewisTextInput = ({
   const customTextInputTheme = {
     field: {
       input: {
-        base: "block w-full border focus:outline-none focus:ring-1 p-2.5 text-sm rounded-lg",
+        base: "block w-full border focus:outline-none focus:ring-1 px-3 py-2 text-sm rounded-lg",
         colors: {
           light: "!text-color dark:!text-gray-300",
           default:
-            "block w-full border focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 border-emerald-100 bg-white/90 text-color placeholder-gray-400 focus:border-emerald-500 focus:ring-emerald-100 p-3 text-sm rounded-xl shadow-sm transition-all",
+            "block w-full border focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 border-slate-200 bg-white text-color placeholder-gray-400 focus:border-emerald-600 focus:ring-emerald-100 px-3 py-2.5 text-sm rounded-lg shadow-sm transition-all",
           white: "!text-white",
           black: "!text-black",
         },

@@ -9,8 +9,8 @@ import {
   Button,
   Label,
   Spinner,
-} from "flowbite-react";
-import { toast } from "react-toastify";
+} from "~/components/ui/primitives";
+import { toast } from "sonner";
 import { courseService } from "~/services/courseService";
 import LewisTextInput from "~/components/Partial/LewisTextInput";
 

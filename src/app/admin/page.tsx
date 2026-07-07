@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card } from "flowbite-react";
+import { Card } from "~/components/ui/primitives";
 import {
   BarChart,
   Bar,

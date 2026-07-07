@@ -8,12 +8,12 @@ import {
   ModalFooter,
   ModalHeader,
   Spinner,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import LewisTextInput from "~/components/Partial/LewisTextInput";
 import LewisButton from "~/components/Partial/LewisButton";
 import { uploadService } from "~/services/uploadService";
 import { courseService } from "~/services/courseService";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useAuthStore } from "~/store/authStore";
 import { Course } from "~/models/Course";
 import Image from "next/image";

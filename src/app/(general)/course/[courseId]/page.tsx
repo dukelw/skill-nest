@@ -7,7 +7,7 @@ import {
   BreadcrumbItem,
   Dropdown,
   DropdownItem,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import { useCourseStore } from "~/store/courseStore";
 import { useAuthStore } from "~/store/authStore";
 import { courseService } from "~/services/courseService";

@@ -7,7 +7,7 @@ import {
   useCall,
   useCallStateHooks,
 } from "@stream-io/video-react-sdk";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import LewisButton from "../Partial/LewisButton";
 
 const OFF_IMAGE_URL =

@@ -1,4 +1,4 @@
-import { Breadcrumb, BreadcrumbItem } from "flowbite-react";
+import { Breadcrumb, BreadcrumbItem } from "~/components/ui/primitives";
 import CallList from "~/components/Meeting/CallList";
 
 function MeetingRecord() {

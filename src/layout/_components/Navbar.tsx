@@ -1,7 +1,7 @@
 import {
   Dropdown,
   DropdownItem,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import { useTranslation } from "react-i18next";
 import { authService } from "~/services/authService";
 // import { useAuth } from "~/context/AuthContext";
@@ -9,7 +9,7 @@ import { useAuthStore } from "~/store/authStore";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { classroomService } from "~/services/classroomService";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { uploadService } from "~/services/uploadService";
 import useUserAnnouncements from "~/hooks/useUserAnnouncements";
 import SelectActionModal from "./Modal/SelectActionModal";

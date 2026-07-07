@@ -1,8 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:wght@100;300;400;500;700;900&display=swap');
 @import "tailwindcss";
-@plugin "flowbite-react/plugin/tailwindcss";
-@source "../../.flowbite-react/class-list.json";
 
 :root {
   --background: #f6fbf9;
@@ -145,10 +143,21 @@ body {
 
 button,
 a,
-input,
 select,
 textarea {
   -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a,
+label[for],
+input[type="checkbox"],
+input[type="radio"],
+input[type="file"],
+select,
+summary,
+[role="button"] {
+  cursor: pointer;
 }
 
 @layer components {
@@ -176,10 +185,10 @@ textarea {
   }
 
   .card-polished {
-    border: 1px solid var(--border-soft);
-    border-radius: 18px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 14px;
     background: var(--surface-strong);
-    box-shadow: 0 16px 42px rgba(8, 55, 45, 0.1);
+    box-shadow: 0 12px 34px rgba(8, 55, 45, 0.08);
     transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
   }
 
@@ -187,6 +196,30 @@ textarea {
     border-color: rgba(16, 168, 111, 0.3);
     box-shadow: var(--shadow-lift);
     transform: translateY(-3px);
+  }
+
+  .modal-titlebar {
+    @apply border-b border-slate-100 bg-white px-6 py-4;
+  }
+
+  .modal-body-pad {
+    @apply space-y-4 px-6 py-5;
+  }
+
+  .modal-footer-actions {
+    @apply justify-end gap-2 border-t border-slate-100 bg-slate-50/70 px-6 py-4;
+  }
+
+  .file-input-card {
+    @apply flex w-full items-center justify-between gap-3 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-600 transition hover:border-emerald-400 hover:bg-emerald-50/50;
+  }
+
+  .classroom-card {
+    @apply block overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-950/10;
+  }
+
+  .detail-panel {
+    @apply rounded-xl border border-slate-200 bg-white shadow-sm;
   }
 
   .auth-stage {

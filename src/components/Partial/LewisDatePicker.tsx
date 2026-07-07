@@ -1,6 +1,6 @@
 "use client";
 
-import { Datepicker, DatepickerProps } from "flowbite-react";
+import { Datepicker, DatepickerProps } from "~/components/ui/primitives";
 
 type LewisDatepickerProps = DatepickerProps & {
   themeColor?: string;

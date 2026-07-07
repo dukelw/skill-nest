@@ -1,6 +1,6 @@
 "use client";
 
-import { Drawer } from "flowbite-react";
+import { Drawer } from "~/components/ui/primitives";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
 import { usePathname } from "next/navigation";

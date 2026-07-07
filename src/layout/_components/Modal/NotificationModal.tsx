@@ -1,6 +1,6 @@
 "use client";
 
-import { Modal, ModalBody, ModalHeader, Avatar } from "flowbite-react";
+import { Modal, ModalBody, ModalHeader, Avatar } from "~/components/ui/primitives";
 import { BellIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";

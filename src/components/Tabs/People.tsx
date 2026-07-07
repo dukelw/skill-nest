@@ -7,7 +7,7 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import { useClassroomStore } from "~/store/classroomStore";
 import User from "~/models/User";
 import useUserStore from "~/store/userStore";

@@ -13,7 +13,7 @@ import {
   Badge,
   Breadcrumb,
   BreadcrumbItem,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 
 import LewisButton from "~/components/Partial/LewisButton";
 import LewisTextInput from "~/components/Partial/LewisTextInput";

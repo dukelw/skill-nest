@@ -1,11 +1,10 @@
 "use client";
 
-import { ThemeModeScript } from "flowbite-react";
 import { useTranslation } from "react-i18next";
 import "./globals.css";
 import "../i18n/client";
 import { useEffect } from "react";
-import { ToastContainer } from "react-toastify";
+import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,
@@ -22,10 +21,9 @@ export default function RootLayout({
   return (
     <html className="w-full scroll-smooth" lang={i18n.language} suppressHydrationWarning>
       <head>
-        <ThemeModeScript />
       </head>
       <body className="min-h-screen font-sans text-color flex">
-        <ToastContainer />
+        <Toaster richColors position="top-right" closeButton />
         {children}
       </body>
     </html>

@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import {
-  Card,
-  Badge,
   Spinner,
   Breadcrumb,
   BreadcrumbItem,
-} from "flowbite-react";
+} from "~/components/ui/primitives";
 import { classroomService } from "~/services/classroomService";
 import { useAuthStore } from "~/store/authStore";
 import { useClassroomStore } from "~/store/classroomStore";
@@ -77,43 +76,42 @@ export default function Teaching() {
       </Breadcrumb>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {teacherClassrooms?.map((classroom) => (
-          <Link href={`/teaching/${classroom.id}`} key={classroom.id}>
-            <Card
-              className="w-full hover:cursor-pointer transition-transform hover:scale-[1.02]"
-              imgAlt={`${classroom.name} thumbnail`}
-              imgSrc={
-                classroom.thumbnail ||
-                "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg"
-              }
-            >
-              <div className="flex items-center justify-between">
-                <h5 className="text-xl font-semibold text-green-600 dark:text-green-600 truncate max-w-[80%]">
+          <Link
+            href={`/teaching/${classroom.id}`}
+            key={classroom.id}
+            className="classroom-card group"
+          >
+            <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
+              <Image
+                src={
+                  classroom.thumbnail ||
+                  "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg"
+                }
+                alt={`${classroom.name} thumbnail`}
+                fill
+                className="object-cover transition duration-300 group-hover:scale-105"
+              />
+              <div className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-xs font-semibold text-slate-700 shadow-sm">
+                <Users className="h-3.5 w-3.5 text-emerald-700" />
+                {classroom.members?.length || 0}
+              </div>
+            </div>
+            <div className="space-y-3 p-4">
+              <div>
+                <h5 className="truncate text-base font-semibold text-slate-950">
                   {classroom.name}
                 </h5>
-
-                <Badge
-                  color="info"
-                  className="ml-2 inline-flex items-center gap-1"
-                >
-                  <Users size={14} className="inline-block" />
-                  <span className="inline-block ml-1">
-                    {classroom.members?.length || 0}
-                  </span>
-                </Badge>
+                <p className="mt-1 text-xs font-medium uppercase tracking-wide text-emerald-700">
+                  {classroom.code}
+                </p>
               </div>
-
-              <div className="flex items-center gap-3 mt-3">
-                <div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
-                    <strong>{t("teachingPage.code")}:</strong> {classroom.code}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {t("teachingPage.created")}:{" "}
-                    {new Date(classroom.createdAt).toLocaleDateString("en-GB")}
-                  </p>
-                </div>
+              <div className="flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500">
+                <span>{t("teachingPage.created")}</span>
+                <span className="font-medium text-slate-700">
+                  {new Date(classroom.createdAt).toLocaleDateString("en-GB")}
+                </span>
               </div>
-            </Card>
+            </div>
           </Link>
         ))}
       </div>

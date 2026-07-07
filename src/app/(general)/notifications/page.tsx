@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
-import { Avatar, Button } from "flowbite-react";
+import { Avatar, Button } from "~/components/ui/primitives";
 import LewisPagination from "~/components/Partial/LewisPagination";
 import useUserAnnouncements from "~/hooks/useUserAnnouncements";
 import EmptyState from "~/components/EmptyState";

@@ -1,4 +1,4 @@
-import { Modal, ModalHeader, ModalBody } from "flowbite-react";
+import { Modal, ModalHeader, ModalBody } from "~/components/ui/primitives";
 import { KeyRound, PlusCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import LewisButton from "~/components/Partial/LewisButton";
