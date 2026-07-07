@@ -21,6 +21,9 @@ export default function RootLayout({
   return (
     <html className="w-full scroll-smooth" lang={i18n.language} suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/logo-small.png" />
+        <link rel="apple-touch-icon" href="/logo-small.png" />
+        <meta name="theme-color" content="#0d3f2a" />
       </head>
       <body className="min-h-screen font-sans text-color flex">
         <Toaster richColors position="top-right" closeButton />

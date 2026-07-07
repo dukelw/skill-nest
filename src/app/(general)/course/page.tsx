@@ -9,7 +9,6 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
-  Card,
   Badge,
   Breadcrumb,
   BreadcrumbItem,
@@ -20,7 +19,7 @@ import LewisTextInput from "~/components/Partial/LewisTextInput";
 import { courseService } from "~/services/courseService";
 import { useAuthStore } from "~/store/authStore";
 import { uploadService } from "~/services/uploadService";
-import { BookOpen, LockKeyhole, Users } from "lucide-react";
+import { BookOpen, CalendarDays, Clock, GraduationCap, LockKeyhole, Users } from "lucide-react";
 import { Course } from "~/models/Course";
 import CourseCreateModal from "./_components/CourseModal";
 import { formatDuration } from "~/utils/format";
@@ -49,12 +48,9 @@ export default function CourseOverview() {
 
     const fetchClasses = async () => {
       try {
-        const [studentRes, teacherRes] = await Promise.all([
-          courseService.getAll(),
-          courseService.getAll(),
-        ]);
-        setNewCourses(studentRes);
-        setPopularCourses(teacherRes);
+        const courses = await courseService.getAll();
+        setNewCourses(courses);
+        setPopularCourses(courses);
       } catch (err) {
         console.error("Error loading classes", err);
       } finally {
@@ -115,50 +111,59 @@ export default function CourseOverview() {
 
   const renderClassCards = (classes: Course[], prefix: string) =>
     classes?.map((course) => (
-      <Link href={`/${prefix}/${course.id}`} key={course.id}>
-        <Card
-          className="card-polished w-full overflow-hidden hover:cursor-pointer"
-          imgAlt={`${course.title} thumbnail`}
-          imgSrc={
-            course.thumbnail ||
-            "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg"
-          }
-        >
-          <h5 className="text-xl font-semibold text-emerald-800 truncate">
+      <Link
+        href={`/${prefix}/${course.id}`}
+        key={`${prefix}-${course.id}`}
+        className="group flex h-full min-h-[430px] flex-col overflow-hidden rounded-xl border border-emerald-100 bg-[#f7fbf7] shadow-sm transition hover:-translate-y-1 hover:border-emerald-200 hover:shadow-md"
+      >
+        <div className="relative aspect-[16/9] overflow-hidden bg-emerald-50">
+          <Image
+            src={
+              course.thumbnail ||
+              "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg"
+            }
+            alt={`${course.title} thumbnail`}
+            fill
+            className="object-cover transition duration-300 group-hover:scale-105"
+          />
+          <Badge className="absolute right-3 top-3 gap-1 bg-white/95 text-slate-700 shadow-sm">
+            <Users size={14} />
+            <span>{course.totalMembers ?? course.members?.length ?? 0}</span>
+          </Badge>
+        </div>
+        <div className="flex flex-1 flex-col p-5">
+          <div className="flex items-center gap-2">
+            <span className="rounded-full border border-emerald-200 bg-[#eef7ef] px-2.5 py-1 text-xs font-extrabold uppercase tracking-wide text-emerald-800">
+              {course.level || "All levels"}
+            </span>
+            <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-bold text-slate-600">
+              #{course.id}
+            </span>
+          </div>
+
+          <h5 className="mt-4 min-h-[58px] line-clamp-2 text-[20px] font-extrabold leading-7 text-slate-950">
             {course.title}
           </h5>
 
-          <p className="text-sm">{course.description}</p>
-          <div className="flex flex-col gap-1 text-sm text-gray-600">
-            <p>
-              <strong>Code:</strong> {course.id}
-            </p>
-            <p>
-              <strong>Created:</strong>{" "}
-              {new Date(course.createdAt).toLocaleDateString("en-GB")}
-            </p>
-            {course.totalLessons !== null && (
-              <p>
-                <strong>Lessons:</strong> {course.totalLessons}
-              </p>
-            )}
-            <div className="flex items-center justify-between">
-              {course.totalDuration !== null && (
-                <p>
-                  <strong>Duration:</strong>{" "}
-                  {formatDuration(course.totalDuration)}
-                </p>
-              )}
-              <Badge
-                color="success"
-                className="ml-2 flex-nowrap items-center gap-1 rounded-full"
-              >
-                <Users size={14} className="inline-block" />
-                <span className="inline-block ml-1">{course.totalMembers}</span>
-              </Badge>
-            </div>
+          <p className="mt-2 min-h-[48px] line-clamp-2 text-sm leading-6 text-slate-600">
+            {course.description || "No description has been added for this course yet."}
+          </p>
+
+          <div className="mt-auto grid grid-cols-2 gap-2 border-t border-emerald-100 pt-4 text-xs font-bold text-slate-600">
+            <span className="flex items-center gap-2 rounded-lg bg-[#eef7ef] px-2.5 py-2">
+              <GraduationCap className="h-3.5 w-3.5 text-emerald-700" />
+              {course.totalLessons ?? course.lessons?.length ?? 0} lessons
+            </span>
+            <span className="flex items-center gap-2 rounded-lg bg-[#eef7ef] px-2.5 py-2">
+              <Clock className="h-3.5 w-3.5 text-emerald-700" />
+              {course.totalDuration ? formatDuration(course.totalDuration) : "0m"}
+            </span>
+            <span className="col-span-2 flex items-center gap-2 rounded-lg bg-[#eef7ef] px-2.5 py-2">
+              <CalendarDays className="h-3.5 w-3.5 text-emerald-700" />
+              Created {new Date(course.createdAt).toLocaleDateString("en-GB")}
+            </span>
           </div>
-        </Card>
+        </div>
       </Link>
     ));
 

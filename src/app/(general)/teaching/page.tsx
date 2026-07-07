@@ -116,7 +116,7 @@ export default function Teaching() {
           <Link
             href={`/teaching/${classroom.id}`}
             key={classroom.id}
-            className="classroom-card group"
+            className="classroom-card group flex min-h-[348px] flex-col"
           >
             <div className="relative aspect-video overflow-hidden bg-slate-100">
               <Image
@@ -133,16 +133,24 @@ export default function Teaching() {
                 {classroom.members?.length || 0}
               </div>
             </div>
-            <div className="space-y-4 p-5">
+            <div className="flex flex-1 flex-col space-y-4 p-5">
               <div>
-                <h5 className="line-clamp-2 text-[18px] font-bold text-slate-950">
+                <h5 className="min-h-[54px] line-clamp-2 text-[18px] font-bold leading-7 text-slate-950">
                   {classroom.name}
                 </h5>
                 <p className="mt-2 inline-flex rounded-full border border-emerald-100 bg-[#eaf6ec] px-2.5 py-1 text-[13px] font-bold uppercase tracking-wide text-emerald-700">
                   {classroom.code}
                 </p>
               </div>
-              <div className="flex items-center justify-between border-t border-emerald-100 pt-3 text-[13px] text-slate-600">
+              <div className="grid grid-cols-2 gap-2 text-[12px] font-bold text-slate-600">
+                <span className="rounded-lg bg-[#eef7ef] px-2.5 py-2">
+                  Teaching space
+                </span>
+                <span className="rounded-lg bg-[#eef7ef] px-2.5 py-2 text-right">
+                  {classroom.members?.length || 0} members
+                </span>
+              </div>
+              <div className="mt-auto flex items-center justify-between border-t border-emerald-100 pt-3 text-[13px] text-slate-600">
                 <span>{t("teachingPage.created")}</span>
                 <span className="font-medium text-slate-700">
                   {new Date(classroom.createdAt).toLocaleDateString("en-GB")}

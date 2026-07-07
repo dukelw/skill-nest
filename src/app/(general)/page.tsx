@@ -16,6 +16,7 @@ import {
 
 import LewisButton from "~/components/Partial/LewisButton";
 import LewisTextInput from "~/components/Partial/LewisTextInput";
+import LoadingButton from "~/components/Partial/LoadingButton";
 import { classroomService } from "~/services/classroomService";
 import { useAuthStore } from "~/store/authStore";
 import Classroom from "~/models/Classroom";
@@ -35,11 +36,16 @@ export default function HomePage() {
   const [modalType, setModalType] = useState<"create" | "join" | null>(null);
   const [joinCode, setJoinCode] = useState("");
   const [file, setFile] = useState<File | null>(null); // State to hold file
+  const [submittingClassroom, setSubmittingClassroom] = useState(false);
 
   useEffect(() => {
     if (!user?.id) return;
 
-    const fetchClasses = async () => {
+    fetchClasses();
+  }, [user?.id]);
+
+  const fetchClasses = async () => {
+    if (!user?.id) return;
       try {
         const [studentRes, teacherRes] = await Promise.all([
           classroomService.getStudentRole(user?.id),
@@ -54,9 +60,6 @@ export default function HomePage() {
       }
     };
 
-    fetchClasses();
-  }, [user?.id]);
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFile(e.target.files[0]);
@@ -68,31 +71,42 @@ export default function HomePage() {
   };
 
   const handleSubmit = async () => {
-    if (modalType === "create") {
-      let fileUrl = "";
-      if (file) {
-        fileUrl = await uploadService.uploadFile(file);
-      }
-      const res = await classroomService.create({
-        ...form,
-        creatorId: user!.id,
-        thumbnail: fileUrl,
-      });
-      if (res) {
-        setForm({
-          name: "",
-          code: "",
-          thumbnail: "",
+    if (!user || submittingClassroom) return;
+    setSubmittingClassroom(true);
+    try {
+      if (modalType === "create") {
+        let fileUrl = "";
+        if (file) {
+          fileUrl = await uploadService.uploadFile(file);
+        }
+        const res = await classroomService.create({
+          ...form,
+          creatorId: user.id,
+          thumbnail: fileUrl,
         });
+        if (res) {
+          setForm({
+            name: "",
+            code: "",
+            thumbnail: "",
+          });
+          setFile(null);
+          await fetchClasses();
+          toast.success("Classroom created");
+          setModalType(null);
+          router.replace("/teaching");
+        }
+      } else {
+        await classroomService.requestToJoinClass(user.id, joinCode);
         setModalType(null);
-        router.replace("/teaching");
+        setJoinCode("");
+        toast.success(`Request to join classroom ${joinCode} successfully`);
       }
-    } else {
-      await classroomService.requestToJoinClass(user!.id, joinCode);
-      setModalType(null);
-      toast.success(`Request to join classroom ${joinCode} successfully`);
+    } catch (error: any) {
+      toast.error(error?.message || "Action failed");
+    } finally {
+      setSubmittingClassroom(false);
     }
-    setModalType(null);
   };
 
   if (!user) {
@@ -217,7 +231,7 @@ export default function HomePage() {
       <Link
         href={`/${prefix}/${classroom.id}`}
         key={classroom.id}
-        className="classroom-card group"
+        className="classroom-card group flex min-h-[330px] flex-col"
       >
         <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
           <Image
@@ -234,16 +248,24 @@ export default function HomePage() {
             {classroom.members?.length || 0}
           </div>
         </div>
-        <div className="space-y-3 p-4">
+        <div className="flex flex-1 flex-col space-y-3 p-4">
           <div>
-            <h5 className="truncate text-base font-semibold text-slate-950">
+            <h5 className="min-h-[48px] line-clamp-2 text-base font-bold leading-6 text-slate-950">
               {classroom.name}
             </h5>
             <p className="mt-1 text-xs font-medium uppercase tracking-wide text-emerald-700">
               {classroom.code}
             </p>
           </div>
-          <div className="flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500">
+          <div className="grid grid-cols-2 gap-2 text-[12px] font-bold text-slate-600">
+            <span className="rounded-lg bg-[#eef7ef] px-2.5 py-2">
+              {prefix === "teaching" ? "Teaching" : "Learning"}
+            </span>
+            <span className="rounded-lg bg-[#eef7ef] px-2.5 py-2 text-right">
+              {classroom.members?.length || 0} members
+            </span>
+          </div>
+          <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500">
             <span>Created</span>
             <span className="font-medium text-slate-700">
               {new Date(classroom.createdAt).toLocaleDateString("en-GB")}
@@ -329,7 +351,7 @@ export default function HomePage() {
       )}
 
       {/* Create modal */}
-      <Modal show={modalType === "create"} onClose={() => setModalType(null)} size="lg">
+      <Modal show={modalType === "create"} onClose={() => !submittingClassroom && setModalType(null)} size="lg">
         <ModalHeader className="modal-titlebar">
           <div>
             <h2 className="text-base font-semibold text-slate-950">
@@ -347,12 +369,14 @@ export default function HomePage() {
             value={form.name}
             onChange={handleChange}
             className="mb-4"
+            disabled={submittingClassroom}
           />
           <LewisTextInput
             name="code"
             placeholder={t("classroomCode")}
             value={form.code}
             onChange={handleChange}
+            disabled={submittingClassroom}
           />
           <label className="file-input-card">
             <span className="flex items-center gap-2">
@@ -375,19 +399,22 @@ export default function HomePage() {
               accept="image/*"
               onChange={handleFileChange}
               className="sr-only"
+              disabled={submittingClassroom}
             />
           </label>
         </ModalBody>
         <ModalFooter className="modal-footer-actions">
-          <LewisButton variant="outlined" onClick={() => setModalType(null)}>
+          <LewisButton variant="outlined" onClick={() => setModalType(null)} disabled={submittingClassroom}>
             {t("cancel")}
           </LewisButton>
-          <LewisButton onClick={handleSubmit}>{t("create")}</LewisButton>
+          <LoadingButton onClick={handleSubmit} loading={submittingClassroom} loadingText="Creating...">
+            {t("create")}
+          </LoadingButton>
         </ModalFooter>
       </Modal>
 
       {/* Join modal */}
-      <Modal show={modalType === "join"} onClose={() => setModalType(null)} size="md">
+      <Modal show={modalType === "join"} onClose={() => !submittingClassroom && setModalType(null)} size="md">
         <ModalHeader className="modal-titlebar">
           <div>
             <h2 className="text-base font-semibold text-slate-950">
@@ -404,13 +431,16 @@ export default function HomePage() {
             placeholder={t("classroomCode")}
             value={joinCode}
             onChange={(e) => setJoinCode(e.target.value)}
+            disabled={submittingClassroom}
           />
         </ModalBody>
         <ModalFooter className="modal-footer-actions">
-          <LewisButton variant="outlined" onClick={() => setModalType(null)}>
+          <LewisButton variant="outlined" onClick={() => setModalType(null)} disabled={submittingClassroom}>
             {t("cancel")}
           </LewisButton>
-          <LewisButton onClick={handleSubmit}>{t("submit")}</LewisButton>
+          <LoadingButton onClick={handleSubmit} loading={submittingClassroom} loadingText="Sending...">
+            {t("submit")}
+          </LoadingButton>
         </ModalFooter>
       </Modal>
     </div>

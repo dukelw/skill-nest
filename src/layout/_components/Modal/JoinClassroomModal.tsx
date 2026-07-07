@@ -2,6 +2,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from "~/components/ui/prim
 import { useTranslation } from "react-i18next";
 import LewisButton from "~/components/Partial/LewisButton";
 import LewisTextInput from "~/components/Partial/LewisTextInput";
+import LoadingButton from "~/components/Partial/LoadingButton";
 
 interface Props {
   show: boolean;
@@ -9,6 +10,7 @@ interface Props {
   joinCode: string;
   setJoinCode: (value: string) => void;
   onSubmit: () => void;
+  loading?: boolean;
 }
 
 export default function JoinClassroomModal({
@@ -17,11 +19,12 @@ export default function JoinClassroomModal({
   joinCode,
   setJoinCode,
   onSubmit,
+  loading = false,
 }: Props) {
   const { t } = useTranslation();
 
   return (
-    <Modal show={show} onClose={onClose} size="md">
+    <Modal show={show} onClose={() => !loading && onClose()} size="md">
       <ModalHeader className="modal-titlebar">
         <div>
           <h2 className="text-base font-semibold text-slate-950">
@@ -38,13 +41,16 @@ export default function JoinClassroomModal({
           placeholder={t("classroomCode")}
           value={joinCode}
           onChange={(e) => setJoinCode(e.target.value)}
+          disabled={loading}
         />
       </ModalBody>
       <ModalFooter className="modal-footer-actions">
-        <LewisButton variant="outlined" onClick={onClose}>
+        <LewisButton variant="outlined" onClick={onClose} disabled={loading}>
           {t("cancel")}
         </LewisButton>
-        <LewisButton onClick={onSubmit}>{t("submit")}</LewisButton>
+        <LoadingButton onClick={onSubmit} loading={loading} loadingText="Sending...">
+          {t("submit")}
+        </LoadingButton>
       </ModalFooter>
     </Modal>
   );

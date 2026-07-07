@@ -8,7 +8,6 @@ import { userService } from "~/services/userService";
 import { useAuthStore } from "~/store/authStore";
 import LewisButton from "~/components/Partial/LewisButton";
 import { uploadService } from "~/services/uploadService";
-import { authService } from "~/services/authService";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { CalendarDays, Camera, Mail, Phone, ShieldCheck, UserRound } from "lucide-react";
@@ -52,8 +51,6 @@ export default function ProfilePage() {
         avatar: fileUrl,
       });
 
-      const res = await authService.getProfile();
-      setUser(res);
       setUser(updated);
       setEditing(false);
       toast.success("Profile updated");

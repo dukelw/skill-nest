@@ -75,7 +75,7 @@ const AppNavbar = () => {
   return (
     <Navbar className="app-header h-16 bg-white text-slate-900" fluid>
       <Image
-        src="/logo.png"
+        src="/logo-small.png"
         alt="Skill Nest Logo"
         className="block md:hidden"
         width={40}
@@ -88,14 +88,12 @@ const AppNavbar = () => {
         <div className="flex items-center space-x-2">
           <NavbarBrand href="/">
             <Image
-              src="/logo.png"
+              src="/logo-big.png"
               alt="Skill Nest Logo"
-              width={40}
-              height={40}
+              width={128}
+              height={36}
+              className="h-9 w-auto object-contain"
             />
-            <span className="ml-2 self-center whitespace-nowrap text-sm font-bold uppercase tracking-wide text-slate-900">
-              {t("home")}
-            </span>
           </NavbarBrand>
         </div>
       </NavbarCollapse>

@@ -126,8 +126,7 @@ export default function SignIn() {
             href="/"
             className="inline-flex items-center gap-3 rounded-full border border-emerald-100 bg-white px-4 py-2 text-sm font-medium shadow-sm transition hover:bg-emerald-50"
           >
-            <Image src="/logo.png" alt="Skill Nest" width={32} height={32} />
-            Skill Nest
+            <Image src="/logo-big.png" alt="Skill Nest" width={132} height={36} className="h-9 w-auto object-contain" />
           </Link>
           <div className="mt-12 max-w-xl">
             <p className="text-sm font-semibold uppercase text-emerald-700">
@@ -154,7 +153,7 @@ export default function SignIn() {
 
           <CardHeader className="mt-7 text-center">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-100 bg-[#f5f7f2] shadow-sm">
-              <Image src="/logo.png" alt="Skill Nest" width={44} height={44} />
+              <Image src="/logo-small.png" alt="Skill Nest" width={44} height={44} />
             </div>
             <div>
               <p className="section-kicker">Welcome back</p>

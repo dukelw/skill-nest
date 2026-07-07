@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Upload } from "lucide-react";
 import LewisButton from "~/components/Partial/LewisButton";
 import LewisTextInput from "~/components/Partial/LewisTextInput";
+import LoadingButton from "~/components/Partial/LoadingButton";
 
 interface Props {
   show: boolean;
@@ -11,6 +12,7 @@ interface Props {
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: () => void;
   form: { name: string; code: string; thumbnail: string };
+  loading?: boolean;
 }
 
 export default function CreateClassroomModal({
@@ -20,11 +22,12 @@ export default function CreateClassroomModal({
   onFileChange,
   onSubmit,
   form,
+  loading = false,
 }: Props) {
   const { t } = useTranslation();
 
   return (
-    <Modal show={show} onClose={onClose} size="lg">
+    <Modal show={show} onClose={() => !loading && onClose()} size="lg">
       <ModalHeader className="modal-titlebar">
         <div>
           <h2 className="text-base font-semibold text-slate-950">
@@ -42,12 +45,14 @@ export default function CreateClassroomModal({
           value={form.name}
           onChange={onChange}
           className="mb-4"
+          disabled={loading}
         />
         <LewisTextInput
           name="code"
           placeholder={t("classroomCode")}
           value={form.code}
           onChange={onChange}
+          disabled={loading}
         />
         <label className="file-input-card">
           <span className="flex items-center gap-2">
@@ -70,14 +75,17 @@ export default function CreateClassroomModal({
             accept="image/*"
             onChange={onFileChange}
             className="sr-only"
+            disabled={loading}
           />
         </label>
       </ModalBody>
       <ModalFooter className="modal-footer-actions">
-        <LewisButton variant="outlined" onClick={onClose}>
+        <LewisButton variant="outlined" onClick={onClose} disabled={loading}>
           {t("cancel")}
         </LewisButton>
-        <LewisButton onClick={onSubmit}>{t("create")}</LewisButton>
+        <LoadingButton onClick={onSubmit} loading={loading} loadingText="Creating...">
+          {t("create")}
+        </LoadingButton>
       </ModalFooter>
     </Modal>
   );

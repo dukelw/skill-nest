@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import { classroomService } from "~/services/classroomService";
 import { toast } from "sonner";
 import { uploadService } from "~/services/uploadService";
+import { useClassroomStore } from "~/store/classroomStore";
 import useUserAnnouncements from "~/hooks/useUserAnnouncements";
 import SelectActionModal from "./Modal/SelectActionModal";
 import CreateClassroomModal from "./Modal/CreateClassroomModal";
@@ -28,6 +29,7 @@ const AppNavbar = () => {
   const [modalType, setModalType] = useState<"create" | "join" | null>(null);
   const [joinCode, setJoinCode] = useState("");
   const [file, setFile] = useState<File | null>(null); // State to hold file
+  const [submittingClassroom, setSubmittingClassroom] = useState(false);
   const [form, setForm] = useState({
     name: "",
     code: "",
@@ -71,34 +73,47 @@ const AppNavbar = () => {
   };
 
   const handleSubmit = async () => {
-    if (modalType === "create") {
-      let fileUrl = "";
-      if (file) {
-        fileUrl = await uploadService.uploadFile(file);
-      }
-      const res = await classroomService.create({
-        ...form,
-        creatorId: user!.id,
-        thumbnail: fileUrl,
-      });
-      if (res) {
-        setForm({
-          name: "",
-          code: "",
-          thumbnail: "",
+    if (!user || submittingClassroom) return;
+    setSubmittingClassroom(true);
+    try {
+      if (modalType === "create") {
+        let fileUrl = "";
+        if (file) {
+          fileUrl = await uploadService.uploadFile(file);
+        }
+        const res = await classroomService.create({
+          ...form,
+          creatorId: user.id,
+          thumbnail: fileUrl,
         });
+        if (res) {
+          setForm({
+            name: "",
+            code: "",
+            thumbnail: "",
+          });
+          setFile(null);
+          const teacherClasses = await classroomService.getTeacherRole(user.id);
+          setTeacherClassrooms(teacherClasses);
+          toast.success("Classroom created");
+          setModalType(null);
+          router.replace("/teaching");
+        }
+      } else {
+        await classroomService.requestToJoinClass(user.id, joinCode);
         setModalType(null);
-        router.replace("/teaching");
+        setJoinCode("");
+        toast.success(`Request to join classroom ${joinCode} successfully`);
       }
-    } else {
-      await classroomService.requestToJoinClass(user!.id, joinCode);
-      setModalType(null);
-      toast.success(`Request to join classroom ${joinCode} successfully`);
+    } catch (error: any) {
+      toast.error(error?.message || "Action failed");
+    } finally {
+      setSubmittingClassroom(false);
     }
-    setModalType(null);
   };
 
   const { user, setUser, setTokens } = useAuthStore();
+  const { setTeacherClassrooms } = useClassroomStore();
 
   const handleLogout = async () => {
     await authService.logout();
@@ -198,6 +213,7 @@ const AppNavbar = () => {
         onFileChange={handleFileChange}
         onSubmit={handleSubmit}
         form={form}
+        loading={submittingClassroom}
       />
 
       <JoinClassroomModal
@@ -206,6 +222,7 @@ const AppNavbar = () => {
         joinCode={joinCode}
         setJoinCode={setJoinCode}
         onSubmit={handleSubmit}
+        loading={submittingClassroom}
       />
 
       <NotificationModal

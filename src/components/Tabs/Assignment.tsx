@@ -16,6 +16,7 @@ import { classroomService } from "~/services/classroomService";
 import { useClassroomStore } from "~/store/classroomStore";
 import { AssignmentType } from "~/models/AssignmentType";
 import LewisButton from "../Partial/LewisButton";
+import LoadingButton from "../Partial/LoadingButton";
 import { useAuthStore } from "~/store/authStore";
 import { submissionService } from "~/services/submissionService";
 import Assignment from "~/models/Assignment";
@@ -36,6 +37,7 @@ export default function Assignments() {
   const [description, setDescription] = useState<string>("");
   const [dueDate, setDueDate] = useState<string>("");
   const [file, setFile] = useState<File | null>(null); // State to hold file
+  const [creatingAssignment, setCreatingAssignment] = useState(false);
   const { classroomId } = useParams();
   const { classroom, setClassroom } = useClassroomStore();
   const { user } = useAuthStore();
@@ -120,31 +122,36 @@ export default function Assignments() {
 
   // Handle creating assignment
   const handleCreateAssignment = async () => {
-    let fileUrl = "";
+    if (creatingAssignment) return;
+    setCreatingAssignment(true);
+    try {
+      let fileUrl = "";
 
-    // If a file is selected, upload it first
-    if (file) {
-      fileUrl = await uploadService.uploadFile(file); // Upload the file and get the URL
-    }
+      if (file) {
+        fileUrl = await uploadService.uploadFile(file);
+      }
 
-    const newAssignmentData = {
-      title,
-      description,
-      dueDate: new Date(dueDate),
-      classroomId: Number(classroomId),
-      type: assignmentType,
-      fileUrl, // Include the uploaded file URL
-    };
+      const newAssignmentData = {
+        title,
+        description,
+        dueDate: new Date(dueDate),
+        classroomId: Number(classroomId),
+        type: assignmentType,
+        fileUrl,
+      };
 
-    const res = await assignmentService.createAssignment(newAssignmentData);
+      const res = await assignmentService.createAssignment(newAssignmentData);
 
-    if (res) {
-      handleGetClassroomDetail();
-      setIsModalOpen(false);
-      setTitle("");
-      setDescription("");
-      setDueDate("");
-      setFile(null); // Clear file after submission
+      if (res) {
+        await handleGetClassroomDetail();
+        setIsModalOpen(false);
+        setTitle("");
+        setDescription("");
+        setDueDate("");
+        setFile(null);
+      }
+    } finally {
+      setCreatingAssignment(false);
     }
   };
 
@@ -702,10 +709,14 @@ export default function Assignments() {
             </Button>
           ) : (
             <>
-              <Button className="bg-green" onClick={handleCreateAssignment}>
+              <LoadingButton
+                loading={creatingAssignment}
+                loadingText="Creating..."
+                onClick={handleCreateAssignment}
+              >
                 {t("create")}
-              </Button>
-              <Button color="gray" onClick={() => setShowTypeSelection(true)}>
+              </LoadingButton>
+              <Button color="gray" onClick={() => setShowTypeSelection(true)} disabled={creatingAssignment}>
                 {t("cancel")}
               </Button>
             </>
