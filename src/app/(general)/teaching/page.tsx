@@ -15,6 +15,8 @@ import { BookOpen, LockKeyhole, Presentation, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import EmptyState from "~/components/EmptyState";
 
+const DEFAULT_CLASSROOM_THUMBNAIL = "/logo-bg.png";
+
 export default function Teaching() {
   const { teacherClassrooms, setTeacherClassrooms } = useClassroomStore();
   const { user } = useAuthStore();
@@ -111,51 +113,49 @@ export default function Teaching() {
         </div>
       </section>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+      <div className="space-y-4">
         {teacherClassrooms?.map((classroom) => (
           <Link
             href={`/teaching/${classroom.id}`}
             key={classroom.id}
-            className="classroom-card group flex min-h-[348px] flex-col"
+            className="group grid overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-md md:grid-cols-[240px_1fr_auto]"
           >
-            <div className="relative aspect-video overflow-hidden bg-slate-100">
+            <div className="relative min-h-44 overflow-hidden bg-slate-100">
               <Image
-                src={
-                  classroom.thumbnail ||
-                  "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg"
-                }
+                src={classroom.thumbnail || DEFAULT_CLASSROOM_THUMBNAIL}
                 alt={`${classroom.name} thumbnail`}
                 fill
                 className="object-cover transition duration-300 group-hover:scale-105"
               />
-              <div className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-xs font-semibold text-slate-700 shadow-sm">
-                <Users className="h-3.5 w-3.5 text-emerald-700" />
-                {classroom.members?.length || 0}
-              </div>
             </div>
-            <div className="flex flex-1 flex-col space-y-4 p-5">
-              <div>
-                <h5 className="min-h-[54px] line-clamp-2 text-[18px] font-bold leading-7 text-slate-950">
+            <div className="flex min-w-0 flex-col justify-between p-5">
+              <div className="min-w-0">
+                <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+                  Teaching command
+                </p>
+                <h5 className="mt-2 line-clamp-2 text-2xl font-extrabold leading-8 text-slate-950">
                   {classroom.name}
                 </h5>
-                <p className="mt-2 inline-flex rounded-full border border-emerald-100 bg-[#eaf6ec] px-2.5 py-1 text-[13px] font-bold uppercase tracking-wide text-emerald-700">
-                  {classroom.code}
+                <p className="mt-2 text-sm font-semibold text-slate-500">
+                  Manage stream, assignments, requests and grades for this class.
                 </p>
               </div>
-              <div className="grid grid-cols-2 gap-2 text-[12px] font-bold text-slate-600">
+              <div className="mt-5 grid max-w-xl grid-cols-3 gap-2 text-[12px] font-bold text-slate-600">
                 <span className="rounded-lg bg-[#eef7ef] px-2.5 py-2">
-                  Teaching space
+                  {classroom.code}
                 </span>
-                <span className="rounded-lg bg-[#eef7ef] px-2.5 py-2 text-right">
+                <span className="rounded-lg bg-[#eef7ef] px-2.5 py-2">
                   {classroom.members?.length || 0} members
                 </span>
-              </div>
-              <div className="mt-auto flex items-center justify-between border-t border-emerald-100 pt-3 text-[13px] text-slate-600">
-                <span>{t("teachingPage.created")}</span>
-                <span className="font-medium text-slate-700">
+                <span className="rounded-lg bg-[#eef7ef] px-2.5 py-2">
                   {new Date(classroom.createdAt).toLocaleDateString("en-GB")}
                 </span>
               </div>
+            </div>
+            <div className="flex items-center justify-end border-t border-emerald-100 bg-[#f2fbf4] p-5 md:border-l md:border-t-0">
+              <span className="rounded-xl bg-emerald-700 px-4 py-2 text-sm font-extrabold text-white shadow-sm">
+                Open workspace
+              </span>
             </div>
           </Link>
         ))}

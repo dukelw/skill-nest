@@ -56,7 +56,7 @@ const Sidebar = ({
   return (
     <aside
       className={`app-sidebar hidden h-screen flex-col overflow-hidden transition-all duration-300 md:flex ${
-        isOpen ? "w-[320px]" : "w-[84px]"
+        isOpen ? "w-[260px]" : "w-[84px]"
       }`}
     >
       <div
@@ -69,9 +69,9 @@ const Sidebar = ({
             <Image
               src="/logo-big.png"
               alt="Skill Nest"
-              width={250}
-              height={82}
-              className="h-14 w-[220px] object-contain object-left"
+              width={190}
+              height={58}
+              className="h-12 w-[150px] object-contain object-left"
               priority
             />
           ) : (

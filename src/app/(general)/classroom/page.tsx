@@ -12,6 +12,8 @@ import { useTranslation } from "react-i18next";
 import Loader from "~/components/Partial/Loader";
 import EmptyState from "~/components/EmptyState";
 
+const DEFAULT_CLASSROOM_THUMBNAIL = "/logo-bg.png";
+
 export default function Classroom() {
   const { studentClassrooms, setStudentClassrooms } = useClassroomStore();
   const { user } = useAuthStore();
@@ -109,26 +111,26 @@ export default function Classroom() {
           <Link
             href={`/classroom/${classroom.id}`}
             key={classroom.id}
-            className="classroom-card group flex min-h-[348px] flex-col"
+            className="group flex min-h-[390px] flex-col overflow-hidden rounded-[22px] border border-emerald-100 bg-white shadow-sm transition hover:-translate-y-1 hover:border-emerald-200 hover:shadow-lg"
           >
-            <div className="relative aspect-video overflow-hidden bg-slate-100">
+            <div className="relative m-3 aspect-[4/3] overflow-hidden rounded-2xl bg-slate-100">
               <Image
-                src={
-                  classroom.thumbnail ||
-                  "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg"
-                }
+                src={classroom.thumbnail || DEFAULT_CLASSROOM_THUMBNAIL}
                 alt={`${classroom.name} thumbnail`}
                 fill
                 className="object-cover transition duration-300 group-hover:scale-105"
               />
-              <div className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-xs font-semibold text-slate-700 shadow-sm">
+              <div className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-xs font-bold text-slate-700 shadow-sm">
                 <Users className="h-3.5 w-3.5 text-emerald-700" />
                 {classroom.members?.length || 0}
               </div>
             </div>
-            <div className="flex flex-1 flex-col space-y-4 p-5">
+            <div className="flex flex-1 flex-col space-y-4 px-5 pb-5 pt-2">
               <div>
-                <h5 className="min-h-[54px] line-clamp-2 text-[18px] font-bold leading-7 text-slate-950">
+                <p className="text-xs font-bold uppercase tracking-wide text-sky-700">
+                  Learning notebook
+                </p>
+                <h5 className="mt-2 min-h-[62px] line-clamp-2 text-[20px] font-extrabold leading-8 text-slate-950">
                   {classroom.name}
                 </h5>
                 <p className="mt-2 inline-flex rounded-full border border-emerald-100 bg-[#eaf6ec] px-2.5 py-1 text-[13px] font-bold uppercase tracking-wide text-emerald-700">

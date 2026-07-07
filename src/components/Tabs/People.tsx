@@ -20,6 +20,7 @@ import LewisButton from "../Partial/LewisButton";
 import { useTranslation } from "react-i18next";
 import { Search, UserPlus, UsersRound } from "lucide-react";
 import EmptyState from "../EmptyState";
+import { toast } from "sonner";
 
 export default function People() {
   const { users, setUsers } = useUserStore();
@@ -70,6 +71,7 @@ export default function People() {
     if (res) {
       handleGetClassroomDetail();
       handleGetRequest();
+      toast.success("Student approved and added to the classroom.");
     }
   };
 
@@ -78,6 +80,7 @@ export default function People() {
     if (res) {
       handleGetClassroomDetail();
       handleGetRequest();
+      toast.success("Join request rejected.");
     }
   };
 

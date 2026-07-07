@@ -44,6 +44,8 @@ export const assignmentService = {
       questionText: string;
       options: string[];
       correctAnswer: string;
+      questionType?: string;
+      showCorrectAnswer?: boolean;
     }[];
   }) {
     const res: AxiosResponse = await api.post(`${API_URL}`, data);

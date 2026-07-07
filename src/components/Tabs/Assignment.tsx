@@ -108,6 +108,15 @@ export default function Assignments() {
     setShowTypeSelection(false);
   };
 
+  const resetAssignmentForm = () => {
+    setTitle("");
+    setDescription("");
+    setDueDate("");
+    setFile(null);
+    setAssignmentType("HOMEWORK");
+    setShowTypeSelection(true);
+  };
+
   const handleGetClassroomDetail = async () => {
     const res = await classroomService.getDetail(Number(classroomId));
     setClassroom(res);
@@ -145,10 +154,7 @@ export default function Assignments() {
       if (res) {
         await handleGetClassroomDetail();
         setIsModalOpen(false);
-        setTitle("");
-        setDescription("");
-        setDueDate("");
-        setFile(null);
+        resetAssignmentForm();
       }
     } finally {
       setCreatingAssignment(false);
@@ -606,7 +612,13 @@ export default function Assignments() {
       </div>
 
       {/* MODAL ADD ASSIGNMENT */}
-      <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Modal
+        show={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          resetAssignmentForm();
+        }}
+      >
         <ModalHeader className="modal-titlebar">
           <div>
             <h2 className="text-base font-bold text-slate-950">
@@ -704,7 +716,14 @@ export default function Assignments() {
         </ModalBody>
         <ModalFooter className="modal-footer-actions">
           {showTypeSelection ? (
-            <Button color="none" className="h-10 rounded-lg border border-emerald-200 bg-[#f7fbf7] px-4 text-sm font-bold text-emerald-800 hover:bg-emerald-50" onClick={() => setIsModalOpen(false)}>
+            <Button
+              color="none"
+              className="h-10 rounded-lg border border-emerald-200 bg-[#f7fbf7] px-4 text-sm font-bold text-emerald-800 hover:bg-emerald-50"
+              onClick={() => {
+                setIsModalOpen(false);
+                resetAssignmentForm();
+              }}
+            >
               {t("cancel")}
             </Button>
           ) : (
@@ -716,7 +735,7 @@ export default function Assignments() {
               >
                 {t("create")}
               </LoadingButton>
-              <Button color="gray" onClick={() => setShowTypeSelection(true)} disabled={creatingAssignment}>
+              <Button color="gray" onClick={resetAssignmentForm} disabled={creatingAssignment}>
                 {t("cancel")}
               </Button>
             </>

@@ -24,11 +24,20 @@ import {
 } from "lucide-react";
 
 const ANSWER_LABELS = ["A", "B", "C", "D"];
+const QUESTION_TYPES = [
+  { value: "SINGLE_CHOICE", label: "Single choice" },
+  { value: "MULTIPLE_CHOICE", label: "Multiple answers" },
+  { value: "TRUE_FALSE", label: "True / False" },
+  { value: "SHORT_ANSWER", label: "Short answer" },
+] as const;
+
+type QuestionType = (typeof QUESTION_TYPES)[number]["value"];
 
 type QuizQuestion = {
   questionText: string;
   options: string[];
   correctAnswer: string;
+  questionType: QuestionType;
   showCorrectAnswer: boolean;
 };
 
@@ -36,6 +45,7 @@ const createEmptyQuestion = (showCorrectAnswer: boolean): QuizQuestion => ({
   questionText: "",
   options: ["", "", "", ""],
   correctAnswer: "",
+  questionType: "SINGLE_CHOICE",
   showCorrectAnswer,
 });
 
@@ -64,7 +74,7 @@ export default function QuizCreatoryPage() {
 
   const handleQuestionChange = (
     index: number,
-    key: "questionText" | "correctAnswer" | "options",
+    key: "questionText" | "correctAnswer" | "options" | "questionType",
     value: any
   ) => {
     setQuestions((prev) =>
@@ -106,15 +116,16 @@ export default function QuizCreatoryPage() {
 
     for (let i = 0; i < questions.length; i++) {
       const question = questions[i];
+      const needsOptions = question.questionType !== "SHORT_ANSWER";
       if (!question.questionText.trim()) {
         toast.error(`Question ${i + 1} is missing.`);
         return false;
       }
-      if (question.options.some((option) => !option.trim())) {
+      if (needsOptions && question.options.some((option) => !option.trim())) {
         toast.error(`All options for Question ${i + 1} are required.`);
         return false;
       }
-      if (!ANSWER_LABELS.includes(question.correctAnswer)) {
+      if (!question.correctAnswer.trim()) {
         toast.error(`Question ${i + 1} needs a correct answer.`);
         return false;
       }
@@ -156,8 +167,52 @@ export default function QuizCreatoryPage() {
     (question) =>
       question.questionText.trim() &&
       question.correctAnswer &&
-      question.options.every((option) => option.trim())
+      (question.questionType === "SHORT_ANSWER" ||
+        question.options.every((option) => option.trim()))
   ).length;
+
+  const setQuestionType = (questionIndex: number, questionType: QuestionType) => {
+    setQuestions((prev) =>
+      prev.map((question, index) => {
+        if (index !== questionIndex) return question;
+        if (questionType === "TRUE_FALSE") {
+          return {
+            ...question,
+            questionType,
+            options: ["True", "False"],
+            correctAnswer: "",
+          };
+        }
+        if (questionType === "SHORT_ANSWER") {
+          return {
+            ...question,
+            questionType,
+            options: [],
+            correctAnswer: "",
+          };
+        }
+        return {
+          ...question,
+          questionType,
+          options:
+            question.options.length >= 4
+              ? question.options.slice(0, 4)
+              : ["", "", "", ""],
+          correctAnswer: "",
+        };
+      })
+    );
+  };
+
+  const toggleMultipleAnswer = (questionIndex: number, label: string) => {
+    const current = questions[questionIndex].correctAnswer
+      ? questions[questionIndex].correctAnswer.split(",")
+      : [];
+    const next = current.includes(label)
+      ? current.filter((item) => item !== label)
+      : [...current, label];
+    handleQuestionChange(questionIndex, "correctAnswer", next.sort().join(","));
+  };
 
   return (
     <div className="space-y-6 p-4 sm:p-6">
@@ -201,7 +256,11 @@ export default function QuizCreatoryPage() {
                     Question {questionIndex + 1}
                   </p>
                   <h2 className="mt-1 text-lg font-extrabold text-slate-950">
-                    Multiple choice
+                    {
+                      QUESTION_TYPES.find(
+                        (type) => type.value === question.questionType
+                      )?.label
+                    }
                   </h2>
                 </div>
                 {questions.length > 1 && (
@@ -217,6 +276,23 @@ export default function QuizCreatoryPage() {
               </div>
 
               <div className="space-y-4 p-4">
+                <div className="flex flex-wrap gap-2">
+                  {QUESTION_TYPES.map((type) => (
+                    <button
+                      key={type.value}
+                      type="button"
+                      onClick={() => setQuestionType(questionIndex, type.value)}
+                      className={`h-9 cursor-pointer rounded-lg border px-3 text-sm font-bold transition ${
+                        question.questionType === type.value
+                          ? "border-emerald-300 bg-emerald-700 text-white"
+                          : "border-emerald-100 bg-[#f7fbf7] text-slate-700 hover:bg-emerald-50"
+                      }`}
+                    >
+                      {type.label}
+                    </button>
+                  ))}
+                </div>
+
                 <LewisTextInput
                   placeholder={`Question ${questionIndex + 1}`}
                   value={question.questionText}
@@ -229,10 +305,41 @@ export default function QuizCreatoryPage() {
                   }
                 />
 
+                {question.questionType === "SHORT_ANSWER" ? (
+                  <div>
+                    <label className="mb-1 block text-sm font-bold text-slate-700">
+                      Accepted answer
+                    </label>
+                    <LewisTextInput
+                      placeholder="Type the expected short answer"
+                      value={question.correctAnswer}
+                      onChange={(event) =>
+                        handleQuestionChange(
+                          questionIndex,
+                          "correctAnswer",
+                          event.target.value
+                        )
+                      }
+                      className="mb-0"
+                    />
+                  </div>
+                ) : (
                 <div className="grid gap-3 md:grid-cols-2">
-                  {ANSWER_LABELS.map((label, optionIndex) => {
-                    const isCorrect = question.correctAnswer === label;
+                  {(question.questionType === "TRUE_FALSE"
+                    ? ["A", "B"]
+                    : ANSWER_LABELS
+                  ).map((label, optionIndex) => {
+                    const isCorrect =
+                      question.questionType === "MULTIPLE_CHOICE"
+                        ? question.correctAnswer.split(",").includes(label)
+                        : question.correctAnswer === label;
                     const nextOptions = [...question.options];
+                    const optionText =
+                      question.questionType === "TRUE_FALSE"
+                        ? optionIndex === 0
+                          ? "True"
+                          : "False"
+                        : question.options[optionIndex];
 
                     return (
                       <label
@@ -244,17 +351,23 @@ export default function QuizCreatoryPage() {
                         }`}
                       >
                         <input
-                          type="radio"
+                          type={
+                            question.questionType === "MULTIPLE_CHOICE"
+                              ? "checkbox"
+                              : "radio"
+                          }
                           name={`correct-${questionIndex}`}
                           aria-label={label}
                           value={label}
                           checked={isCorrect}
                           onChange={() =>
-                            handleQuestionChange(
-                              questionIndex,
-                              "correctAnswer",
-                              label
-                            )
+                            question.questionType === "MULTIPLE_CHOICE"
+                              ? toggleMultipleAnswer(questionIndex, label)
+                              : handleQuestionChange(
+                                  questionIndex,
+                                  "correctAnswer",
+                                  label
+                                )
                           }
                           className="h-4 w-4 cursor-pointer accent-emerald-700"
                         />
@@ -269,8 +382,9 @@ export default function QuizCreatoryPage() {
                         </span>
                         <LewisTextInput
                           placeholder={`Option ${label}`}
-                          value={question.options[optionIndex]}
+                          value={optionText}
                           onChange={(event) => {
+                            if (question.questionType === "TRUE_FALSE") return;
                             nextOptions[optionIndex] = event.target.value;
                             handleQuestionChange(
                               questionIndex,
@@ -279,11 +393,13 @@ export default function QuizCreatoryPage() {
                             );
                           }}
                           className="mb-0"
+                          disabled={question.questionType === "TRUE_FALSE"}
                         />
                       </label>
                     );
                   })}
                 </div>
+                )}
               </div>
             </section>
           ))}

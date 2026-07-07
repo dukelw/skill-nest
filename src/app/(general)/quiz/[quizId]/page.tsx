@@ -9,6 +9,28 @@ import { submissionService } from "~/services/submissionService";
 import { useAssignmentStore } from "~/store/assignmentStore";
 import { useAuthStore } from "~/store/authStore";
 
+const ANSWER_LABELS = ["A", "B", "C", "D"];
+
+const normalizeText = (value: string) => value.trim().toLowerCase();
+const normalizeSet = (value: string) =>
+  value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .sort()
+    .join(",");
+
+const isAnswerCorrect = (question: any, answer?: string) => {
+  if (!answer) return false;
+  if (question.questionType === "SHORT_ANSWER") {
+    return normalizeText(answer) === normalizeText(question.correctAnswer);
+  }
+  if (question.questionType === "MULTIPLE_CHOICE") {
+    return normalizeSet(answer) === normalizeSet(question.correctAnswer);
+  }
+  return answer === question.correctAnswer;
+};
+
 export default function Quiz() {
   const { assignment, setAssignment } = useAssignmentStore();
   const { quizId } = useParams();
@@ -19,11 +41,17 @@ export default function Quiz() {
   const [markedQuestions, setMarkedQuestions] = useState<number[]>([]);
   const { user } = useAuthStore();
 
-  const alphaAnswers = ["A", "B", "C", "D"];
-
-  const handleOptionSelect = (questionId: number, option: string) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: option }));
+  const handleAnswerChange = (questionId: number, value: string) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: value }));
     setErrors((prev) => prev.filter((id) => id !== questionId));
+  };
+
+  const toggleMultipleAnswer = (questionId: number, label: string) => {
+    const current = answers[questionId] ? answers[questionId].split(",") : [];
+    const next = current.includes(label)
+      ? current.filter((item) => item !== label)
+      : [...current, label];
+    handleAnswerChange(questionId, next.sort().join(","));
   };
 
   const toggleMark = (questionId: number) => {
@@ -36,7 +64,7 @@ export default function Quiz() {
 
   const handleSubmit = async () => {
     const unanswered =
-      assignment?.questions.filter((q) => !answers[q.id])?.map((q) => q.id) ||
+      assignment?.questions.filter((q) => !answers[q.id]?.trim()).map((q) => q.id) ||
       [];
 
     if (unanswered.length > 0) {
@@ -46,8 +74,7 @@ export default function Quiz() {
 
     let correctCount = 0;
     assignment?.questions.forEach((q) => {
-      const selected = answers[q.id];
-      if (selected === q.correctAnswer) correctCount++;
+      if (isAnswerCorrect(q, answers[q.id])) correctCount++;
     });
 
     const totalQuestions = assignment?.questions?.length ?? 0;
@@ -55,14 +82,10 @@ export default function Quiz() {
 
     if (!assignment?.id || !user?.id) return;
 
-    const answerString = Object.entries(answers)
-      ?.map(([qid, ans]) => `${qid}:${ans}`)
-      .join(";");
-
     await submissionService.createSubmission({
       assignmentId: assignment.id,
       userId: user.id,
-      fileUrl: answerString,
+      fileUrl: JSON.stringify(answers),
       grade,
     });
 
@@ -72,7 +95,6 @@ export default function Quiz() {
 
   const handleGetAssignment = async () => {
     const res = await assignmentService.getAssignmentById(Number(quizId));
-    console.log("assi", res);
     setAssignment(res);
   };
 
@@ -80,78 +102,121 @@ export default function Quiz() {
     handleGetAssignment();
   }, []);
 
+  const renderQuestionInput = (question: any) => {
+    if (question.questionType === "SHORT_ANSWER") {
+      return (
+        <input
+          value={answers[question.id] || ""}
+          disabled={submitted}
+          onChange={(event) => handleAnswerChange(question.id, event.target.value)}
+          placeholder="Type your answer"
+          className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+        />
+      );
+    }
+
+    const optionLabels =
+      question.questionType === "TRUE_FALSE" ? ["A", "B"] : ANSWER_LABELS;
+
+    return (
+      <div className="grid gap-2 sm:grid-cols-2">
+        {optionLabels.map((label, index) => {
+          const checked =
+            question.questionType === "MULTIPLE_CHOICE"
+              ? (answers[question.id] || "").split(",").includes(label)
+              : answers[question.id] === label;
+          return (
+            <label
+              key={label}
+              className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition ${
+                checked
+                  ? "border-emerald-300 bg-emerald-50"
+                  : "border-slate-200 bg-white hover:bg-emerald-50"
+              }`}
+            >
+              <input
+                type={question.questionType === "MULTIPLE_CHOICE" ? "checkbox" : "radio"}
+                name={`question-${question.id}`}
+                disabled={submitted}
+                checked={checked}
+                onChange={() =>
+                  question.questionType === "MULTIPLE_CHOICE"
+                    ? toggleMultipleAnswer(question.id, label)
+                    : handleAnswerChange(question.id, label)
+                }
+                className="h-4 w-4 cursor-pointer accent-emerald-700"
+              />
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#eef7ef] text-sm font-extrabold text-emerald-800">
+                {label}
+              </span>
+              <span className="text-sm font-semibold text-slate-700">
+                {question.options?.[index]}
+              </span>
+            </label>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 p-6 gap-4">
-      {/* LEFT: Questions */}
+    <div className="grid grid-cols-1 gap-4 p-6 lg:grid-cols-12">
       <div className="lg:col-span-9">
-        <h2 className="text-2xl font-semibold mb-4">
-          {assignment?.title || "Bài kiểm tra"}
+        <h2 className="mb-4 text-2xl font-extrabold text-slate-950">
+          {assignment?.title || "Quiz"}
         </h2>
 
         {assignment?.questions?.map((q, index) => {
           const userAnswer = answers[q.id];
-          const isCorrect = userAnswer === q.correctAnswer;
-          const isSubmitted = submitted;
+          const isCorrect = isAnswerCorrect(q, userAnswer);
           const showAnswer = submitted && q.showCorrectAnswer;
-
-          let questionBg = "";
-          if (isSubmitted && userAnswer) {
-            questionBg = isCorrect
-              ? "bg-green-200 border border-green-600"
-              : "bg-red-200 border border-red-600";
-          }
 
           return (
             <div
               key={q.id}
               id={`question-${q.id}`}
-              className={`mb-6 p-4 rounded scroll-mt-24 ${questionBg}`}
+              className={`mb-6 scroll-mt-24 rounded-xl border p-4 shadow-sm ${
+                submitted && userAnswer
+                  ? isCorrect
+                    ? "border-emerald-200 bg-emerald-50"
+                    : "border-red-200 bg-red-50"
+                  : "border-emerald-100 bg-[#f7fbf7]"
+              }`}
             >
-              <p className="font-medium mb-2">
+              <p className="mb-1 text-xs font-bold uppercase tracking-wide text-emerald-700">
+                {q.questionType?.replaceAll("_", " ") || "SINGLE CHOICE"}
+              </p>
+              <p className="mb-3 font-bold text-slate-950">
                 {index + 1}. {q.questionText}
               </p>
 
-              <div className="space-y-2">
-                {q.options?.map((opt: string, i: number) => (
-                  <label key={i} className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name={`question-${q.id}`}
-                      value={opt}
-                      disabled={submitted}
-                      checked={answers[q.id] === alphaAnswers[i]}
-                      onChange={() => handleOptionSelect(q.id, alphaAnswers[i])}
-                      className="accent-blue-500"
-                    />
-                    {opt}
-                  </label>
-                ))}
-              </div>
+              {renderQuestionInput(q)}
 
-              <div className="mt-2">
+              <div className="mt-3">
                 <button
+                  type="button"
                   onClick={() => toggleMark(q.id)}
-                  className={`text-sm px-3 py-1 rounded border ${
+                  className={`cursor-pointer rounded-lg border px-3 py-1 text-sm font-bold ${
                     markedQuestions.includes(q.id)
-                      ? "bg-yellow-100 text-yellow-600 border-yellow-400"
-                      : "bg-gray-100 text-gray-700 border-gray-300"
+                      ? "border-amber-300 bg-amber-50 text-amber-700"
+                      : "border-slate-200 bg-white text-slate-600"
                   }`}
                 >
                   {markedQuestions.includes(q.id)
-                    ? "★ Đã đánh dấu"
-                    : "☆ Đánh dấu xem lại"}
+                    ? "Marked for review"
+                    : "Mark for review"}
                 </button>
               </div>
 
               {errors.includes(q.id) && (
-                <p className="text-red-500 text-sm mt-1">
-                  ❗ Vui lòng chọn một đáp án cho câu hỏi này.
+                <p className="mt-2 text-sm font-semibold text-red-600">
+                  Please answer this question.
                 </p>
               )}
 
               {showAnswer && !isCorrect && (
-                <p className="text-sm mt-2 text-green-700">
-                  Đáp án đúng: <strong>{q.correctAnswer}</strong>
+                <p className="mt-2 text-sm font-semibold text-emerald-700">
+                  Correct answer: <strong>{q.correctAnswer}</strong>
                 </p>
               )}
             </div>
@@ -159,58 +224,55 @@ export default function Quiz() {
         })}
       </div>
 
-      {/* RIGHT: Quick navigation */}
-      <div className="lg:col-span-3 sticky top-6 h-fit">
-        <h3 className="font-semibold mb-2">Danh sách câu hỏi</h3>
-        <div className="grid grid-cols-5 gap-2">
-          {assignment?.questions?.map((q, index) => {
-            let color = "bg-gray-300"; // default
+      <div className="h-fit lg:sticky lg:top-6 lg:col-span-3">
+        <div className="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm">
+          <h3 className="mb-3 font-extrabold text-slate-950">Questions</h3>
+          <div className="grid grid-cols-5 gap-2">
+            {assignment?.questions?.map((q, index) => {
+              let color = "bg-slate-100 text-slate-700";
 
-            if (submitted) {
-              const isCorrect = answers[q.id] === q.correctAnswer;
-              color = isCorrect
-                ? "bg-green-600 text-white"
-                : "bg-red-600 text-white";
-            } else {
-              if (answers[q.id]) color = "bg-blue-500 text-white";
-              if (markedQuestions.includes(q.id))
-                color = "bg-orange-500 text-white";
-            }
+              if (submitted) {
+                color = isAnswerCorrect(q, answers[q.id])
+                  ? "bg-emerald-700 text-white"
+                  : "bg-red-600 text-white";
+              } else {
+                if (answers[q.id]) color = "bg-sky-600 text-white";
+                if (markedQuestions.includes(q.id)) color = "bg-amber-500 text-white";
+              }
 
-            return (
-              <button
-                key={q.id}
-                onClick={() =>
-                  document
-                    .getElementById(`question-${q.id}`)
-                    ?.scrollIntoView({ behavior: "smooth" })
-                }
-                className={`w-10 h-10 rounded-full text-sm font-medium ${color}`}
-              >
-                {index + 1}
-              </button>
-            );
-          })}
-        </div>
-        {!submitted ? (
-          <Button onClick={handleSubmit} className="mt-4 w-full">
-            Nộp bài
-          </Button>
-        ) : (
-          <div className="mt-4 text-lg font-semibold text-green-600">
-            <span className="flex items-center gap-1">
-              <CheckCircle className="text-green-600 w-5 h-5" />
-              {score}/{assignment?.questions.length} câu. Được{" "}
-              {(score * 10) / (assignment?.questions?.length ?? 1)} điểm
-            </span>
-            <Button
-              className="mt-4"
-              href={`/classroom/${assignment?.classroomId}`}
-            >
-              Classroom
-            </Button>
+              return (
+                <button
+                  key={q.id}
+                  type="button"
+                  onClick={() =>
+                    document
+                      .getElementById(`question-${q.id}`)
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                  className={`h-10 w-10 cursor-pointer rounded-full text-sm font-bold ${color}`}
+                >
+                  {index + 1}
+                </button>
+              );
+            })}
           </div>
-        )}
+          {!submitted ? (
+            <Button onClick={handleSubmit} className="mt-4 w-full">
+              Submit quiz
+            </Button>
+          ) : (
+            <div className="mt-4 text-lg font-bold text-emerald-700">
+              <span className="flex items-center gap-1">
+                <CheckCircle className="h-5 w-5 text-emerald-700" />
+                {score}/{assignment?.questions.length} correct. Score{" "}
+                {((score * 10) / (assignment?.questions?.length ?? 1)).toFixed(1)}
+              </span>
+              <Button className="mt-4 w-full" href={`/classroom/${assignment?.classroomId}`}>
+                Classroom
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -717,7 +717,14 @@ export default function Asset() {
         </ModalBody>
         <ModalFooter className="modal-footer-actions">
           {showTypeSelection ? (
-            <Button color="none" className="h-10 rounded-lg border border-emerald-200 bg-[#f7fbf7] px-4 text-sm font-bold text-emerald-800 hover:bg-emerald-50" onClick={() => setIsModalOpen(false)}>
+            <Button
+              color="none"
+              className="h-10 rounded-lg border border-emerald-200 bg-[#f7fbf7] px-4 text-sm font-bold text-emerald-800 hover:bg-emerald-50"
+              onClick={() => {
+                setIsModalOpen(false);
+                resetAssignmentForm();
+              }}
+            >
               {t("cancel")}
             </Button>
           ) : (
