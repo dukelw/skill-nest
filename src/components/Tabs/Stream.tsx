@@ -376,8 +376,7 @@ export default function Stream() {
         <Image
           alt="Thumbnail"
           src={
-            classroom?.thumbnail ||
-            "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg"
+            classroom?.thumbnail || "/logo-bg.png"
           }
           fill
           className="object-cover"

@@ -192,7 +192,7 @@ export default function ClientClassroomDetail() {
               >
                 {activeTab === "stream" && <Stream />}
                 {activeTab === "assignments" && <Asset />}
-                {activeTab === "people" && <People />}
+                {activeTab === "people" && <People canManageRequests />}
                 {activeTab === "grades" && <Grade />}
               </TabItem>
             ))}

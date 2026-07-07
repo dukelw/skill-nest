@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import LewisButton from "../Partial/LewisButton";
 
 const OFF_IMAGE_URL =
-  "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg";
+  "/logo-bg.png";
 
 const MeetingSetup = ({
   setIsSetupComplete,

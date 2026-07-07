@@ -74,7 +74,7 @@ export default function NotificationModal({
                 <Avatar
                   img={
                     a?.user?.avatar ||
-                    "https://cdn-icons-png.freepik.com/512/3607/3607444.png"
+                    "/logo-small.png"
                   }
                   rounded
                   size="sm"

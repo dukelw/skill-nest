@@ -15,6 +15,7 @@ import { uploadService } from "~/services/uploadService";
 import { useClassroomStore } from "~/store/classroomStore";
 import { AssignmentType } from "~/models/AssignmentType";
 import LewisButton from "~/components/Partial/LewisButton";
+import LoadingButton from "~/components/Partial/LoadingButton";
 import { useAuthStore } from "~/store/authStore";
 import Assignment from "~/models/Assignment";
 import { submissionService } from "~/services/submissionService";
@@ -22,8 +23,9 @@ import { classroomService } from "~/services/classroomService";
 import Classroom from "~/models/Classroom";
 import Loader from "~/components/Partial/Loader";
 import { useTranslation } from "react-i18next";
-import { CheckCircleIcon, ClipboardList, LockKeyhole } from "lucide-react";
+import { CheckCircleIcon, ClipboardList, LockKeyhole, Upload } from "lucide-react";
 import EmptyState from "~/components/EmptyState";
+import { toast } from "sonner";
 
 export default function Tasks() {
   const { studentClassrooms, setStudentClassrooms } = useClassroomStore();
@@ -66,9 +68,11 @@ export default function Tasks() {
       setFile(null);
       setSelectedAssignmentId(null);
       router.refresh();
+      toast.success("Submission uploaded successfully.");
     } catch (err) {
       console.error("Failed to submit", err);
       setUploading(false);
+      toast.error("Could not upload your submission.");
     }
   };
 
@@ -114,6 +118,10 @@ export default function Tasks() {
       />
     );
   }
+
+  const selectedAssignment = studentClassrooms
+    .flatMap((classroom) => classroom.assignments ?? [])
+    .find((assignment) => assignment.id === selectedAssignmentId);
 
   return (
     <div className="p-6">
@@ -238,6 +246,7 @@ export default function Tasks() {
                               lewisSize="small"
                               onClick={() => {
                                 setSelectedAssignmentId(assignment.id);
+                                setFile(null);
                                 setIsSubmitModalOpen(true);
                               }}
                             >
@@ -308,25 +317,72 @@ export default function Tasks() {
         onClose={() => {
           setIsSubmitModalOpen(false);
           setFile(null);
+          setSelectedAssignmentId(null);
         }}
       >
-        <ModalHeader className="bg-green text-white">{t("submit")}</ModalHeader>
-        <ModalBody>
-          <input
-            type="file"
-            onChange={handleFileChange}
-            className="block w-full mt-4 text-sm file:bg-green-700 text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:bg-green file:text-white hover:file:bg-green-600"
-          />
+        <ModalHeader className="modal-titlebar">
+          <div>
+            <h2 className="text-base font-bold text-slate-950">
+              {t("assignmentComponent.submitHomework")}
+            </h2>
+            <p className="mt-1 text-xs font-normal text-slate-500">
+              Upload your work for teacher review.
+            </p>
+          </div>
+        </ModalHeader>
+        <ModalBody className="modal-body-pad space-y-4">
+          {selectedAssignment && (
+            <section className="rounded-xl border border-emerald-100 bg-[#f7fbf7] p-4">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+                    {selectedAssignment.type}
+                  </p>
+                  <h3 className="mt-1 text-lg font-extrabold text-slate-950">
+                    {selectedAssignment.title}
+                  </h3>
+                </div>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-600">
+                  {t("dueDate")}:{" "}
+                  {new Date(selectedAssignment.dueDate).toLocaleString()}
+                </span>
+              </div>
+              {selectedAssignment.description && (
+                <p className="mt-3 text-sm leading-6 text-slate-600">
+                  {selectedAssignment.description}
+                </p>
+              )}
+            </section>
+          )}
+
+          <label className="flex min-h-32 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-emerald-300 bg-[#eef7ef] px-4 py-5 text-center transition hover:bg-emerald-50">
+            <Upload className="h-8 w-8 text-emerald-700" />
+            <span className="mt-3 text-sm font-extrabold text-slate-950">
+              {file?.name || "Choose submission file"}
+            </span>
+            <span className="mt-1 text-xs font-semibold text-slate-500">
+              Click to browse and attach your homework file.
+            </span>
+            <input type="file" onChange={handleFileChange} className="sr-only" />
+          </label>
         </ModalBody>
-        <ModalFooter>
-          <Button
-            className="bg-green"
+        <ModalFooter className="modal-footer-actions">
+          <LoadingButton
             onClick={handleSubmitHomework}
-            disabled={!file || uploading}
+            loading={uploading}
+            loadingText={t("uploading")}
+            disabled={!file}
           >
-            {uploading ? "Uploading..." : "Submit"}
-          </Button>
-          <Button color="gray" onClick={() => setIsSubmitModalOpen(false)}>
+            {t("submit")}
+          </LoadingButton>
+          <Button
+            color="gray"
+            onClick={() => {
+              setIsSubmitModalOpen(false);
+              setFile(null);
+              setSelectedAssignmentId(null);
+            }}
+          >
             {t("cancel")}
           </Button>
         </ModalFooter>

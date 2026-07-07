@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
   Breadcrumb,
@@ -25,10 +26,10 @@ import {
 
 const ANSWER_LABELS = ["A", "B", "C", "D"];
 const QUESTION_TYPES = [
-  { value: "SINGLE_CHOICE", label: "Single choice" },
-  { value: "MULTIPLE_CHOICE", label: "Multiple answers" },
-  { value: "TRUE_FALSE", label: "True / False" },
-  { value: "SHORT_ANSWER", label: "Short answer" },
+  { value: "SINGLE_CHOICE", labelKey: "quizCreator.questionTypes.singleChoice" },
+  { value: "MULTIPLE_CHOICE", labelKey: "quizCreator.questionTypes.multipleChoice" },
+  { value: "TRUE_FALSE", labelKey: "quizCreator.questionTypes.trueFalse" },
+  { value: "SHORT_ANSWER", labelKey: "quizCreator.questionTypes.shortAnswer" },
 ] as const;
 
 type QuestionType = (typeof QUESTION_TYPES)[number]["value"];
@@ -53,6 +54,7 @@ export default function QuizCreatoryPage() {
   const { classroomId } = useParams();
   const { classroom } = useClassroomStore();
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -102,15 +104,15 @@ export default function QuizCreatoryPage() {
 
   const validateQuiz = () => {
     if (!title.trim()) {
-      toast.error("Title is required.");
+      toast.error(t("quizCreator.validationTitleRequired"));
       return false;
     }
     if (!dueDate) {
-      toast.error("Due date is required.");
+      toast.error(t("quizCreator.validationDueDateRequired"));
       return false;
     }
     if (!questions.length) {
-      toast.error("At least one question is required.");
+      toast.error(t("quizCreator.validationQuestionRequired"));
       return false;
     }
 
@@ -118,15 +120,15 @@ export default function QuizCreatoryPage() {
       const question = questions[i];
       const needsOptions = question.questionType !== "SHORT_ANSWER";
       if (!question.questionText.trim()) {
-        toast.error(`Question ${i + 1} is missing.`);
+        toast.error(t("quizCreator.validationQuestionMissing", { number: i + 1 }));
         return false;
       }
       if (needsOptions && question.options.some((option) => !option.trim())) {
-        toast.error(`All options for Question ${i + 1} are required.`);
+        toast.error(t("quizCreator.validationOptionsRequired", { number: i + 1 }));
         return false;
       }
       if (!question.correctAnswer.trim()) {
-        toast.error(`Question ${i + 1} needs a correct answer.`);
+        toast.error(t("quizCreator.validationCorrectAnswerRequired", { number: i + 1 }));
         return false;
       }
     }
@@ -151,12 +153,12 @@ export default function QuizCreatoryPage() {
         fileUrl,
       });
 
-      toast.success("Quiz created successfully.");
+      toast.success(t("quizCreator.created"));
       router.push(`/teaching/${classroomId}`);
     } catch (error: any) {
       console.error(error);
       toast.error(
-        error?.response?.data?.message || error?.message || "Failed to create quiz."
+        error?.response?.data?.message || error?.message || t("quizCreator.createFailed")
       );
     } finally {
       setIsSubmitting(false);
@@ -179,7 +181,10 @@ export default function QuizCreatoryPage() {
           return {
             ...question,
             questionType,
-            options: ["True", "False"],
+            options: [
+              t("quizCreator.trueOption"),
+              t("quizCreator.falseOption"),
+            ],
             correctAnswer: "",
           };
         }
@@ -217,28 +222,27 @@ export default function QuizCreatoryPage() {
   return (
     <div className="space-y-6 p-4 sm:p-6">
       <Breadcrumb aria-label="Breadcrumb" className="mb-4">
-        <BreadcrumbItem href="/">Home</BreadcrumbItem>
-        <BreadcrumbItem href="/teaching">Teaching</BreadcrumbItem>
-        <BreadcrumbItem>{classroom?.name || "Create quiz"}</BreadcrumbItem>
+        <BreadcrumbItem href="/">{t("teachingPage.home")}</BreadcrumbItem>
+        <BreadcrumbItem href="/teaching">{t("teachingPage.teachingPage")}</BreadcrumbItem>
+        <BreadcrumbItem>{classroom?.name || t("quizCreator.breadcrumb")}</BreadcrumbItem>
       </Breadcrumb>
 
       <section className="rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm">
         <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
-          Quiz builder
+          {t("quizCreator.eyebrow")}
         </p>
         <div className="mt-2 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-950">
-              Create quiz
+              {t("quizCreator.title")}
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-              Build the quiz in one flow: set the title, deadline, questions,
-              answers and optional attachment before publishing.
+              {t("quizCreator.subtitle")}
             </p>
           </div>
           <div className="grid grid-cols-2 gap-2 rounded-xl border border-emerald-100 bg-[#eef7ef] p-3 text-sm font-bold text-slate-700">
-            <span>{questions.length} questions</span>
-            <span>{completedQuestions} ready</span>
+            <span>{t("quizCreator.questionsCount", { count: questions.length })}</span>
+            <span>{t("quizCreator.readyCount", { count: completedQuestions })}</span>
           </div>
         </div>
       </section>
@@ -253,14 +257,14 @@ export default function QuizCreatoryPage() {
               <div className="flex flex-col gap-3 border-b border-emerald-100 bg-[#f7fbf7] p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
-                    Question {questionIndex + 1}
+                    {t("quizCreator.question", { number: questionIndex + 1 })}
                   </p>
                   <h2 className="mt-1 text-lg font-extrabold text-slate-950">
-                    {
+                    {t(
                       QUESTION_TYPES.find(
                         (type) => type.value === question.questionType
-                      )?.label
-                    }
+                      )?.labelKey ?? "quizCreator.questionTypes.singleChoice"
+                    )}
                   </h2>
                 </div>
                 {questions.length > 1 && (
@@ -270,7 +274,7 @@ export default function QuizCreatoryPage() {
                     className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 text-sm font-bold text-red-700 transition hover:bg-red-100"
                   >
                     <Trash2 className="h-4 w-4" />
-                    Remove
+                    {t("quizCreator.remove")}
                   </button>
                 )}
               </div>
@@ -288,13 +292,15 @@ export default function QuizCreatoryPage() {
                           : "border-emerald-100 bg-[#f7fbf7] text-slate-700 hover:bg-emerald-50"
                       }`}
                     >
-                      {type.label}
+                      {t(type.labelKey)}
                     </button>
                   ))}
                 </div>
 
                 <LewisTextInput
-                  placeholder={`Question ${questionIndex + 1}`}
+                  placeholder={t("quizCreator.questionPlaceholder", {
+                    number: questionIndex + 1,
+                  })}
                   value={question.questionText}
                   onChange={(event) =>
                     handleQuestionChange(
@@ -308,10 +314,10 @@ export default function QuizCreatoryPage() {
                 {question.questionType === "SHORT_ANSWER" ? (
                   <div>
                     <label className="mb-1 block text-sm font-bold text-slate-700">
-                      Accepted answer
+                      {t("quizCreator.acceptedAnswer")}
                     </label>
                     <LewisTextInput
-                      placeholder="Type the expected short answer"
+                      placeholder={t("quizCreator.shortAnswerPlaceholder")}
                       value={question.correctAnswer}
                       onChange={(event) =>
                         handleQuestionChange(
@@ -337,8 +343,8 @@ export default function QuizCreatoryPage() {
                     const optionText =
                       question.questionType === "TRUE_FALSE"
                         ? optionIndex === 0
-                          ? "True"
-                          : "False"
+                          ? t("quizCreator.trueOption")
+                          : t("quizCreator.falseOption")
                         : question.options[optionIndex];
 
                     return (
@@ -381,7 +387,7 @@ export default function QuizCreatoryPage() {
                           {label}
                         </span>
                         <LewisTextInput
-                          placeholder={`Option ${label}`}
+                          placeholder={t("quizCreator.optionPlaceholder", { label })}
                           value={optionText}
                           onChange={(event) => {
                             if (question.questionType === "TRUE_FALSE") return;
@@ -410,40 +416,40 @@ export default function QuizCreatoryPage() {
             className="flex min-h-16 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-emerald-300 bg-[#eef7ef] text-sm font-extrabold text-emerald-800 transition hover:bg-emerald-50"
           >
             <Plus className="h-4 w-4" />
-            Add question
+            {t("quizCreator.addQuestion")}
           </button>
         </main>
 
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
           <section className="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm">
             <h2 className="text-lg font-extrabold text-slate-950">
-              Quiz settings
+              {t("quizCreator.settingsTitle")}
             </h2>
             <p className="mt-1 text-sm leading-6 text-slate-600">
-              These details become the assignment students see in the classroom.
+              {t("quizCreator.settingsDescription")}
             </p>
 
             <div className="mt-4 space-y-4">
               <div>
                 <label className="mb-1 block text-sm font-bold text-slate-700">
-                  Title
+                  {t("quizCreator.titleLabel")}
                 </label>
                 <LewisTextInput
                   value={title}
                   onChange={(event) => setTitle(event.target.value)}
-                  placeholder="Quiz title"
+                  placeholder={t("quizCreator.titlePlaceholder")}
                   className="mb-0"
                 />
               </div>
 
               <div>
                 <label className="mb-1 block text-sm font-bold text-slate-700">
-                  Description
+                  {t("quizCreator.descriptionLabel")}
                 </label>
                 <textarea
                   value={description}
                   onChange={(event) => setDescription(event.target.value)}
-                  placeholder="What should students prepare?"
+                  placeholder={t("quizCreator.descriptionPlaceholder")}
                   rows={4}
                   className="w-full resize-none rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
                 />
@@ -451,7 +457,7 @@ export default function QuizCreatoryPage() {
 
               <div>
                 <label className="mb-1 block text-sm font-bold text-slate-700">
-                  Due date
+                  {t("quizCreator.dueDateLabel")}
                 </label>
                 <input
                   type="datetime-local"
@@ -465,11 +471,11 @@ export default function QuizCreatoryPage() {
                 <span className="flex min-w-0 items-center gap-2">
                   <FileText className="h-4 w-4 shrink-0 text-emerald-700" />
                   <span className="truncate">
-                    {file?.name || "Optional attachment"}
+                    {file?.name || t("quizCreator.optionalAttachment")}
                   </span>
                 </span>
                 <span className="rounded-lg bg-white px-3 py-1 text-xs text-emerald-800">
-                  Browse
+                  {t("quizCreator.browse")}
                 </span>
                 <input
                   type="file"
@@ -488,10 +494,12 @@ export default function QuizCreatoryPage() {
             >
               <span>
                 <span className="block text-sm font-extrabold text-slate-950">
-                  Reveal correct answers
+                  {t("quizCreator.revealAnswers")}
                 </span>
                 <span className="mt-1 block text-xs font-semibold text-slate-500">
-                  {showResult ? "Students can review answers." : "Answers stay hidden."}
+                  {showResult
+                    ? t("quizCreator.studentsCanReview")
+                    : t("quizCreator.answersStayHidden")}
                 </span>
               </span>
               {showResult ? (
@@ -504,11 +512,11 @@ export default function QuizCreatoryPage() {
             <div className="mt-4 space-y-2 text-sm font-semibold text-slate-600">
               <p className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-emerald-700" />
-                Pick one correct answer for every question.
+                {t("quizCreator.ruleAnswer")}
               </p>
               <p className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-emerald-700" />
-                Empty options are blocked before publishing.
+                {t("quizCreator.ruleOptions")}
               </p>
             </div>
           </section>
@@ -519,14 +527,14 @@ export default function QuizCreatoryPage() {
               onClick={() => router.push(`/teaching/${classroomId}`)}
               disabled={isSubmitting}
             >
-              Cancel
+              {t("quizCreator.cancel")}
             </LewisButton>
             <LoadingButton
               onClick={handleSubmit}
               loading={isSubmitting}
-              loadingText="Publishing..."
+              loadingText={t("quizCreator.publishing")}
             >
-              Publish quiz
+              {t("quizCreator.publish")}
             </LoadingButton>
           </div>
         </aside>

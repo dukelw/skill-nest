@@ -22,7 +22,11 @@ import { Search, UserPlus, UsersRound } from "lucide-react";
 import EmptyState from "../EmptyState";
 import { toast } from "sonner";
 
-export default function People() {
+type PeopleProps = {
+  canManageRequests?: boolean;
+};
+
+export default function People({ canManageRequests = false }: PeopleProps) {
   const { users, setUsers } = useUserStore();
   const { user } = useAuthStore();
   const { classroom, setClassroom } = useClassroomStore();
@@ -52,35 +56,57 @@ export default function People() {
     setClassroom(res);
   };
 
+  const isTeacher =
+    classroom?.members?.some(
+      (member) => member.userId === user?.id && member.role === "TEACHER"
+    ) ?? false;
+  const canManageMembers = canManageRequests && isTeacher;
+
   const handleAdd = async () => {
-    const res = await classroomService.addStudents(
-      Number(classroomId),
-      selectedUserIds
-    );
-    if (res) {
-      handleGetClassroomDetail();
-      setIsModalOpen(false);
-      setSelectedUserIds([]);
+    try {
+      const res = await classroomService.addStudents(
+        Number(classroomId),
+        selectedUserIds
+      );
+      if (res) {
+        handleGetClassroomDetail();
+        setIsModalOpen(false);
+        setSelectedUserIds([]);
+        toast.success("Members added to the classroom.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("You do not have permission to add members.");
     }
   };
 
   const handleAccept = async (userId: number) => {
-    const res = await classroomService.addStudents(Number(classroomId), [
-      userId,
-    ]);
-    if (res) {
-      handleGetClassroomDetail();
-      handleGetRequest();
-      toast.success("Student approved and added to the classroom.");
+    try {
+      const res = await classroomService.addStudents(Number(classroomId), [
+        userId,
+      ]);
+      if (res) {
+        handleGetClassroomDetail();
+        handleGetRequest();
+        toast.success("Student approved and added to the classroom.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Only classroom teachers can approve join requests.");
     }
   };
 
   const handleReject = async (userId: number) => {
-    const res = await classroomService.reject(Number(classroomId), userId);
-    if (res) {
-      handleGetClassroomDetail();
-      handleGetRequest();
-      toast.success("Join request rejected.");
+    try {
+      const res = await classroomService.reject(Number(classroomId), userId);
+      if (res) {
+        handleGetClassroomDetail();
+        handleGetRequest();
+        toast.success("Join request rejected.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Only classroom teachers can reject join requests.");
     }
   };
 
@@ -90,6 +116,7 @@ export default function People() {
   };
 
   const handleGetRequest = async () => {
+    if (!canManageMembers || !classroom?.id) return;
     const res = await classroomService.getRequest(Number(classroom!.id));
     setRequests(res);
     window.dispatchEvent(
@@ -101,8 +128,11 @@ export default function People() {
 
   useEffect(() => {
     handleGetUser();
-    handleGetRequest();
   }, []);
+
+  useEffect(() => {
+    handleGetRequest();
+  }, [canManageMembers, classroom?.id]);
 
   const teachers = classroom?.members?.filter((m) => m.role === "TEACHER") ?? [];
   const students = classroom?.members?.filter((m) => m.role === "STUDENT") ?? [];
@@ -116,6 +146,7 @@ export default function People() {
   return (
     <div className="space-y-5">
       {/* REQUEST */}
+      {canManageMembers && (
       <section className="detail-panel p-5">
         <div className="mb-4 flex items-center justify-between gap-3">
           <div>
@@ -142,7 +173,7 @@ export default function People() {
                   <Avatar
                     img={
                       m?.user?.avatar ||
-                      "https://cdn-icons-png.freepik.com/512/3607/3607444.png"
+                      "/logo-small.png"
                     }
                     rounded
                     className="h-12 w-12"
@@ -189,6 +220,7 @@ export default function People() {
           />
         )}
       </section>
+      )}
 
       {/* TEACHER */}
       <section className="detail-panel p-5">
@@ -219,7 +251,7 @@ export default function People() {
               <Avatar
                 img={
                   m?.user?.avatar ||
-                  "https://cdn-icons-png.freepik.com/512/3607/3607444.png"
+                  "/logo-small.png"
                 }
                 rounded
               />
@@ -250,7 +282,7 @@ export default function People() {
               {t("peopleComponent.student")}
             </h2>
           </div>
-          {classroom?.creatorId === user?.id && (
+          {canManageMembers && (
             <button
               onClick={() => toggleModal("student")}
               className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-emerald-200 bg-[#eef7ef] px-3 text-sm font-bold text-emerald-800 transition hover:bg-emerald-50"
@@ -268,7 +300,7 @@ export default function People() {
               <Avatar
                 img={
                   m.user?.avatar ||
-                  "https://cdn-icons-png.freepik.com/512/3607/3607444.png"
+                  "/logo-small.png"
                 }
                 rounded
               />

@@ -236,8 +236,7 @@ export default function HomePage() {
         <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
           <Image
             src={
-              classroom.thumbnail ||
-              "https://res.cloudinary.com/dukelewis-workspace/image/upload/v1747039662/uploads/a541itrjuslvtbifaz1q.jpg"
+              classroom.thumbnail || "/logo-bg.png"
             }
             alt={`${classroom.name} thumbnail`}
             fill
@@ -307,7 +306,7 @@ export default function HomePage() {
       {hasNoClasses ? (
         <div className="glass-panel flex min-h-[420px] flex-col items-center justify-center rounded-2xl p-8 text-center">
           <Image
-            src={`https://res.cloudinary.com/dukelewis-workspace/image/upload/v1746546890/uploads/rvllbvnf3l3yatsrtz9a.svg`}
+            src="/logo-bg.png"
             alt="Empty"
             width={400}
             height={400}
