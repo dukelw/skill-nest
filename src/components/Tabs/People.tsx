@@ -1,4 +1,3 @@
-import { FaPlus } from "react-icons/fa";
 import {
   Avatar,
   Button,
@@ -19,6 +18,8 @@ import { userService } from "~/services/userService";
 import Request from "~/models/Request";
 import LewisButton from "../Partial/LewisButton";
 import { useTranslation } from "react-i18next";
+import { Search, UserPlus, UsersRound } from "lucide-react";
+import EmptyState from "../EmptyState";
 
 export default function People() {
   const { users, setUsers } = useUserStore();
@@ -28,6 +29,7 @@ export default function People() {
   const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
   const [addMode, setAddMode] = useState<"teacher" | "student">("student");
   const [requests, setRequests] = useState<Request[]>([]);
+  const [userSearch, setUserSearch] = useState("");
   const { classroomId } = useParams();
   const { t } = useTranslation();
 
@@ -94,25 +96,41 @@ export default function People() {
     handleGetRequest();
   }, []);
 
+  const teachers = classroom?.members?.filter((m) => m.role === "TEACHER") ?? [];
+  const students = classroom?.members?.filter((m) => m.role === "STUDENT") ?? [];
+  const filteredUsers =
+    users?.filter((u: User) => {
+      const keyword = userSearch.trim().toLowerCase();
+      if (!keyword) return true;
+      return `${u.name ?? ""} ${u.email ?? ""}`.toLowerCase().includes(keyword);
+    }) ?? [];
+
   return (
-    <div>
+    <div className="space-y-5">
       {/* REQUEST */}
-      <div className="flex flex-col items-start">
-        <div className="flex justify-between items-center w-full">
-          <h2 className="text-xl font-semibold">
-            {t("peopleComponent.request")}
-          </h2>
+      <section className="detail-panel p-5">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+              Classroom access
+            </p>
+            <h2 className="mt-1 text-xl font-bold text-slate-950">
+              {t("peopleComponent.request")}
+            </h2>
+          </div>
+          <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">
+            {requests?.length ?? 0} pending
+          </span>
         </div>
 
-        <div className="w-full h-px bg-gray-700 my-4" />
-
         {requests?.length > 0 ? (
-          requests?.map((m: Request, index: number) => (
-            <div
-              key={index}
-              className="w-full flex justify-between items-center space-x-4 mb-3"
-            >
-              <div className="flex items-center">
+          <div className="space-y-3">
+            {requests?.map((m: Request, index: number) => (
+              <div
+                key={index}
+                className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-[#f7fbf7] p-3 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="flex min-w-0 items-center gap-3">
                 <Avatar
                   img={
                     m?.user?.avatar ||
@@ -121,12 +139,17 @@ export default function People() {
                   rounded
                   className="w-10 h-10"
                 />
-                <span className="text-color ml-4">
-                  {m?.user?.name + " (" + m.user.email + ")" || "Guest"}
-                </span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-sm font-bold text-slate-950">
+                      {m?.user?.name || "Guest"}
+                    </span>
+                    <span className="block truncate text-xs text-slate-500">
+                      {m.user.email}
+                    </span>
+                  </span>
               </div>
 
-              <div className="flex items-center">
+                <div className="flex items-center justify-end gap-2">
                 <LewisButton
                   lewisSize="small"
                   color="red"
@@ -140,36 +163,47 @@ export default function People() {
                 >
                   {t("accept")}
                 </LewisButton>
+                </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         ) : (
-          <p className="mb-8">{t("peopleComponent.norequest")}</p>
+          <EmptyState
+            compact
+            icon={UsersRound}
+            eyebrow="No requests"
+            title={t("peopleComponent.norequest")}
+            description="New classroom join requests will appear here for quick review."
+          />
         )}
-      </div>
+      </section>
 
       {/* TEACHER */}
-      <div className="flex flex-col items-start">
-        <div className="flex justify-between items-center w-full">
-          <h2 className="text-xl font-semibold">
-            {t("peopleComponent.teacher")}
-          </h2>
+      <section className="detail-panel p-5">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+              Teaching team
+            </p>
+            <h2 className="mt-1 text-xl font-bold text-slate-950">
+              {t("peopleComponent.teacher")}
+            </h2>
+          </div>
           {classroom?.creatorId === user?.id && (
             <button
               onClick={() => toggleModal("teacher")}
-              className="rounded-full flex items-center justify-center w-10 h-10 text-green bg-transparent hover:bg-green-500/10 transition-colors duration-200"
+              className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-emerald-200 bg-[#eef7ef] px-3 text-sm font-bold text-emerald-800 transition hover:bg-emerald-50"
             >
-              <FaPlus />
+              <UserPlus className="h-4 w-4" />
+              Add
             </button>
           )}
         </div>
 
-        <div className="w-full h-px bg-gray-700 my-4" />
-
-        {classroom?.members
-          ?.filter((m) => m.role === "TEACHER")
-          ?.map((m, index) => (
-            <div key={index} className="flex items-center space-x-4 mb-3">
+        {teachers.length > 0 ? (
+          <div className="grid gap-3 md:grid-cols-2">
+            {teachers.map((m, index) => (
+            <div key={index} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-[#f7fbf7] p-3">
               <Avatar
                 img={
                   m?.user?.avatar ||
@@ -177,35 +211,48 @@ export default function People() {
                 }
                 rounded
               />
-              <span className="text-color">
-                {m?.user?.name + " (" + m.user.email + ")" || "Guest"}
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-bold text-slate-950">
+                  {m?.user?.name || "Guest"}
+                </span>
+                <span className="block truncate text-xs text-slate-500">
+                  {m.user.email}
+                </span>
               </span>
             </div>
-          ))}
-      </div>
+            ))}
+          </div>
+        ) : (
+          <EmptyState compact icon={UsersRound} eyebrow="No teachers" title="No teachers yet" />
+        )}
+      </section>
 
       {/* STUDENT */}
-      <div className="flex flex-col items-start mt-6">
-        <div className="flex justify-between items-center w-full">
-          <h2 className="text-xl font-semibold">
-            {t("peopleComponent.student")}
-          </h2>
+      <section className="detail-panel p-5">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+              Learners
+            </p>
+            <h2 className="mt-1 text-xl font-bold text-slate-950">
+              {t("peopleComponent.student")}
+            </h2>
+          </div>
           {classroom?.creatorId === user?.id && (
             <button
               onClick={() => toggleModal("student")}
-              className="rounded-full flex items-center justify-center w-10 h-10 text-green bg-transparent hover:bg-green-500/10 transition-colors duration-200"
+              className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-emerald-200 bg-[#eef7ef] px-3 text-sm font-bold text-emerald-800 transition hover:bg-emerald-50"
             >
-              <FaPlus />
+              <UserPlus className="h-4 w-4" />
+              Add
             </button>
           )}
         </div>
 
-        <div className="w-full h-px bg-gray-700 my-4" />
-
-        {classroom?.members
-          ?.filter((m) => m.role === "STUDENT")
-          ?.map((m, index) => (
-            <div key={index} className="flex items-center space-x-4 mb-3">
+        {students.length > 0 ? (
+          <div className="grid gap-3 md:grid-cols-2">
+            {students.map((m, index) => (
+            <div key={index} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-[#f7fbf7] p-3">
               <Avatar
                 img={
                   m.user?.avatar ||
@@ -213,40 +260,72 @@ export default function People() {
                 }
                 rounded
               />
-              <span className="text-color">
-                {m.user?.name + " (" + m.user.email + ")" || "Guest"}
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-bold text-slate-950">
+                  {m.user?.name || "Guest"}
+                </span>
+                <span className="block truncate text-xs text-slate-500">
+                  {m.user.email}
+                </span>
               </span>
             </div>
-          ))}
-      </div>
+            ))}
+          </div>
+        ) : (
+          <EmptyState compact icon={UsersRound} eyebrow="No students" title="No students yet" />
+        )}
+      </section>
 
       {/* MODAL ADD MEMBER */}
       <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <ModalHeader className="bg-green">
-          {t("add")} {addMode === "teacher" ? "Teacher" : "Student"}
+        <ModalHeader className="modal-titlebar">
+          <div>
+            <h2 className="text-base font-bold text-slate-950">
+              {t("add")} {addMode === "teacher" ? "Teacher" : "Student"}
+            </h2>
+            <p className="mt-1 text-xs font-normal text-slate-500">
+              Search and select users to add to this classroom.
+            </p>
+          </div>
         </ModalHeader>
-        <ModalBody>
+        <ModalBody className="modal-body-pad">
+          <div className="relative mb-3">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              value={userSearch}
+              onChange={(e) => setUserSearch(e.target.value)}
+              placeholder="Search users"
+              className="h-11 w-full rounded-xl border border-slate-200 bg-[#f7fbf7] pl-10 pr-3 text-sm font-medium text-slate-800 outline-none transition focus:border-emerald-300 focus:ring-2 focus:ring-emerald-100"
+            />
+          </div>
           <div className="flex flex-col gap-2 max-h-80 overflow-y-auto">
-            {users?.map((u: User) => (
-              <label key={u?.id} className="flex items-center gap-2 ml-1">
+            {filteredUsers?.map((u: User) => (
+              <label
+                key={u?.id}
+                className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-[#f7fbf7] p-3 transition hover:border-emerald-200 hover:bg-emerald-50"
+              >
                 <Checkbox
                   checked={selectedUserIds.includes(u?.id)}
                   onChange={() => handleCheckboxChange(u?.id)}
                 />
                 <Avatar img={u.avatar} rounded />
-                <span>{u?.name || "No Name"}</span>
-                <span className="text-gray-500">{`(${u.email})`}</span>
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-bold text-slate-950">
+                    {u?.name || "No Name"}
+                  </span>
+                  <span className="block truncate text-xs text-slate-500">
+                    {u.email}
+                  </span>
+                </span>
               </label>
             ))}
           </div>
         </ModalBody>
-        <ModalFooter>
-          <Button className="bg-green" onClick={handleAdd}>
-            {t("add")}
-          </Button>
+        <ModalFooter className="modal-footer-actions">
           <Button color="gray" onClick={() => setIsModalOpen(false)}>
             {t("cancel")}
           </Button>
+          <Button onClick={handleAdd}>{t("add")}</Button>
         </ModalFooter>
       </Modal>
     </div>

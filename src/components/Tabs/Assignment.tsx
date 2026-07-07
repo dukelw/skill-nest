@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
 import {
   Avatar,
   Button,
@@ -24,7 +23,8 @@ import useComments from "~/hooks/useComments";
 import useSocket from "~/hooks/useSocket";
 import Comment from "~/models/Comment";
 import { useTranslation } from "react-i18next";
-import { CheckCircleIcon } from "lucide-react";
+import { CheckCircleIcon, ClipboardList, Plus, Upload } from "lucide-react";
+import EmptyState from "../EmptyState";
 
 export default function Assignments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -220,34 +220,57 @@ export default function Assignments() {
     isEdit(true);
   };
 
+  const visibleAssignments =
+    classroom?.assignments
+      .filter((c: Assignment) => c.type !== AssignmentType.DOCUMENT)
+      .sort(
+        (a, b) =>
+          new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+      ) ?? [];
+
   return (
-    <div>
-      <div className="flex flex-col items-start">
-        <div className="flex justify-between items-center w-full">
-          <h2 className="text-xl font-semibold">
+    <div className="space-y-5">
+      <section className="detail-panel p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+              Classroom work
+            </p>
+            <h2 className="mt-1 text-xl font-bold text-slate-950">
             {t("assignmentComponent.assignment")}
-          </h2>
+            </h2>
+            <p className="mt-1 text-sm text-slate-600">
+              Homework and quizzes for this class are collected here.
+            </p>
+          </div>
           {classroom?.creatorId === user?.id && (
             <button
               onClick={() => setIsModalOpen(true)}
-              className="rounded-full flex items-center justify-center w-10 h-10 text-green bg-transparent hover:bg-green-500/10 transition-colors duration-200"
+              className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg bg-[#0d3f2a] px-4 text-sm font-bold text-white shadow-sm transition hover:bg-[#0a3322]"
             >
-              <FaPlus />
+              <Plus className="h-4 w-4" />
+              New assignment
             </button>
           )}
         </div>
-        <div className="w-full h-px bg-gray-700 my-4" />
-      </div>
+      </section>
 
       {/* Display assignments */}
       <div className="space-y-4">
-        {classroom?.assignments
-          .filter((c: Assignment) => c.type !== AssignmentType.DOCUMENT)
-          .sort(
-            (a, b) =>
-              new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
-          )
-          ?.map((assignment) => {
+        {visibleAssignments.length === 0 && (
+          <EmptyState
+            compact
+            icon={ClipboardList}
+            eyebrow="No assignments"
+            title="No assignments yet"
+            description="Create the first homework or quiz so students know what to work on next."
+            actionLabel={
+              classroom?.creatorId === user?.id ? "New assignment" : undefined
+            }
+            onAction={() => setIsModalOpen(true)}
+          />
+        )}
+        {visibleAssignments.map((assignment) => {
             const submission = assignment.submissions.find(
               (s) => s.userId === user?.id
             );
@@ -536,7 +559,7 @@ export default function Assignments() {
 
                     {/* Student - Homework */}
                     {assignment.type === AssignmentType.HOMEWORK &&
-                      classroom.creatorId !== user?.id &&
+                      classroom?.creatorId !== user?.id &&
                       !submission?.grade && (
                         <LewisButton
                           className="ml-2"
@@ -553,7 +576,7 @@ export default function Assignments() {
 
                     {/* Student - Quiz */}
                     {assignment.type === AssignmentType.QUIZ &&
-                      classroom.creatorId !== user?.id &&
+                      classroom?.creatorId !== user?.id &&
                       !isSubmitted && (
                         <LewisButton
                           className="ml-2"
@@ -577,25 +600,35 @@ export default function Assignments() {
 
       {/* MODAL ADD ASSIGNMENT */}
       <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <ModalHeader className="bg-green">
-          {showTypeSelection ? "Select Assignment Type" : "Create Assignment"}
+        <ModalHeader className="modal-titlebar">
+          <div>
+            <h2 className="text-base font-bold text-slate-950">
+              {showTypeSelection ? "Select assignment type" : "Create assignment"}
+            </h2>
+            <p className="mt-1 text-xs font-normal text-slate-500">
+              Keep class work clear with a title, due date and optional attachment.
+            </p>
+          </div>
         </ModalHeader>
-        <ModalBody>
+        <ModalBody className="modal-body-pad">
           {/* Step 1: Show type selection */}
           {showTypeSelection ? (
-            <div className="flex flex-col space-y-4">
+            <div className="grid gap-3">
               <Button
                 onClick={() => handleTypeSelection("HOMEWORK")}
-                className="w-full"
+                className="h-12 w-full justify-start rounded-xl border border-emerald-200 bg-[#f7fbf7] px-4 text-left font-bold text-slate-900 hover:bg-emerald-50"
               >
                 {t("assignmentComponent.homework")}
               </Button>
-              <Button href={`/quiz-creatory/${classroomId}`} className="w-full">
+              <Button
+                href={`/quiz-creatory/${classroomId}`}
+                className="h-12 w-full justify-start rounded-xl border border-emerald-200 bg-[#f7fbf7] px-4 text-left font-bold text-slate-900 hover:bg-emerald-50"
+              >
                 {t("assignmentComponent.quiz")}
               </Button>
               <Button
                 onClick={() => handleTypeSelection("DOCUMENT")}
-                className="w-full"
+                className="h-12 w-full justify-start rounded-xl border border-emerald-200 bg-[#f7fbf7] px-4 text-left font-bold text-slate-900 hover:bg-emerald-50"
               >
                 {t("assignmentComponent.document")}
               </Button>
@@ -636,7 +669,7 @@ export default function Assignments() {
                   type="datetime-local" // Change from "date" to "datetime-local"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="block w-full mt-2 border rounded-md p-2"
+                  className="mt-2 block h-11 w-full rounded-xl border border-slate-200 bg-[#f7fbf7] px-3 text-sm font-medium outline-none transition focus:border-emerald-300 focus:ring-2 focus:ring-emerald-100"
                 />
               </div>
 
@@ -645,16 +678,21 @@ export default function Assignments() {
                 <label className="block text-sm font-medium">
                   {t("upload")}
                 </label>
-                <input
-                  type="file"
-                  onChange={handleFileChange}
-                  className="block w-full mt-4 text-sm file:bg-green-700 text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:bg-green file:text-white hover:file:bg-green-600"
-                />
+                <label className="mt-2 flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-dashed border-emerald-200 bg-[#eef7ef] px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-emerald-50">
+                  <span className="flex items-center gap-2">
+                    <Upload className="h-4 w-4 text-emerald-700" />
+                    {file?.name || "Choose attachment"}
+                  </span>
+                  <span className="rounded-lg bg-white px-3 py-1 text-xs text-emerald-800">
+                    Browse
+                  </span>
+                  <input type="file" onChange={handleFileChange} className="sr-only" />
+                </label>
               </div>
             </div>
           )}
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter className="modal-footer-actions">
           {showTypeSelection ? (
             <Button className="bg-green" onClick={() => setIsModalOpen(false)}>
               {t("cancel")}

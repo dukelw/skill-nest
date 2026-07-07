@@ -38,7 +38,7 @@ export default function RichTextEditor({
     editorProps: {
       attributes: {
         class:
-          "min-h-[156px] border border-green-500 focus:border-green-500 rounded-md bg-slate-50 py-2 px-3 outline-none",
+          "min-h-[190px] rounded-b-xl border border-t-0 border-emerald-200 bg-[#f7fbf7] px-4 py-3 text-[15px] leading-7 text-slate-800 outline-none transition focus:border-emerald-300 focus:bg-white",
       },
     },
     onUpdate: ({ editor }) => {

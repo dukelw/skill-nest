@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
 import {
   Avatar,
   Button,
@@ -22,6 +21,8 @@ import useComments from "~/hooks/useComments";
 import useSocket from "~/hooks/useSocket";
 import Comment from "~/models/Comment";
 import { useTranslation } from "react-i18next";
+import { FileText, Plus, Upload } from "lucide-react";
+import EmptyState from "../EmptyState";
 
 export default function Asset() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -55,6 +56,13 @@ export default function Asset() {
     userId: number;
   }>({ id: undefined, email: null, userId: -1 });
   const { t } = useTranslation();
+  const visibleMaterials =
+    classroom?.assignments
+      ?.slice()
+      .sort(
+        (a, b) =>
+          new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+      ) ?? [];
 
   const toggleCommentBox = (id: number) => {
     setVisibleCommentBox((prev) => (prev === id ? null : id));
@@ -205,32 +213,48 @@ export default function Asset() {
   };
 
   return (
-    <div>
-      <div className="flex flex-col items-start">
-        <div className="flex justify-between items-center w-full">
-          <h2 className="text-xl font-semibold">
-            {t("assetsComponent.assignment")}
-          </h2>
+    <div className="space-y-5">
+      <section className="detail-panel p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+              Learning materials
+            </p>
+            <h2 className="mt-1 text-xl font-bold text-slate-950">
+              {t("assetsComponent.assignment")}
+            </h2>
+            <p className="mt-1 text-sm text-slate-600">
+              Documents, homework and quizzes shared with this classroom.
+            </p>
+          </div>
           {classroom?.creatorId === user?.id && (
             <button
               onClick={() => setIsModalOpen(true)}
-              className="rounded-full flex items-center justify-center w-10 h-10 text-green bg-transparent hover:bg-green-500/10 transition-colors duration-200"
+              className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg bg-[#0d3f2a] px-4 text-sm font-bold text-white shadow-sm transition hover:bg-[#0a3322]"
             >
-              <FaPlus />
+              <Plus className="h-4 w-4" />
+              New material
             </button>
           )}
         </div>
-        <div className="w-full h-px bg-gray-700 my-4" />
-      </div>
+      </section>
 
       {/* Display assignments */}
       <div className="space-y-4">
-        {classroom?.assignments
-          .sort(
-            (a, b) =>
-              new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
-          ) // Sorting by createdAt
-          ?.map((assignment) => (
+        {visibleMaterials.length === 0 && (
+          <EmptyState
+            compact
+            icon={FileText}
+            eyebrow="No materials"
+            title="No materials yet"
+            description="Upload a document or create a classroom activity to start building the lesson stream."
+            actionLabel={
+              classroom?.creatorId === user?.id ? "New material" : undefined
+            }
+            onAction={() => setIsModalOpen(true)}
+          />
+        )}
+        {visibleMaterials.map((assignment) => (
             <div
               key={assignment.id}
               className="grid grid-cols-1 md:grid-cols-12 p-4 border border-green-500 rounded-lg shadow-md"
@@ -481,7 +505,7 @@ export default function Asset() {
                     </a>
                   )}
                   {assignment.type === AssignmentType.HOMEWORK &&
-                    classroom.creatorId !== user?.id && (
+                    classroom?.creatorId !== user?.id && (
                       <LewisButton
                         className="ml-2"
                         space={false}
@@ -491,7 +515,7 @@ export default function Asset() {
                       </LewisButton>
                     )}
                   {assignment.type === AssignmentType.QUIZ &&
-                    classroom.creatorId !== user?.id && (
+                    classroom?.creatorId !== user?.id && (
                       <LewisButton
                         className="ml-2"
                         space={false}
@@ -506,7 +530,7 @@ export default function Asset() {
                       </LewisButton>
                     )}
                   {assignment.type === AssignmentType.QUIZ &&
-                    classroom.creatorId === user?.id && (
+                    classroom?.creatorId === user?.id && (
                       <LewisButton
                         className="ml-2"
                         space={false}
@@ -516,7 +540,7 @@ export default function Asset() {
                         {t("review")}
                       </LewisButton>
                     )}
-                  {classroom.creatorId === user?.id && (
+                  {classroom?.creatorId === user?.id && (
                     <>
                       <LewisButton
                         color="yellow"
@@ -548,25 +572,35 @@ export default function Asset() {
 
       {/* MODAL ADD ASSIGNMENT */}
       <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <ModalHeader className="bg-green">
-          {showTypeSelection ? "Select Assignment Type" : "Create Assignment"}
+        <ModalHeader className="modal-titlebar">
+          <div>
+            <h2 className="text-base font-bold text-slate-950">
+              {showTypeSelection ? "Select material type" : "Create material"}
+            </h2>
+            <p className="mt-1 text-xs font-normal text-slate-500">
+              Choose how this classroom resource should appear to students.
+            </p>
+          </div>
         </ModalHeader>
-        <ModalBody>
+        <ModalBody className="modal-body-pad">
           {/* Step 1: Show type selection */}
           {showTypeSelection ? (
-            <div className="flex flex-col space-y-4">
+            <div className="grid gap-3">
               <Button
                 onClick={() => handleTypeSelection("HOMEWORK")}
-                className="w-full"
+                className="h-12 w-full justify-start rounded-xl border border-emerald-200 bg-[#f7fbf7] px-4 text-left font-bold text-slate-900 hover:bg-emerald-50"
               >
                 {t("assetsComponent.homework")}
               </Button>
-              <Button href={`/quiz-creatory/${classroomId}`} className="w-full">
+              <Button
+                href={`/quiz-creatory/${classroomId}`}
+                className="h-12 w-full justify-start rounded-xl border border-emerald-200 bg-[#f7fbf7] px-4 text-left font-bold text-slate-900 hover:bg-emerald-50"
+              >
                 {t("assetsComponent.quiz")}
               </Button>
               <Button
                 onClick={() => handleTypeSelection("DOCUMENT")}
-                className="w-full"
+                className="h-12 w-full justify-start rounded-xl border border-emerald-200 bg-[#f7fbf7] px-4 text-left font-bold text-slate-900 hover:bg-emerald-50"
               >
                 {t("assetsComponent.document")}
               </Button>
@@ -601,23 +635,28 @@ export default function Asset() {
                   type="datetime-local" // Change from "date" to "datetime-local"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="block w-full mt-2 border rounded-md p-2"
+                  className="mt-2 block h-11 w-full rounded-xl border border-slate-200 bg-[#f7fbf7] px-3 text-sm font-medium outline-none transition focus:border-emerald-300 focus:ring-2 focus:ring-emerald-100"
                 />
               </div>
 
               {/* File Upload */}
               <div className="mb-4">
                 <label className="block text-sm font-medium">Upload File</label>
-                <LewisTextInput
-                  type="file"
-                  onChange={handleFileChange}
-                  className="block w-full mt-2"
-                />
+                <label className="mt-2 flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-dashed border-emerald-200 bg-[#eef7ef] px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-emerald-50">
+                  <span className="flex items-center gap-2">
+                    <Upload className="h-4 w-4 text-emerald-700" />
+                    {file?.name || "Choose attachment"}
+                  </span>
+                  <span className="rounded-lg bg-white px-3 py-1 text-xs text-emerald-800">
+                    Browse
+                  </span>
+                  <input type="file" onChange={handleFileChange} className="sr-only" />
+                </label>
               </div>
             </div>
           )}
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter className="modal-footer-actions">
           {showTypeSelection ? (
             <Button className="bg-green" onClick={() => setIsModalOpen(false)}>
               {t("cancel")}

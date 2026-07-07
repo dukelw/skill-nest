@@ -18,7 +18,7 @@ import { classroomService } from "~/services/classroomService";
 import LewisTextInput from "../Partial/LewisTextInput";
 import { useTranslation } from "react-i18next";
 import EmptyState from "../EmptyState";
-import { FileCheck2 } from "lucide-react";
+import { ClipboardCheck, FileCheck2 } from "lucide-react";
 
 export default function Grade() {
   const { classroom } = useClassroomStore();
@@ -69,24 +69,42 @@ export default function Grade() {
     }
   };
 
+  const gradableAssignments =
+    classroom?.assignments
+      .filter((assignment) => assignment.type !== AssignmentType.DOCUMENT)
+      .sort(
+        (a, b) =>
+          new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+      ) ?? [];
+
   return (
-    <div>
-      <div className="flex flex-col items-start">
+    <div className="space-y-5">
+      <section className="detail-panel p-5">
         <div className="flex justify-between items-center w-full">
-          <h2 className="text-xl font-semibold">{t("grade")}</h2>
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+              Review center
+            </p>
+            <h2 className="mt-1 text-xl font-bold text-slate-950">{t("grade")}</h2>
+            <p className="mt-1 text-sm text-slate-600">
+              Track submissions, late work and grading progress.
+            </p>
+          </div>
         </div>
-        <div className="w-full h-px bg-gray-700 my-4" />
-      </div>
+      </section>
 
       {/* Display assignments */}
       <div className="space-y-4">
-        {classroom?.assignments
-          .filter((assignment) => assignment.type !== AssignmentType.DOCUMENT)
-          .sort(
-            (a, b) =>
-              new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
-          ) // Sorting by createdAt
-          ?.map((assignment) => {
+        {gradableAssignments.length === 0 && (
+          <EmptyState
+            compact
+            icon={ClipboardCheck}
+            eyebrow="No gradebook items"
+            title="Nothing to grade yet"
+            description="Assignments and quizzes will appear here once they are created for this class."
+          />
+        )}
+        {gradableAssignments.map((assignment) => {
             const submissionCount = assignment?.submissions?.filter(
               (s: Submission) => s.assignmentId === assignment?.id
             ).length;
@@ -98,7 +116,7 @@ export default function Grade() {
             return (
               <div
                 key={assignment?.id}
-                className="grid grid-cols-1 md:grid-cols-12 rounded-lg shadow-md"
+                className="grid grid-cols-1 overflow-hidden rounded-xl border border-slate-200 bg-[#f7fbf7] shadow-sm transition hover:border-emerald-200 md:grid-cols-12"
               >
                 <div className="col-span-12 md:col-span-8 md:mr-4 p-6">
                   <div className="flex justify-between items-center">
@@ -130,8 +148,8 @@ export default function Grade() {
                   </div>
                 </div>
 
-                <div className="col-span-12 md:col-span-4 px-6 mb-2 bg-white md:border-l-2 border-l-green-500">
-                  <h4 className="text-center font-bold text-green m-6 hidden md:block">
+                <div className="col-span-12 bg-[#eef7ef] px-6 py-4 md:col-span-4 md:border-l md:border-emerald-200">
+                  <h4 className="mb-4 hidden text-center font-bold text-emerald-800 md:block">
                     {t("actions")}
                   </h4>
                   <div className="flex justify-end items-center">
@@ -146,7 +164,7 @@ export default function Grade() {
                       </a>
                     )}
                     {assignment.type === AssignmentType.QUIZ &&
-                      classroom.creatorId === user?.id && (
+                      classroom?.creatorId === user?.id && (
                         <LewisButton
                           className="ml-2"
                           space={false}
@@ -156,7 +174,7 @@ export default function Grade() {
                           {t("review")}
                         </LewisButton>
                       )}
-                    {classroom.creatorId === user?.id && (
+                    {classroom?.creatorId === user?.id && (
                       <LewisButton
                         className="ml-2 text-sm"
                         space={false}
@@ -177,12 +195,19 @@ export default function Grade() {
         show={isViewSubmissionOpen}
         onClose={() => setIsViewSubmissionOpen(false)}
       >
-        <ModalHeader className="bg-green">
-          {t("gradeComponent.submitted")} ({submissions.length} /{" "}
-          {classroom?.members.filter((m) => m.role === "STUDENT").length})
+        <ModalHeader className="modal-titlebar">
+          <div>
+            <h2 className="text-base font-bold text-slate-950">
+              {t("gradeComponent.submitted")} ({submissions.length} /{" "}
+              {classroom?.members.filter((m) => m.role === "STUDENT").length})
+            </h2>
+            <p className="mt-1 text-xs font-normal text-slate-500">
+              Review uploads, scores and missing submissions.
+            </p>
+          </div>
         </ModalHeader>
 
-        <ModalBody>
+        <ModalBody className="modal-body-pad">
           <h2 className="font-semibold mb-2">Đã nộp ({submissions.length})</h2>
           {submissions.length === 0 ? (
             <EmptyState
@@ -201,7 +226,7 @@ export default function Grade() {
                 const grade = s.grade ?? t("gradeComponent.noscore");
 
                 return (
-                  <li key={s?.id} className="flex justify-between items-start">
+              <li key={s?.id} className="flex justify-between items-start rounded-xl border border-slate-200 bg-[#f7fbf7] p-3">
                     <div>
                       <p>
                         {s.user?.name + " (" + s.user.email + ")" ||
@@ -306,7 +331,7 @@ export default function Grade() {
           </ul>
         </ModalBody>
 
-        <ModalFooter>
+        <ModalFooter className="modal-footer-actions">
           <Button color="gray" onClick={() => setIsViewSubmissionOpen(false)}>
             {t("close")}
           </Button>
@@ -318,8 +343,10 @@ export default function Grade() {
         show={isGradingModalOpen}
         onClose={() => setIsGradingModalOpen(false)}
       >
-        <ModalHeader className="bg-green">{t("mark")}</ModalHeader>
-        <ModalBody>
+        <ModalHeader className="modal-titlebar">
+          <h2 className="text-base font-bold text-slate-950">{t("mark")}</h2>
+        </ModalHeader>
+        <ModalBody className="modal-body-pad">
           <p>
             {t("student")}:{" "}
             <strong>
@@ -335,7 +362,7 @@ export default function Grade() {
             placeholder={t("gradeComponent.enterMark")}
           />
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter className="modal-footer-actions">
           <Button color="gray" onClick={() => setIsGradingModalOpen(false)}>
             {t("cancel")}
           </Button>

@@ -22,10 +22,17 @@ import { uploadService } from "~/services/uploadService";
 import useSocket from "~/hooks/useSocket";
 import MeetingModal from "../Meeting/MeetingModal";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import {
   CalendarClock,
+  Check,
+  CheckCheck,
+  Copy,
   Hash,
+  Inbox,
   MegaphoneIcon,
+  Search,
+  Trash2,
   Upload,
   UsersIcon,
   Video,
@@ -42,6 +49,8 @@ export default function Stream() {
   const [selectedNotificationIds, setSelectedNotificationIds] = useState<
     number[]
   >([]);
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [memberSearch, setMemberSearch] = useState("");
   const [file, setFile] = useState<File | null>(null); // State to hold file
   const [code, setCode] = useState<string | undefined>(classroom?.code); // State to hold file
   const [modalType, setModalType] = useState<
@@ -51,6 +60,32 @@ export default function Stream() {
   const socket = useSocket();
   const [openMeetingModal, setOpenMeetingModal] = useState<ModalType>(null);
   const { t } = useTranslation();
+
+  const studentMembers =
+    classroom?.members?.filter((member) => member.role === "STUDENT") ?? [];
+  const filteredStudentMembers = studentMembers.filter((member) => {
+    const keyword = memberSearch.trim().toLowerCase();
+    if (!keyword) return true;
+    return `${member.user?.name ?? ""} ${member.user?.email ?? ""}`
+      .toLowerCase()
+      .includes(keyword);
+  });
+  const visibleNotifications =
+    classroom?.notifications
+      ?.slice()
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )
+      .filter((n) =>
+        n.recipients.some(
+          (recipient) =>
+            recipient.userId === user?.id || user?.id === classroom.creatorId
+        )
+      ) ?? [];
+  const selectedStudents = studentMembers.filter((member) =>
+    selectedStudentIds.includes(member.userId)
+  );
 
   const handleGetClassroomDetail = async () => {
     const res = await classroomService.getDetail(Number(classroomId));
@@ -86,6 +121,14 @@ export default function Stream() {
       setContent("");
       setSelectedStudentIds([]);
     }
+  };
+
+  const handleCopyClassCode = async () => {
+    if (!classroom?.code) return;
+    await navigator.clipboard.writeText(classroom.code);
+    setCopiedCode(true);
+    toast.success("Copied");
+    window.setTimeout(() => setCopiedCode(false), 1600);
   };
 
   const handleDeleteNotification = async () => {
@@ -137,44 +180,109 @@ export default function Stream() {
             <ModalHeader className="modal-titlebar">
               <div>
                 <h2 className="text-base font-semibold text-slate-950">
-                  {t("streamComponent.studentList")}
+                  Chọn người nhận
                 </h2>
                 <p className="mt-1 text-xs font-normal text-slate-500">
-                  Choose who should receive this post.
+                  Thông báo sẽ gửi tới toàn bộ lớp hoặc nhóm học sinh được chọn.
                 </p>
               </div>
             </ModalHeader>
             <ModalBody className="modal-body-pad">
-              {classroom?.members?.map((member) => (
-                <label
-                  key={member.id}
-                  className="flex items-center gap-3 rounded-lg border border-slate-100 px-3 py-2 text-sm transition hover:border-emerald-200 hover:bg-emerald-50"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedStudentIds.includes(member.user?.id)}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSelectedStudentIds([
-                          ...selectedStudentIds,
-                          member.user?.id,
-                        ]);
-                      } else {
-                        setSelectedStudentIds(
-                          selectedStudentIds.filter(
-                            (id) => id !== member.user?.id
-                          )
-                        );
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedStudentIds([])}
+                    className={`cursor-pointer rounded-xl border px-4 py-3 text-left transition ${
+                      selectedStudentIds.length === 0
+                        ? "border-emerald-300 bg-emerald-50 text-emerald-900"
+                        : "border-slate-200 bg-[#f7fbf7] text-slate-700 hover:border-emerald-200"
+                    }`}
+                  >
+                    <span className="block text-sm font-bold">Tất cả học sinh</span>
+                    <span className="mt-1 block text-xs text-slate-500">
+                      Gửi cho {studentMembers.length} thành viên trong lớp.
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (selectedStudentIds.length === 0 && studentMembers[0]) {
+                        setSelectedStudentIds([studentMembers[0].userId]);
                       }
                     }}
+                    className={`cursor-pointer rounded-xl border px-4 py-3 text-left transition ${
+                      selectedStudentIds.length > 0
+                        ? "border-emerald-300 bg-emerald-50 text-emerald-900"
+                        : "border-slate-200 bg-[#f7fbf7] text-slate-700 hover:border-emerald-200"
+                    }`}
+                  >
+                    <span className="block text-sm font-bold">Chọn học sinh</span>
+                    <span className="mt-1 block text-xs text-slate-500">
+                      Đã chọn {selectedStudentIds.length} người nhận.
+                    </span>
+                  </button>
+                </div>
+
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <input
+                    value={memberSearch}
+                    onChange={(e) => setMemberSearch(e.target.value)}
+                    placeholder="Tìm theo tên hoặc email"
+                    className="h-11 w-full rounded-xl border border-slate-200 bg-[#f7fbf7] pl-10 pr-3 text-sm font-medium text-slate-800 outline-none transition focus:border-emerald-300 focus:ring-2 focus:ring-emerald-100"
                   />
-                  <span>{member.user.name}</span>
-                </label>
-              ))}
+                </div>
+
+                <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
+                  {filteredStudentMembers.map((member) => (
+                    <label
+                      key={member.id}
+                      className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-[#f7fbf7] px-3 py-3 transition hover:border-emerald-200 hover:bg-emerald-50"
+                    >
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 rounded border-slate-300 accent-emerald-700"
+                        checked={selectedStudentIds.includes(member.userId)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedStudentIds((prev) => [
+                              ...new Set([...prev, member.userId]),
+                            ]);
+                          } else {
+                            setSelectedStudentIds((prev) =>
+                              prev.filter((id) => id !== member.userId)
+                            );
+                          }
+                        }}
+                      />
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-800">
+                        {(member.user?.name || member.user?.email || "?")
+                          .charAt(0)
+                          .toUpperCase()}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block truncate text-sm font-bold text-slate-900">
+                          {member.user?.name || "No Name"}
+                        </span>
+                        <span className="block truncate text-xs text-slate-500">
+                          {member.user?.email}
+                        </span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
             </ModalBody>
             <ModalFooter className="modal-footer-actions">
+              <LewisButton
+                variant="outlined"
+                onClick={() => setSelectedStudentIds([])}
+              >
+                Chọn tất cả
+              </LewisButton>
               <LewisButton variant="outlined" onClick={() => setModalType(null)}>
-                {t("close")}
+                Xong
               </LewisButton>
             </ModalFooter>
           </>
@@ -324,7 +432,17 @@ export default function Stream() {
                 <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
                   {t("streamComponent.classCode")}
                 </p>
-                <h4 className="mt-1 text-base font-semibold text-slate-950">{classroom?.code}</h4>
+                <div className="mt-1 flex items-center gap-2">
+                  <h4 className="text-base font-semibold text-slate-950">
+                    {classroom?.code}
+                  </h4>
+                  {copiedCode && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-bold text-emerald-700">
+                      <Check className="h-3 w-3" />
+                      Copied
+                    </span>
+                  )}
+                </div>
                 </div>
               </div>
               <Dropdown
@@ -337,11 +455,8 @@ export default function Stream() {
                 placement="bottom-end"
                 inline
               >
-                <DropdownItem
-                  onClick={() =>
-                    navigator.clipboard.writeText(classroom?.code || "")
-                  }
-                >
+                <DropdownItem onClick={handleCopyClassCode}>
+                  <Copy className="mr-2 h-4 w-4" />
                   {t("streamComponent.copy")}
                 </DropdownItem>
                 {classroom?.creatorId === user?.id && (
@@ -438,7 +553,7 @@ export default function Stream() {
                     {t("streamComponent.createNew")}
                   </h2>
                   <p className="mt-1 text-sm text-slate-500">
-                    Share an update with the whole class or selected members.
+                    Gửi thông báo cho lớp {classroom?.name} hoặc nhóm học sinh được chọn.
                   </p>
                 </div>
                 <LewisButton
@@ -449,19 +564,35 @@ export default function Stream() {
                 >
                   <UsersIcon className="mr-2 h-4 w-4 text-white" />
                   {selectedStudentIds.length === 0
-                    ? t("streamComponent.allMembers")
-                    : `${selectedStudentIds.length} ${t(
-                        "streamComponent.members"
-                      )}`}
+                    ? "Tất cả học sinh"
+                    : `${selectedStudentIds.length} học sinh`}
                 </LewisButton>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2">
-                <input
-                  value={classroom?.name}
-                  readOnly
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600 outline-none sm:w-auto"
-                />
+              <div className="rounded-xl border border-emerald-100 bg-[#eef7ef] p-3">
+                <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+                  Lớp nhận thông báo
+                </p>
+                <p className="mt-1 text-base font-bold text-slate-950">
+                  {classroom?.name}
+                </p>
+                {selectedStudents.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {selectedStudents.slice(0, 5).map((member) => (
+                      <span
+                        key={member.id}
+                        className="rounded-full border border-emerald-200 bg-white px-3 py-1 text-xs font-bold text-emerald-800"
+                      >
+                        {member.user?.name || member.user?.email}
+                      </span>
+                    ))}
+                    {selectedStudents.length > 5 && (
+                      <span className="rounded-full border border-emerald-200 bg-white px-3 py-1 text-xs font-bold text-emerald-800">
+                        +{selectedStudents.length - 5}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="mx-auto mt-2">
@@ -498,58 +629,61 @@ export default function Stream() {
           <section className="detail-panel space-y-4 p-5">
             <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-950">
               <MegaphoneIcon className="h-5 w-5 text-emerald-700" />
-              {t("streamComponent.allNoti")}
+              Thông báo của lớp {classroom?.name}
             </h2>
-            {classroom?.creatorId === user?.id && (
-              <div className="w-full flex justify-between items-center">
-                {classroom?.creatorId === user?.id && (
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox"
-                      checked={
-                        selectedNotificationIds.length ===
-                        classroom?.notifications.length
-                      }
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          const allIds = classroom?.notifications?.map(
-                            (n) => n.id
-                          );
-                          setSelectedNotificationIds(allIds ?? []);
-                        } else {
-                          setSelectedNotificationIds([]);
-                        }
-                      }}
-                    />
-                    <span className="text-sm">
-                      {t("streamComponent.chooseAll")}
-                    </span>
-                  </div>
-                )}
-                <span
-                  onClick={handleDeleteNotification}
-                  role="button"
-                  className="text-sm font-medium text-red-600 transition hover:text-red-700"
+            {classroom?.creatorId === user?.id && visibleNotifications.length > 0 && (
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-[#f7fbf7] px-3 py-2">
+                <button
+                  type="button"
+                  className="inline-flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-emerald-50 hover:text-emerald-800"
+                  onClick={() => {
+                    if (selectedNotificationIds.length === visibleNotifications.length) {
+                      setSelectedNotificationIds([]);
+                    } else {
+                      setSelectedNotificationIds(
+                        visibleNotifications.map((n) => n.id)
+                      );
+                    }
+                  }}
                 >
-                  {t("delete")}
-                </span>
+                  <CheckCheck className="h-4 w-4" />
+                  {selectedNotificationIds.length === visibleNotifications.length
+                    ? "Bỏ chọn"
+                    : "Chọn tất cả"}
+                </button>
+                <button
+                  type="button"
+                  disabled={selectedNotificationIds.length === 0}
+                  onClick={handleDeleteNotification}
+                  className="inline-flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Xóa đã chọn
+                </button>
               </div>
             )}
 
-            {classroom?.notifications
-              .slice()
-              .sort(
-                (a, b) =>
-                  new Date(b.createdAt).getTime() -
-                  new Date(a.createdAt).getTime()
-              )
-              ?.map((n) => {
+            {visibleNotifications.length === 0 && (
+              <div className="rounded-xl border border-dashed border-emerald-200 bg-[#eef7ef] px-5 py-8 text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                  <Inbox className="h-5 w-5" />
+                </div>
+                <h3 className="mt-4 text-base font-bold text-slate-950">
+                  Chưa có thông báo nào
+                </h3>
+                <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-600">
+                  Khi có cập nhật mới cho lớp {classroom?.name}, nội dung sẽ
+                  xuất hiện ở đây theo thời gian mới nhất.
+                </p>
+              </div>
+            )}
+
+            {visibleNotifications.map((n) => {
                 // Kiểm tra xem người dùng có phải là người nhận thông báo này không
                 const isRecipient = n.recipients.some(
                   (recipient) =>
                     recipient.userId === user?.id ||
-                    user?.id === classroom.creatorId // currentUserId là id của người dùng hiện tại
+                    user?.id === classroom?.creatorId // currentUserId là id của người dùng hiện tại
                 );
 
                 if (!isRecipient) return null; // Nếu không phải người nhận, không hiển thị thông báo
@@ -557,7 +691,7 @@ export default function Stream() {
                 return (
                   <div
                     key={n.id}
-                    className="rounded-xl border border-slate-200 bg-white p-4 transition hover:border-emerald-100 hover:shadow-sm"
+                    className="rounded-xl border border-slate-200 bg-[#f7fbf7] p-4 transition hover:border-emerald-200 hover:shadow-sm"
                   >
                     <div className="flex justify-between items-center"></div>
                     <div className="w-full flex justify-between items-center">

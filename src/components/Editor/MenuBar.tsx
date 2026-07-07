@@ -65,15 +65,17 @@ export default function MenuBar({ editor }: { editor: Editor | null }) {
   ];
 
   return (
-    <div className="border border-green-500 rounded-md p-1 mb-1 bg-slate-50 space-x-2 z-50 flex overflow-x-auto sm:overflow-x-visible">
+    <div className="z-50 flex gap-1 overflow-x-auto rounded-t-xl border border-emerald-200 bg-[#eef7ef] p-1.5 shadow-sm sm:overflow-x-visible">
       {Options?.map((option, index) => {
         const Icon = option.icon;
         return (
           <button
             key={index}
             onClick={option.onClick}
-            className={`p-2 rounded-md hover:bg-slate-200 transition ${
-              option.pressed ? "text-green font-bold" : "text-gray-700"
+            className={`cursor-pointer rounded-lg p-2 transition ${
+              option.pressed
+                ? "bg-emerald-700 text-white shadow-sm"
+                : "text-slate-600 hover:bg-white hover:text-emerald-800"
             }`}
           >
             <Icon className="size-4" />
