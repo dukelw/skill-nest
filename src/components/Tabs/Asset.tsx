@@ -585,22 +585,25 @@ export default function Asset() {
         <ModalBody className="modal-body-pad">
           {/* Step 1: Show type selection */}
           {showTypeSelection ? (
-            <div className="grid gap-3">
+            <div className="grid gap-3 sm:grid-cols-3">
               <Button
+                color="none"
                 onClick={() => handleTypeSelection("HOMEWORK")}
-                className="h-12 w-full justify-start rounded-xl border border-emerald-200 bg-[#f7fbf7] px-4 text-left font-bold text-slate-900 hover:bg-emerald-50"
+                className="h-24 w-full flex-col items-start justify-between rounded-xl border border-emerald-200 bg-[#f7fbf7] px-4 py-4 text-left font-bold text-slate-900 shadow-sm hover:border-emerald-300 hover:bg-emerald-50"
               >
                 {t("assetsComponent.homework")}
               </Button>
               <Button
+                color="none"
                 href={`/quiz-creatory/${classroomId}`}
-                className="h-12 w-full justify-start rounded-xl border border-emerald-200 bg-[#f7fbf7] px-4 text-left font-bold text-slate-900 hover:bg-emerald-50"
+                className="h-24 w-full flex-col items-start justify-between rounded-xl border border-emerald-200 bg-[#f7fbf7] px-4 py-4 text-left font-bold text-slate-900 shadow-sm hover:border-emerald-300 hover:bg-emerald-50"
               >
                 {t("assetsComponent.quiz")}
               </Button>
               <Button
+                color="none"
                 onClick={() => handleTypeSelection("DOCUMENT")}
-                className="h-12 w-full justify-start rounded-xl border border-emerald-200 bg-[#f7fbf7] px-4 text-left font-bold text-slate-900 hover:bg-emerald-50"
+                className="h-24 w-full flex-col items-start justify-between rounded-xl border border-emerald-200 bg-[#f7fbf7] px-4 py-4 text-left font-bold text-slate-900 shadow-sm hover:border-emerald-300 hover:bg-emerald-50"
               >
                 {t("assetsComponent.document")}
               </Button>
@@ -658,7 +661,7 @@ export default function Asset() {
         </ModalBody>
         <ModalFooter className="modal-footer-actions">
           {showTypeSelection ? (
-            <Button className="bg-green" onClick={() => setIsModalOpen(false)}>
+            <Button color="none" className="h-10 rounded-lg border border-emerald-200 bg-[#f7fbf7] px-4 text-sm font-bold text-emerald-800 hover:bg-emerald-50" onClick={() => setIsModalOpen(false)}>
               {t("cancel")}
             </Button>
           ) : (
