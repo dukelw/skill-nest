@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Modal, ModalHeader, ModalBody, Label } from "~/components/ui/primitives";
+import {
+  Label,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from "~/components/ui/primitives";
 import LewisButton from "~/components/Partial/LewisButton";
 import LewisTextInput from "../Partial/LewisTextInput";
 import { useAuthStore } from "~/store/authStore";
@@ -18,6 +24,9 @@ const initialValues = {
   link: "",
 };
 
+const labelClass =
+  "text-xs font-semibold uppercase tracking-wide text-slate-600";
+
 export default function MeetingModal({
   openModal,
   setOpenModal,
@@ -31,7 +40,7 @@ export default function MeetingModal({
   const { user } = useAuthStore();
   const client = useStreamVideoClient();
   const [values, setValues] = useState(initialValues);
-  const [callDetail, setCallDetail] = useState<Call>();
+  const [, setCallDetail] = useState<Call>();
   const [showScheduleResult, setShowScheduleResult] = useState<null | string>(
     null
   );
@@ -46,9 +55,7 @@ export default function MeetingModal({
         return;
       }
       const finalCode =
-        customCode.trim() !== ""
-          ? customCode
-          : crypto.randomUUID().slice(0, 12);
+        customCode.trim() !== "" ? customCode : crypto.randomUUID().slice(0, 12);
       const call = client.call("default", finalCode);
       if (!call) throw new Error("Failed to create meeting");
       const startsAt =
@@ -67,20 +74,22 @@ export default function MeetingModal({
       if (!values.description) {
         router.push(`/meeting/${call.id}`);
       }
-      toast.success("Meeting Created");
+      toast.success("Meeting created");
     } catch (error) {
       console.error(error);
-      toast.error("Failed to create Meeting");
+      toast.error("Failed to create meeting");
     }
   };
 
   const handleJoinMeeting = async () => {
-    const callType = "default";
+    if (!joinCode.trim()) {
+      toast.warning("Please enter a meeting code");
+      return;
+    }
 
-    client?.call(callType, joinCode);
+    client?.call("default", joinCode);
     setOpenModal(null);
     setJoinCode("");
-    setOpenModal(null);
     router.push(`/meeting/${joinCode}`);
   };
 
@@ -111,7 +120,7 @@ export default function MeetingModal({
         },
       });
 
-      toast.success("Meeting Scheduled");
+      toast.success("Meeting scheduled");
       setOpenModal(null);
       setScheduleCode("");
       setScheduleDate("");
@@ -125,12 +134,7 @@ export default function MeetingModal({
 
   const formatCode = (input: string) => {
     const raw = input.replace(/[^A-Z0-9]/gi, "").toUpperCase();
-    return (
-      raw
-        .match(/.{1,4}/g)
-        ?.join("-")
-        .slice(0, 14) || ""
-    );
+    return raw.match(/.{1,4}/g)?.join("-").slice(0, 14) || "";
   };
 
   useEffect(() => {
@@ -142,7 +146,6 @@ export default function MeetingModal({
 
   return (
     <>
-      {/* Modal: Bắt đầu cuộc họp */}
       <Modal
         show={openModal === "new"}
         onClose={() => {
@@ -151,27 +154,24 @@ export default function MeetingModal({
           setCustomCode("");
         }}
       >
-        <ModalHeader className="bg-green-500 text-white">
-          Start a New Meeting
+        <ModalHeader>
+          <div>
+            <h2>Start a new meeting</h2>
+            <p className="mt-1 text-xs font-medium text-slate-500">
+              Open a room now or create a custom invitation code.
+            </p>
+          </div>
         </ModalHeader>
-        <ModalBody className="space-y-4 text-black">
-          {" "}
-          {/* text màu đen */}
+        <ModalBody className="space-y-4">
           {!createType && (
-            <div className="flex flex-col gap-2">
-              <LewisButton
-                lewisSize="full"
-                onClick={() => {
-                  setCreateType("now");
-                  handleStartMeeting();
-                }}
-              >
+            <div className="grid gap-2">
+              <LewisButton lewisSize="full" onClick={handleStartMeeting}>
                 Start Now
               </LewisButton>
               <LewisButton
                 lewisSize="full"
+                variant="outlined"
                 onClick={() => setCreateType("custom")}
-                className="bg-gray-200 text-black hover:bg-gray-300"
               >
                 Generate My Own Code
               </LewisButton>
@@ -179,25 +179,31 @@ export default function MeetingModal({
           )}
           {createType === "custom" && (
             <div className="space-y-2">
-              <Label className="text-green" htmlFor="custom-code">
-                Enter 12-character code (e.g. ABC1-DE2F-3GH4)
+              <Label className={labelClass} htmlFor="custom-code">
+                Meeting code
               </Label>
               <LewisTextInput
-                className="mt-1"
                 id="custom-code"
                 value={customCode}
                 onChange={(e) => setCustomCode(formatCode(e.target.value))}
                 placeholder="ABC1-DE2F-3GH4"
               />
-              <LewisButton lewisSize="full" onClick={handleStartMeeting}>
-                Create Meeting
-              </LewisButton>
+              <p className="text-xs text-slate-500">
+                Use 12 letters or numbers. We will format it for readability.
+              </p>
             </div>
           )}
         </ModalBody>
+        {createType === "custom" && (
+          <ModalFooter>
+            <LewisButton variant="outlined" onClick={() => setCreateType(null)}>
+              Back
+            </LewisButton>
+            <LewisButton onClick={handleStartMeeting}>Create Meeting</LewisButton>
+          </ModalFooter>
+        )}
       </Modal>
 
-      {/* Modal: Tham gia cuộc họp */}
       <Modal
         show={openModal === "join"}
         onClose={() => {
@@ -205,42 +211,48 @@ export default function MeetingModal({
           setJoinCode("");
         }}
       >
-        <ModalHeader className="bg-green-500 text-white">
-          Join Meeting
+        <ModalHeader>
+          <div>
+            <h2>Join meeting</h2>
+            <p className="mt-1 text-xs font-medium text-slate-500">
+              Paste a meeting code from your teacher or classmate.
+            </p>
+          </div>
         </ModalHeader>
-        <ModalBody className="space-y-4">
-          <Label className="text-green" htmlFor="join-code">
-            Invitation Code or Link
+        <ModalBody className="space-y-2">
+          <Label className={labelClass} htmlFor="join-code">
+            Invitation code or link
           </Label>
           <LewisTextInput
-            className="mt-1"
             id="join-code"
             value={joinCode}
             onChange={(e) => setJoinCode(e.target.value)}
             placeholder="Paste your code or link here"
           />
-          <LewisButton
-            space={false}
-            lewisSize="full"
-            onClick={handleJoinMeeting}
-          >
-            Join Now
-          </LewisButton>
         </ModalBody>
+        <ModalFooter>
+          <LewisButton variant="outlined" onClick={() => setOpenModal(null)}>
+            Cancel
+          </LewisButton>
+          <LewisButton onClick={handleJoinMeeting}>Join Now</LewisButton>
+        </ModalFooter>
       </Modal>
 
-      {/* Modal: Đặt lịch cuộc họp */}
       <Modal show={openModal === "schedule"} onClose={() => setOpenModal(null)}>
-        <ModalHeader className="bg-green-500 text-white">
-          Schedule a Meeting
-        </ModalHeader>
-        <ModalBody className="space-y-4 text-black">
+        <ModalHeader>
           <div>
-            <Label className="text-green" htmlFor="schedule-code">
-              Enter Meeting Code
+            <h2>Schedule a meeting</h2>
+            <p className="mt-1 text-xs font-medium text-slate-500">
+              Pick a code and time for your upcoming session.
+            </p>
+          </div>
+        </ModalHeader>
+        <ModalBody className="space-y-4">
+          <div className="space-y-2">
+            <Label className={labelClass} htmlFor="schedule-code">
+              Meeting code
             </Label>
             <LewisTextInput
-              className="mt-1"
               id="schedule-code"
               value={scheduleCode}
               onChange={(e) => setScheduleCode(formatCode(e.target.value))}
@@ -248,57 +260,64 @@ export default function MeetingModal({
             />
           </div>
 
-          <div>
-            <Label className="text-green" htmlFor="schedule-date">
-              Select Date
-            </Label>
-            <LewisTextInput
-              className="mt-1"
-              id="schedule-date"
-              type="date"
-              value={scheduleDate}
-              onChange={(e) => setScheduleDate(e.target.value)}
-            />
-          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label className={labelClass} htmlFor="schedule-date">
+                Date
+              </Label>
+              <LewisTextInput
+                id="schedule-date"
+                type="date"
+                value={scheduleDate}
+                onChange={(e) => setScheduleDate(e.target.value)}
+              />
+            </div>
 
-          <div>
-            <Label className="text-green" htmlFor="schedule-time">
-              Select Time
-            </Label>
-            <LewisTextInput
-              className="mt-1"
-              id="schedule-time"
-              type="time"
-              value={scheduleTime}
-              onChange={(e) => setScheduleTime(e.target.value)}
-            />
+            <div className="space-y-2">
+              <Label className={labelClass} htmlFor="schedule-time">
+                Time
+              </Label>
+              <LewisTextInput
+                id="schedule-time"
+                type="time"
+                value={scheduleTime}
+                onChange={(e) => setScheduleTime(e.target.value)}
+              />
+            </div>
           </div>
-
-          <LewisButton
-            space={false}
-            lewisSize="full"
-            onClick={handleScheduleMeeting}
-          >
-            Schedule
-          </LewisButton>
         </ModalBody>
+        <ModalFooter>
+          <LewisButton variant="outlined" onClick={() => setOpenModal(null)}>
+            Cancel
+          </LewisButton>
+          <LewisButton onClick={handleScheduleMeeting}>Schedule</LewisButton>
+        </ModalFooter>
       </Modal>
 
       <Modal
         show={showScheduleResult !== null}
         onClose={() => setShowScheduleResult(null)}
       >
-        <ModalHeader className="bg-green-500 text-white">
-          Meeting Scheduled Successfully
-        </ModalHeader>
-        <ModalBody className="space-y-4">
-          <div className="text-center">
-            <p className="mb-2">Your meeting code:</p>
-            <div className="font-bold text-lg">{showScheduleResult}</div>
+        <ModalHeader>
+          <div>
+            <h2>Meeting scheduled successfully</h2>
+            <p className="mt-1 text-xs font-medium text-slate-500">
+              Share this code with invited students.
+            </p>
           </div>
+        </ModalHeader>
+        <ModalBody>
+          <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-4 text-center">
+            <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+              Meeting code
+            </p>
+            <div className="mt-2 text-lg font-bold text-slate-950">
+              {showScheduleResult}
+            </div>
+          </div>
+        </ModalBody>
+        <ModalFooter>
           <LewisButton
-            space={false}
-            lewisSize="full"
             onClick={() => {
               navigator.clipboard.writeText(showScheduleResult!);
               toast.success("Code copied to clipboard");
@@ -306,7 +325,7 @@ export default function MeetingModal({
           >
             Copy Code
           </LewisButton>
-        </ModalBody>
+        </ModalFooter>
       </Modal>
     </>
   );

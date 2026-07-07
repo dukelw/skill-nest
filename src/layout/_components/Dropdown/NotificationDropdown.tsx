@@ -51,7 +51,7 @@ export default function NotificationDropdown({
 
   return (
     <div
-      className="relative mx-2 cursor-pointer flex items-center"
+      className="relative mx-1 flex cursor-pointer items-center"
       onClick={() => {
         if (isMobile) {
           openModal();
@@ -61,8 +61,8 @@ export default function NotificationDropdown({
       }}
       ref={ref}
     >
-      <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 transition hover:bg-white/18">
-        <FiBell className="text-white" size={22} />
+      <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-100 hover:text-slate-950">
+        <FiBell size={18} />
       </span>
       {unreadCount > 0 && (
         <Badge
@@ -74,15 +74,15 @@ export default function NotificationDropdown({
       )}
 
       {showDropdown && (
-        <div className="absolute right-0 top-full z-50 mt-3 w-100 overflow-hidden rounded-2xl border border-emerald-100 bg-white text-black shadow-2xl shadow-emerald-950/15">
-          <div className="flex items-center justify-between border-b border-emerald-100 bg-[#0d5b49] px-4 py-3 font-semibold text-white">
+        <div className="absolute right-0 top-full z-50 mt-3 w-100 overflow-hidden rounded-lg border border-slate-200 bg-white text-slate-900 shadow-xl shadow-slate-900/10">
+          <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-4 py-3 font-semibold text-slate-950">
             <div className="flex items-center">
               <BellIcon className="w-5 h-5 inline-block mr-2" />
               {t("notifications")}
             </div>
             <div className="flex items-center gap-1 ml-2">
               <button
-                className="text-white-500 text-xs hover:underline"
+                className="cursor-pointer text-xs font-medium text-emerald-700 hover:underline"
                 onClick={(e) => {
                   e.stopPropagation();
                   markAllAsRead();
@@ -91,7 +91,7 @@ export default function NotificationDropdown({
                 {t("markAllAsRead")}
               </button>
               <button
-                className="text-red-600 text-xs hover:underline ml-1"
+                className="ml-1 cursor-pointer text-xs font-medium text-red-600 hover:underline"
                 onClick={(e) => {
                   e.stopPropagation();
                   deleteAll();

@@ -32,12 +32,23 @@ export default function NotificationModal({
   const { t } = useTranslation();
 
   return (
-    <Modal show={show} onClose={onClose}>
-      <ModalHeader className="bg-green-500 text-white">
-        <BellIcon className="w-5 h-5 inline-block mr-2" />
-        {t("notifications")}
+    <Modal show={show} onClose={onClose} size="lg">
+      <ModalHeader className="modal-titlebar">
+        <div className="flex items-center gap-3">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700">
+            <BellIcon className="h-4 w-4" />
+          </span>
+          <div>
+            <h2 className="text-base font-semibold text-slate-950">
+              {t("notifications")}
+            </h2>
+            <p className="mt-1 text-xs font-normal text-slate-500">
+              Classroom announcements and updates.
+            </p>
+          </div>
+        </div>
       </ModalHeader>
-      <ModalBody className="p-0 max-h-[70vh] overflow-y-auto">
+      <ModalBody className="max-h-[70vh] overflow-y-auto p-0">
         {announcements.length > 0 ? (
           announcements
             .sort(
@@ -48,7 +59,7 @@ export default function NotificationModal({
             .map((a, index) => (
               <div
                 key={index}
-                className={`flex items-start px-4 py-2 gap-2 border-b text-sm cursor-pointer hover:bg-gray-100 ${
+                className={`flex cursor-pointer items-start gap-3 border-b border-slate-100 px-5 py-3 text-sm transition hover:bg-slate-50 ${
                   a?.isRead ? "opacity-60" : ""
                 }`}
                 onClick={() => {
@@ -69,12 +80,14 @@ export default function NotificationModal({
                   size="sm"
                   alt="avatar"
                 />
-                <div className="flex-1">
-                  <p className="text-green font-bold">
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-emerald-800">
                     {a?.announcement?.title}
                   </p>
-                  <p className="text-gray-800">{a?.announcement?.content}</p>
-                  <div className="text-xs text-gray-500 mt-1">
+                  <p className="mt-1 text-slate-700">
+                    {a?.announcement?.content}
+                  </p>
+                  <div className="mt-2 text-xs text-slate-500">
                     {(() => {
                       const createdAt = a?.announcement?.createdAt;
                       return createdAt && !isNaN(Date.parse(createdAt))

@@ -14,17 +14,22 @@ export default function ActionCard({
   onClick?: () => void;
 }) {
   return (
-    <div
-      className={`p-4 rounded-xl text-white cursor-pointer flex flex-col gap-4 min-h-[140px] ${bg}`}
+    <button
+      type="button"
+      className="group flex min-h-[132px] w-full cursor-pointer flex-col gap-4 rounded-lg border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
       onClick={onClick}
     >
-      <div className="bg-black/20 rounded-lg w-10 h-10 flex items-center justify-center">
+      <div
+        className={`flex h-10 w-10 items-center justify-center rounded-lg ${bg}`}
+      >
         {icon}
       </div>
       <div>
-        <h3 className="text-lg font-bold">{title}</h3>
-        <p className="text-sm opacity-80">{description}</p>
+        <h3 className="text-base font-bold text-slate-950 transition group-hover:text-emerald-800">
+          {title}
+        </h3>
+        <p className="mt-1 text-sm text-slate-500">{description}</p>
       </div>
-    </div>
+    </button>
   );
 }

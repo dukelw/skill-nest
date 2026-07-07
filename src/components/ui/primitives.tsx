@@ -25,9 +25,9 @@ export function Button({ color, variant, size, className, href, children, ...pro
   const mappedSize = size === "xs" ? "sm" : size === "md" || size === "xl" ? "default" : size;
   const colorClass =
     color === "red"
-      ? "bg-red-600 hover:bg-red-700"
+      ? "bg-red-600 text-white hover:bg-red-700 hover:text-white"
       : color === "blue"
-        ? "bg-blue-600 hover:bg-blue-700"
+        ? "bg-blue-600 text-white hover:bg-blue-700 hover:text-white"
         : "";
   const buttonClass = cn(colorClass, className);
   if (href) {
@@ -47,7 +47,7 @@ export function Navbar({
   ...props
 }: React.HTMLAttributes<HTMLElement> & { fluid?: boolean }) {
   return (
-    <nav className={cn("w-full border-b border-slate-200 bg-white/95", className)} {...props}>
+    <nav className={cn("flex min-h-14 w-full items-center border-b border-slate-200 bg-white/95 px-4 text-slate-900 shadow-sm", className)} {...props}>
       {children}
     </nav>
   );
@@ -180,7 +180,7 @@ export function Modal({
     <Dialog.Root open={!!show} onOpenChange={(open) => !open && onClose?.()}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-slate-950/45 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[90vh] w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl focus:outline-none">
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[90vh] w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-slate-200 bg-white text-slate-900 shadow-xl focus:outline-none">
           {children}
           <Dialog.Close className="absolute right-4 top-4 rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
             <X className="h-4 w-4" />
@@ -194,17 +194,17 @@ export function Modal({
 export function ModalHeader({ className, children }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <Dialog.Title asChild>
-      <div className={cn("border-b border-slate-100 px-6 py-4 pr-12", className)}>{children}</div>
+      <div className={cn("border-b border-slate-200 bg-white px-5 py-4 pr-12 text-base font-semibold text-slate-950", className?.replace(/bg-\S+|text-white/g, ""))}>{children}</div>
     </Dialog.Title>
   );
 }
 
 export function ModalBody({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("px-6 py-5", className)} {...props} />;
+  return <div className={cn("px-5 py-5 text-slate-800", className)} {...props} />;
 }
 
 export function ModalFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("flex justify-end gap-2 border-t border-slate-100 bg-slate-50 px-6 py-4", className)} {...props} />;
+  return <div className={cn("flex justify-end gap-2 border-t border-slate-200 bg-slate-50 px-5 py-4", className)} {...props} />;
 }
 
 export function Dropdown({
@@ -227,13 +227,13 @@ export function Dropdown({
         {renderTrigger ? (
           renderTrigger()
         ) : (
-          <button className={cn("inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium transition hover:bg-slate-100", className)}>
+          <button className={cn("inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-950", className)}>
             {label}
           </button>
         )}
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
-        <DropdownMenu.Content align="end" sideOffset={8} className="z-50 min-w-44 overflow-hidden rounded-lg border border-slate-200 bg-white p-1 shadow-xl">
+        <DropdownMenu.Content align="end" sideOffset={8} className="z-50 min-w-44 overflow-hidden rounded-lg border border-slate-200 bg-white p-1 text-slate-800 shadow-xl">
           {children}
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
@@ -248,7 +248,7 @@ export function DropdownItem({
   children,
 }: React.HTMLAttributes<HTMLDivElement> & { href?: string }) {
   const content = (
-    <span className={cn("flex w-full items-center rounded-md px-3 py-2 text-sm text-slate-700 transition hover:bg-emerald-50 hover:text-emerald-900", className)}>
+    <span className={cn("flex w-full items-center rounded-md px-3 py-2 text-sm text-slate-700 transition hover:bg-emerald-50 hover:text-emerald-900", className?.replace(/text-white|hover:bg-white/g, ""))}>
       {children}
     </span>
   );
@@ -304,9 +304,9 @@ export function Tabs({
           <button
             key={item.key ?? index}
             className={cn(
-              "rounded-t-lg border-b-2 px-4 py-3 text-sm font-medium transition",
+              "rounded-t-lg border-b-2 px-4 py-2.5 text-sm font-semibold transition",
               active === index
-                ? "border-emerald-700 bg-emerald-700 text-white"
+                ? "border-emerald-700 bg-emerald-50 text-emerald-800"
                 : "border-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-900"
             )}
             onClick={() => {

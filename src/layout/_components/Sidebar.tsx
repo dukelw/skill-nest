@@ -27,20 +27,20 @@ const Sidebar = ({
       return (
         <Link className="block" href={item.href} key={index}>
           <button
-            className={`group flex h-12 w-full items-center rounded-2xl px-3 text-sm font-semibold transition-all duration-200 ${
+            className={`group flex h-10 w-full cursor-pointer items-center rounded-lg px-3 text-sm font-semibold transition-colors ${
               isOpen ? "justify-start" : "justify-center"
             } ${
               isActive
-                ? "bg-white text-emerald-900 shadow-lg shadow-emerald-950/15"
-                : "text-emerald-50/86 hover:bg-white/10 hover:text-white"
+                ? "bg-emerald-50 text-emerald-800"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-950"
             }`}
             onClick={onItemClick}
           >
             <span
-              className={`flex h-9 w-9 items-center justify-center rounded-xl transition ${
+              className={`flex h-8 w-8 items-center justify-center rounded-lg transition ${
                 isActive
-                  ? "bg-emerald-50 text-emerald-700"
-                  : "bg-white/6 text-emerald-50 group-hover:bg-white/12"
+                  ? "bg-white text-emerald-700 shadow-sm"
+                  : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-slate-800"
               }`}
             >
               <Icon className="h-4 w-4" />
@@ -53,17 +53,17 @@ const Sidebar = ({
 
   return (
     <aside
-      className={`hidden h-full flex-col overflow-hidden rounded-[28px] border border-white/10 bg-[#043a31]/95 text-white shadow-[0_24px_70px_rgba(3,47,39,0.26)] backdrop-blur-xl transition-all duration-300 md:flex ${
+      className={`hidden h-full flex-col overflow-hidden rounded-lg border border-slate-200 bg-white text-slate-900 shadow-sm transition-all duration-300 md:flex ${
         isOpen ? "w-64" : "w-20"
       }`}
     >
       <div className={`flex h-20 items-center ${isOpen ? "justify-between px-4" : "justify-center"}`}>
         <Link href="/" className={`flex items-center ${isOpen ? "gap-3" : "gap-0"}`}>
-          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/12 shadow-inner shadow-white/10">
-            <Image src="/logo-white.png" alt="Skill Nest" width={38} height={38} />
+          <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-emerald-50 shadow-sm">
+            <Image src="/logo.png" alt="Skill Nest" width={36} height={36} />
           </span>
           {isOpen && (
-            <span className="text-lg font-bold leading-tight text-white">
+            <span className="text-lg font-bold leading-tight text-slate-950">
               Skill Nest
             </span>
           )}
@@ -71,7 +71,7 @@ const Sidebar = ({
         {isOpen && (
           <button
             onClick={toggleSidebar}
-            className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/8 text-white transition hover:bg-white/14"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
             aria-label="Toggle sidebar"
           >
             <FaBars />
@@ -82,7 +82,7 @@ const Sidebar = ({
       {!isOpen && (
         <button
           onClick={toggleSidebar}
-          className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/8 text-white transition hover:bg-white/14"
+          className="mx-auto mb-3 flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
           aria-label="Toggle sidebar"
         >
           <FaBars />
@@ -92,11 +92,11 @@ const Sidebar = ({
       <nav className="flex-1 space-y-2 px-3 pb-5">{renderItems()}</nav>
 
       {isOpen && (
-        <div className="m-3 rounded-3xl border border-white/10 bg-white/8 p-4">
-          <p className="text-xs font-semibold uppercase text-emerald-100">
+        <div className="m-3 rounded-lg border border-emerald-100 bg-emerald-50 p-4">
+          <p className="text-xs font-semibold uppercase text-emerald-800">
             Learning hub
           </p>
-          <p className="mt-1 text-xs text-emerald-50/70">
+          <p className="mt-1 text-xs text-slate-600">
             Organize classes, tasks, meetings, and courses in one flow.
           </p>
         </div>
@@ -108,9 +108,9 @@ const Sidebar = ({
           open={isOpen}
           onClose={toggleSidebar}
           position="left"
-          className="z-40 mt-[72px] w-72 bg-[#043a31]"
+          className="z-40 mt-[72px] w-72 bg-white"
         >
-          <div className="h-full bg-[#043a31] p-4">{renderItems(toggleSidebar)}</div>
+          <div className="h-full bg-white p-4">{renderItems(toggleSidebar)}</div>
         </Drawer>
       </div>
     </aside>

@@ -122,29 +122,33 @@ const AppNavbar = () => {
   }, []);
 
   return (
-    <header className="flex h-[68px] items-center rounded-[28px] border border-white/12 bg-[#064638]/92 px-4 text-white shadow-[0_18px_50px_rgba(4,54,45,0.2)] backdrop-blur-xl">
+    <header className="flex min-h-14 items-center rounded-lg border border-slate-200 bg-white px-4 text-slate-900 shadow-sm">
       <div className="hidden md:block">
-        <p className="text-xs font-medium text-emerald-100/75">Workspace</p>
-        <h1 className="text-base font-semibold leading-tight">{t("home")}</h1>
+        <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+          Workspace
+        </p>
+        <h1 className="text-base font-semibold leading-tight text-slate-950">
+          {t("home")}
+        </h1>
       </div>
 
       <div className="ml-auto flex items-center gap-2">
         <button
-          className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-white/16 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+          className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-800 shadow-sm transition hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-200"
           onClick={() => setOpenSelectModal(true)}
           aria-label="Create or join"
         >
-          <Plus className="h-5 w-5" />
+          <Plus className="h-4 w-4" />
         </button>
         <Dropdown
           arrowIcon={false}
           label={
-            <span className="flex h-11 items-center rounded-2xl border border-white/10 bg-white/10 px-4 text-sm font-semibold text-white transition hover:bg-white/16">
+            <span className="flex h-9 items-center rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
               {i18n?.language?.toUpperCase()}
             </span>
           }
           inline
-          className="text-white"
+          className="text-slate-700"
         >
           <DropdownItem
             className={` ${currentLang === "en" ? "text-green font-bold" : ""}`}

@@ -22,9 +22,19 @@ const MeetingPage = () => {
 
   if (!call)
     return (
-      <p className="text-center text-3xl font-bold text-white">
-        Call Not Found
-      </p>
+      <main className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
+        <div className="rounded-lg border border-slate-200 bg-white px-8 py-6 text-center shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+            Meeting
+          </p>
+          <h1 className="mt-2 text-2xl font-semibold text-slate-950">
+            Call not found
+          </h1>
+          <p className="mt-2 text-sm text-slate-500">
+            The meeting may have ended or the link is no longer available.
+          </p>
+        </div>
+      </main>
     );
 
   const notAllowed =

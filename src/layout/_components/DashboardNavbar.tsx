@@ -72,9 +72,9 @@ const AppNavbar = () => {
   }, []);
 
   return (
-    <Navbar className="bg-dark-green" fluid>
+    <Navbar className="border-b border-slate-200 bg-white text-slate-900" fluid>
       <Image
-        src="/logo-white.png"
+        src="/logo.png"
         alt="Skill Nest Logo"
         className="block md:hidden"
         width={40}
@@ -87,12 +87,12 @@ const AppNavbar = () => {
         <div className="flex items-center space-x-2">
           <NavbarBrand href="/">
             <Image
-              src="/logo-white.png"
+              src="/logo.png"
               alt="Skill Nest Logo"
               width={40}
               height={40}
             />
-            <span className="ml-2 self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+            <span className="ml-2 self-center whitespace-nowrap text-sm font-bold uppercase tracking-wide text-slate-900">
               {t("home")}
             </span>
           </NavbarBrand>
@@ -102,12 +102,12 @@ const AppNavbar = () => {
         <Dropdown
           arrowIcon={false}
           label={
-            <span className="text-white font-medium">
+            <span className="font-semibold text-slate-700">
               {i18n?.language?.toUpperCase()}
             </span>
           }
           inline
-          className="text-white"
+          className="text-slate-700"
         >
           <DropdownItem
             className={` ${currentLang === "en" ? "text-green font-bold" : ""}`}

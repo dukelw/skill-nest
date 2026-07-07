@@ -119,11 +119,11 @@ const AppNavbar = () => {
   }, []);
 
   return (
-    <Navbar className="bg-dark-green" fluid>
+    <Navbar className="border-b border-slate-200 bg-white text-slate-900" fluid>
       <div className="flex items-center space-x-2">
         <NavbarBrand href={`/course/${course?.id}`}>
-          <ChevronLeft className="w-5 h-5 text-white dark:text-white" />
-          <span className="ml-2 self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+          <ChevronLeft className="h-5 w-5 text-slate-600" />
+          <span className="ml-2 self-center whitespace-nowrap text-sm font-bold text-slate-900">
             {course?.title}
           </span>
         </NavbarBrand>
@@ -131,9 +131,7 @@ const AppNavbar = () => {
 
       <div className="flex md:order-2 space-x-2">
         <Button
-          className="w-10 h-10 text-white text-2xl bg-green-700 hover:bg-green-800 
-             focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full 
-             text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 mr-4"
+          className="mr-2 h-9 w-9 rounded-lg bg-emerald-700 text-lg text-white hover:bg-emerald-800 hover:text-white"
           onClick={() => setOpenSelectModal(true)}
         >
           +
@@ -141,12 +139,12 @@ const AppNavbar = () => {
         <Dropdown
           arrowIcon={false}
           label={
-            <span className="text-white font-medium">
+            <span className="font-semibold text-slate-700">
               {i18n?.language?.toUpperCase()}
             </span>
           }
           inline
-          className="text-white"
+          className="text-slate-700"
         >
           <DropdownItem
             className={` ${currentLang === "en" ? "text-green font-bold" : ""}`}
