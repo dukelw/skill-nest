@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import { uploadService } from "~/services/uploadService";
 import useUserAnnouncements from "~/hooks/useUserAnnouncements";
 import { useCourseStore } from "~/store/courseStore";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Languages } from "lucide-react";
 import NotificationModal from "./Modal/NotificationModal";
 import JoinClassroomModal from "./Modal/JoinClassroomModal";
 import CreateClassroomModal from "./Modal/CreateClassroomModal";
@@ -119,7 +119,7 @@ const AppNavbar = () => {
   }, []);
 
   return (
-    <Navbar className="border-b border-slate-200 bg-white text-slate-900" fluid>
+    <Navbar className="border-b border-emerald-100 bg-[#f7fbf7] text-slate-900" fluid>
       <div className="flex items-center space-x-2">
         <NavbarBrand href={`/course/${course?.id}`}>
           <ChevronLeft className="h-5 w-5 text-slate-600" />
@@ -139,7 +139,12 @@ const AppNavbar = () => {
         <Dropdown
           arrowIcon={false}
           label={
-            <span className="font-semibold text-slate-700">
+            <span
+              title="Change language"
+              aria-label="Change language"
+              className="flex h-10 items-center gap-2 rounded-full border border-emerald-100 bg-[#eef7ef] px-3 text-[14px] font-bold text-slate-700 transition hover:bg-[#dcf5e2] hover:text-emerald-700"
+            >
+              <Languages className="h-4 w-4" />
               {i18n?.language?.toUpperCase()}
             </span>
           }
@@ -150,13 +155,13 @@ const AppNavbar = () => {
             className={` ${currentLang === "en" ? "text-green font-bold" : ""}`}
             onClick={() => handleChangeLanguage("en")}
           >
-            🇬🇧 English
+            EN English
           </DropdownItem>
           <DropdownItem
             className={`${currentLang === "vi" ? "text-green font-bold" : ""}`}
             onClick={() => handleChangeLanguage("vi")}
           >
-            🇻🇳 Tiếng Việt
+            VI Vietnamese
           </DropdownItem>
         </Dropdown>
         <NotificationDropdown

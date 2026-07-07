@@ -16,6 +16,7 @@ import useUserAnnouncements from "~/hooks/useUserAnnouncements";
 import NotificationModal from "./Modal/NotificationModal";
 import NotificationDropdown from "./Dropdown/NotificationDropdown";
 import UserDropdown from "./Dropdown/UserDropdown";
+import { Languages } from "lucide-react";
 
 const AppNavbar = () => {
   const { i18n, t } = useTranslation();
@@ -102,7 +103,12 @@ const AppNavbar = () => {
         <Dropdown
           arrowIcon={false}
           label={
-            <span className="font-semibold text-slate-700">
+            <span
+              title="Change language"
+              aria-label="Change language"
+              className="flex h-10 items-center gap-2 rounded-full border border-emerald-100 bg-[#eef7ef] px-3 text-[14px] font-bold text-slate-700 transition hover:bg-[#dcf5e2] hover:text-emerald-700"
+            >
+              <Languages className="h-4 w-4" />
               {i18n?.language?.toUpperCase()}
             </span>
           }
@@ -113,13 +119,13 @@ const AppNavbar = () => {
             className={` ${currentLang === "en" ? "text-green font-bold" : ""}`}
             onClick={() => handleChangeLanguage("en")}
           >
-            🇬🇧 English
+            EN English
           </DropdownItem>
           <DropdownItem
             className={`${currentLang === "vi" ? "text-green font-bold" : ""}`}
             onClick={() => handleChangeLanguage("vi")}
           >
-            🇻🇳 Tiếng Việt
+            VI Vietnamese
           </DropdownItem>
         </Dropdown>
         <NotificationDropdown

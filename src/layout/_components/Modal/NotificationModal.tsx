@@ -35,14 +35,14 @@ export default function NotificationModal({
     <Modal show={show} onClose={onClose} size="lg">
       <ModalHeader className="modal-titlebar">
         <div className="flex items-center gap-3">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700">
+          <span className="flex h-11 w-11 items-center justify-center rounded-full border border-emerald-100 bg-[#eaf6ec] text-emerald-700">
             <BellIcon className="h-4 w-4" />
           </span>
           <div>
-            <h2 className="text-base font-semibold text-slate-950">
+            <h2 className="text-[18px] font-bold text-slate-950">
               {t("notifications")}
             </h2>
-            <p className="mt-1 text-xs font-normal text-slate-500">
+            <p className="mt-1 text-[13px] font-normal text-slate-600">
               Classroom announcements and updates.
             </p>
           </div>
@@ -59,7 +59,7 @@ export default function NotificationModal({
             .map((a, index) => (
               <div
                 key={index}
-                className={`flex cursor-pointer items-start gap-3 border-b border-slate-100 px-5 py-3 text-sm transition hover:bg-slate-50 ${
+                className={`flex cursor-pointer items-start gap-3 border-b border-emerald-100 px-5 py-4 text-[15px] transition hover:bg-[#eef7ef] ${
                   a?.isRead ? "opacity-60" : ""
                 }`}
                 onClick={() => {
@@ -87,7 +87,7 @@ export default function NotificationModal({
                   <p className="mt-1 text-slate-700">
                     {a?.announcement?.content}
                   </p>
-                  <div className="mt-2 text-xs text-slate-500">
+                  <div className="mt-2 text-[13px] text-slate-500">
                     {(() => {
                       const createdAt = a?.announcement?.createdAt;
                       return createdAt && !isNaN(Date.parse(createdAt))

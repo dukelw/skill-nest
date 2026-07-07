@@ -7,7 +7,7 @@ import { classroomService } from "~/services/classroomService";
 import { useAuthStore } from "~/store/authStore";
 import { useClassroomStore } from "~/store/classroomStore";
 import Link from "next/link";
-import { BookOpenCheck, LockKeyhole, Users } from "lucide-react";
+import { BookOpenCheck, GraduationCap, LockKeyhole, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Loader from "~/components/Partial/Loader";
 import EmptyState from "~/components/EmptyState";
@@ -62,11 +62,48 @@ export default function Classroom() {
   }
 
   return (
-    <div className="p-6">
+    <div className="space-y-5 p-6">
       <Breadcrumb aria-label="Breadcrumb" className="mb-4">
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
         <BreadcrumbItem href="/classroom">Classroom</BreadcrumbItem>
       </Breadcrumb>
+
+      <section className="rounded-2xl border border-emerald-100 bg-[#f2fbf4] p-6 shadow-sm">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-[13px] font-bold uppercase tracking-wider text-emerald-700">
+              Learning spaces
+            </p>
+            <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">
+              Your classrooms
+            </h1>
+            <p className="mt-2 max-w-3xl text-[15px] leading-7 text-slate-700">
+              Keep every joined class, stream, people list, assignment, and
+              gradebook within a calm learning dashboard.
+            </p>
+          </div>
+          <div className="grid min-w-[280px] grid-cols-2 gap-3">
+            <div className="rounded-xl border border-emerald-100 bg-[#eaf6ec] p-4">
+              <GraduationCap className="h-5 w-5 text-emerald-700" />
+              <p className="mt-3 text-2xl font-bold text-slate-950">
+                {studentClassrooms.length}
+              </p>
+              <p className="text-[13px] font-semibold text-slate-600">Classes</p>
+            </div>
+            <div className="rounded-xl border border-emerald-100 bg-[#eaf6ec] p-4">
+              <Users className="h-5 w-5 text-emerald-700" />
+              <p className="mt-3 text-2xl font-bold text-slate-950">
+                {studentClassrooms.reduce(
+                  (total, classroom) => total + (classroom.members?.length || 0),
+                  0
+                )}
+              </p>
+              <p className="text-[13px] font-semibold text-slate-600">Members</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {studentClassrooms?.map((classroom) => (
           <Link
@@ -89,16 +126,16 @@ export default function Classroom() {
                 {classroom.members?.length || 0}
               </div>
             </div>
-            <div className="space-y-3 p-5">
+            <div className="space-y-4 p-5">
               <div>
-                <h5 className="truncate text-base font-semibold text-slate-950">
+                <h5 className="line-clamp-2 text-[18px] font-bold text-slate-950">
                   {classroom.name}
                 </h5>
-                <p className="mt-1 text-xs font-medium uppercase tracking-wide text-emerald-700">
+                <p className="mt-2 inline-flex rounded-full border border-emerald-100 bg-[#eaf6ec] px-2.5 py-1 text-[13px] font-bold uppercase tracking-wide text-emerald-700">
                   {classroom.code}
                 </p>
               </div>
-              <div className="flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500">
+              <div className="flex items-center justify-between border-t border-emerald-100 pt-3 text-[13px] text-slate-600">
                 <span>{t("teachingPage.created")}</span>
                 <span className="font-medium text-slate-700">
                   {new Date(classroom.createdAt).toLocaleDateString("en-GB")}

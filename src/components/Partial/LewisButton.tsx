@@ -12,10 +12,10 @@ type LewisButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "col
 };
 
 const sizeClasses = {
-  xsmall: "text-xs min-w-10",
-  small: "text-xs min-w-14",
-  medium: "text-sm min-w-20",
-  large: "text-sm min-w-28",
+  xsmall: "text-[13px] min-w-10",
+  small: "text-[14px] min-w-16",
+  medium: "text-[15px] min-w-24",
+  large: "text-[15px] min-w-32",
   full: "w-full",
 };
 
@@ -32,7 +32,7 @@ const getColorClasses = (
   hoverColor: string
 ) => {
   if (variant === "outlined") {
-    return `border border-emerald-200 text-emerald-800 bg-white/80 hover:bg-emerald-50 hover:!bg-emerald-50`;
+    return `border border-emerald-200 text-emerald-800 bg-[#eef7ef] hover:bg-[#dcf5e2] hover:!bg-[#dcf5e2]`;
   }
 
   if (color === "black") {

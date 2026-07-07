@@ -18,7 +18,7 @@ import JoinClassroomModal from "./Modal/JoinClassroomModal";
 import NotificationModal from "./Modal/NotificationModal";
 import NotificationDropdown from "./Dropdown/NotificationDropdown";
 import UserDropdown from "./Dropdown/UserDropdown";
-import { Plus } from "lucide-react";
+import { Languages, Plus } from "lucide-react";
 
 const AppNavbar = () => {
   const { i18n, t } = useTranslation();
@@ -124,17 +124,17 @@ const AppNavbar = () => {
   return (
     <header className="app-header flex h-16 items-center px-6">
       <div className="hidden md:block">
-        <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">
+        <p className="text-[13px] font-medium uppercase tracking-wide text-slate-600">
           Workspace
         </p>
-        <h1 className="text-base font-semibold leading-tight text-slate-950">
+        <h1 className="text-[17px] font-bold leading-tight text-slate-950">
           {t("home")}
         </h1>
       </div>
 
       <div className="ml-auto flex items-center gap-2">
         <button
-          className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-[#baeac6] bg-[#f2fbf4] text-[#257a35] transition hover:bg-[#dcf5e2] focus:outline-none focus:ring-2 focus:ring-[#baeac6]"
+          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border border-[#baeac6] bg-[#eef7ef] text-[#257a35] transition hover:bg-[#dcf5e2] focus:outline-none focus:ring-2 focus:ring-[#baeac6]"
           onClick={() => setOpenSelectModal(true)}
           aria-label="Create or join"
         >
@@ -143,7 +143,12 @@ const AppNavbar = () => {
         <Dropdown
           arrowIcon={false}
           label={
-            <span className="flex h-9 items-center rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:bg-[#f7faf8]">
+            <span
+              title="Change language"
+              aria-label="Change language"
+              className="flex h-10 items-center gap-2 rounded-full border border-emerald-100 bg-[#eef7ef] px-3 text-[14px] font-bold text-slate-700 transition hover:bg-[#dcf5e2] hover:text-emerald-700"
+            >
+              <Languages className="h-4 w-4" />
               {i18n?.language?.toUpperCase()}
             </span>
           }
@@ -154,13 +159,13 @@ const AppNavbar = () => {
             className={` ${currentLang === "en" ? "text-green font-bold" : ""}`}
             onClick={() => handleChangeLanguage("en")}
           >
-            🇬🇧 English
+            EN English
           </DropdownItem>
           <DropdownItem
             className={`${currentLang === "vi" ? "text-green font-bold" : ""}`}
             onClick={() => handleChangeLanguage("vi")}
           >
-            🇻🇳 Tiếng Việt
+            VI Vietnamese
           </DropdownItem>
         </Dropdown>
         <NotificationDropdown

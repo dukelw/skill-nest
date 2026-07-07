@@ -29,7 +29,7 @@ const Sidebar = ({
       return (
         <Link className="block" href={item.href} key={index}>
           <button
-            className={`group flex min-h-9 w-full cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-1.5 text-[13px] font-medium transition-colors ${
+            className={`group flex min-h-10 w-full cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-[14px] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-200 ${
               isOpen ? "justify-start" : "justify-center"
             } ${
               isActive
@@ -65,11 +65,11 @@ const Sidebar = ({
         }`}
       >
         <Link href="/" className={`flex items-center ${isOpen ? "gap-3" : "gap-0"}`}>
-          <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm">
+          <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-emerald-100 bg-[#eef7ef] shadow-sm">
             <Image src="/logo.png" alt="Skill Nest" width={34} height={34} />
           </span>
           {isOpen && (
-            <span className="text-[15px] font-semibold leading-tight text-slate-950">
+            <span className="text-[16px] font-bold leading-tight text-slate-950">
               Skill Nest
             </span>
           )}
@@ -77,7 +77,7 @@ const Sidebar = ({
         {isOpen && (
           <button
             onClick={toggleSidebar}
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-[#f7faf8] hover:text-slate-900"
+            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border border-emerald-100 bg-[#eef7ef] text-slate-600 transition hover:bg-[#dcf5e2] hover:text-slate-900"
             aria-label="Toggle sidebar"
           >
             <Menu className="h-4 w-4" />
@@ -88,7 +88,7 @@ const Sidebar = ({
       {!isOpen && (
         <button
           onClick={toggleSidebar}
-          className="mx-auto mt-4 flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-[#f7faf8] hover:text-slate-900"
+          className="mx-auto mt-4 flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border border-emerald-100 bg-[#eef7ef] text-slate-600 transition hover:bg-[#dcf5e2] hover:text-slate-900"
           aria-label="Toggle sidebar"
         >
           <Menu className="h-4 w-4" />
@@ -99,10 +99,10 @@ const Sidebar = ({
 
       {isOpen && (
         <div className="mx-4 mb-5 rounded-lg border border-[#dcf5e2] bg-[#f2fbf4] p-4">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-[#257a35]">
+          <p className="text-[13px] font-semibold uppercase tracking-wide text-[#257a35]">
             Learning hub
           </p>
-          <p className="mt-1 text-xs leading-5 text-slate-500">
+          <p className="mt-1 text-[13px] leading-6 text-slate-600">
             Organize classes, tasks, meetings, and courses in one flow.
           </p>
         </div>

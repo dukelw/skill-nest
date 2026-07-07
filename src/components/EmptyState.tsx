@@ -28,27 +28,29 @@ export default function EmptyState({
   compact = false,
 }: EmptyStateProps) {
   const actionClass =
-    "inline-flex h-9 items-center justify-center rounded-lg bg-[#1e5028] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#257a35]";
+    "inline-flex h-10 items-center justify-center rounded-lg bg-[#1e5028] px-5 text-[15px] font-semibold text-white shadow-sm transition hover:bg-[#257a35]";
 
   return (
     <section
-      className={`relative overflow-hidden rounded-lg border border-[#dcf5e2] bg-white text-center shadow-sm ${
+      className={`relative overflow-hidden rounded-lg border border-[#dcf5e2] bg-[#f7fbf7] text-center shadow-sm ${
         compact
           ? "p-6"
           : "flex min-h-[calc(100vh-8rem)] items-center justify-center p-8 sm:p-10"
       }`}
     >
-      <div className="absolute inset-0 bg-[#fbfdfb]" />
-      <div className="relative mx-auto flex max-w-2xl flex-col items-center">
-        <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-[#f2fbf4] text-[#257a35]">
+      <div className="absolute inset-0 bg-[#f2fbf4]" />
+      <div className="relative mx-auto flex max-w-3xl flex-col items-center px-2">
+        <div className="flex h-16 w-16 items-center justify-center rounded-lg border border-[#dcf5e2] bg-[#eaf6ec] text-[#257a35]">
           <Icon className="h-7 w-7" />
         </div>
-        <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-[#257a35]">
+        <p className="mt-5 text-[13px] font-semibold uppercase tracking-wide text-[#257a35]">
           {eyebrow}
         </p>
-        <h2 className="mt-2 text-2xl font-semibold text-[#10201d]">{title}</h2>
+        <h2 className="mt-2 max-w-3xl text-[26px] font-bold leading-tight text-[#10201d] sm:text-[30px]">
+          {title}
+        </h2>
         {description && (
-          <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600">
+          <p className="mt-3 max-w-xl text-[15px] leading-7 text-slate-700">
             {description}
           </p>
         )}
@@ -67,7 +69,7 @@ export default function EmptyState({
             {secondaryLabel && secondaryHref && (
               <Link
                 href={secondaryHref}
-                className="inline-flex h-9 items-center justify-center rounded-lg border border-[#baeac6] bg-white px-4 text-sm font-semibold text-[#257a35] shadow-sm transition hover:bg-[#f2fbf4]"
+                className="inline-flex h-10 items-center justify-center rounded-lg border border-[#baeac6] bg-[#eef7ef] px-5 text-[15px] font-semibold text-[#257a35] shadow-sm transition hover:bg-[#dcf5e2]"
               >
                 {secondaryLabel}
               </Link>

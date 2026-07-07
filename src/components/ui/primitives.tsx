@@ -21,7 +21,7 @@ export type ButtonProps = Omit<ShadButtonProps, "size" | "color"> & {
 
 export function Button({ color, variant, size, className, href, children, ...props }: ButtonProps) {
   const mappedVariant =
-    variant ?? (color === "light" || color === "gray" ? "secondary" : "default");
+    variant ?? (color === "none" ? "unstyled" : color === "light" || color === "gray" ? "secondary" : "default");
   const mappedSize = size === "xs" ? "sm" : size === "md" || size === "xl" ? "default" : size;
   const colorClass =
     color === "red"
@@ -32,7 +32,7 @@ export function Button({ color, variant, size, className, href, children, ...pro
   const buttonClass = cn(colorClass, className);
   if (href) {
     return (
-      <Link href={href} className={cn("inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-all", mappedSize === "sm" ? "h-9 px-3" : "h-11 px-5", colorClass || "bg-[#0d5b49] text-white hover:bg-[#0a493b]", buttonClass)}>
+      <Link href={href} className={cn("inline-flex items-center justify-center gap-2 rounded-lg text-[15px] font-semibold transition-all", mappedSize === "sm" ? "h-10 px-3" : "h-11 px-5", color === "none" ? "" : colorClass || "bg-[#0d5b49] text-white hover:bg-[#0a493b]", buttonClass)}>
         {children}
       </Link>
     );
@@ -47,7 +47,7 @@ export function Navbar({
   ...props
 }: React.HTMLAttributes<HTMLElement> & { fluid?: boolean }) {
   return (
-    <nav className={cn("flex min-h-14 w-full items-center border-b border-slate-200 bg-white/95 px-4 text-slate-900 shadow-sm", className)} {...props}>
+    <nav className={cn("flex min-h-14 w-full items-center border-b border-emerald-100 bg-[#f7fbf7] px-4 text-slate-900 shadow-sm", className)} {...props}>
       {children}
     </nav>
   );
@@ -180,7 +180,7 @@ export function Modal({
     <Dialog.Root open={!!show} onOpenChange={(open) => !open && onClose?.()}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-[1000] bg-slate-950/45 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-[1001] max-h-[90vh] w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-slate-200 bg-white text-slate-900 shadow-xl focus:outline-none">
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-[1001] max-h-[90vh] w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-emerald-100 bg-[#f7fbf7] text-slate-900 shadow-xl focus:outline-none">
           {children}
           <Dialog.Close className="absolute right-4 top-4 rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
             <X className="h-4 w-4" />
@@ -194,17 +194,17 @@ export function Modal({
 export function ModalHeader({ className, children }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <Dialog.Title asChild>
-      <div className={cn("border-b border-slate-200 bg-white px-5 py-4 pr-12 text-base font-semibold text-slate-950", className?.replace(/bg-\S+|text-white/g, ""))}>{children}</div>
+      <div className={cn("border-b border-emerald-100 bg-[#f7fbf7] px-5 py-5 pr-12 text-[17px] font-semibold text-slate-950", className?.replace(/bg-\S+|text-white/g, ""))}>{children}</div>
     </Dialog.Title>
   );
 }
 
 export function ModalBody({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("px-5 py-5 text-slate-800", className)} {...props} />;
+  return <div className={cn("px-5 py-5 text-[15px] text-slate-800", className)} {...props} />;
 }
 
 export function ModalFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("flex justify-end gap-2 border-t border-slate-200 bg-slate-50 px-5 py-4", className)} {...props} />;
+  return <div className={cn("flex justify-end gap-2 border-t border-emerald-100 bg-[#eef7ef] px-5 py-4", className)} {...props} />;
 }
 
 export function Dropdown({
@@ -233,7 +233,7 @@ export function Dropdown({
         )}
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
-        <DropdownMenu.Content align="end" sideOffset={8} className="z-50 min-w-44 overflow-hidden rounded-lg border border-slate-200 bg-white p-1 text-slate-800 shadow-xl">
+        <DropdownMenu.Content align="end" sideOffset={8} className="z-50 min-w-44 overflow-hidden rounded-lg border border-emerald-100 bg-[#f7fbf7] p-1 text-slate-800 shadow-xl">
           {children}
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
@@ -270,14 +270,32 @@ export function DropdownItem({
 }
 
 export function Breadcrumb({ className, children }: React.HTMLAttributes<HTMLElement>) {
-  return <nav className={cn("text-sm text-slate-500", className)}>{children}</nav>;
+  return (
+    <nav
+      className={cn(
+        "inline-flex flex-wrap items-center gap-1 rounded-xl border border-emerald-100 bg-[#f2fbf4] px-3 py-2 text-[15px] font-semibold text-slate-600 shadow-sm",
+        className
+      )}
+    >
+      {children}
+    </nav>
+  );
 }
 
 export function BreadcrumbItem({ href, children }: { href?: string; children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-2">
-      {href ? <Link className="font-medium text-slate-600 hover:text-emerald-700" href={href}>{children}</Link> : <span>{children}</span>}
-      <span className="mx-2 text-slate-300">/</span>
+    <span className="inline-flex items-center gap-1.5">
+      {href ? (
+        <Link
+          className="rounded-lg px-2 py-1 text-emerald-700 transition hover:bg-[#dcf5e2] hover:text-emerald-900"
+          href={href}
+        >
+          {children}
+        </Link>
+      ) : (
+        <span className="rounded-lg bg-[#dcf5e2] px-2 py-1 text-emerald-900">{children}</span>
+      )}
+      <span className="crumb-separator text-emerald-300">/</span>
     </span>
   );
 }
@@ -372,7 +390,7 @@ export function Select({
     <select
       value={value}
       onChange={onChange}
-      className={cn("h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 shadow-sm focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-100", className)}
+      className={cn("h-10 rounded-lg border border-emerald-100 bg-[#f7fbf7] px-3 text-[15px] text-slate-900 shadow-sm focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-100", className)}
       {...props}
     >
       {children}
@@ -410,10 +428,10 @@ export function Datepicker({
 export type DatepickerProps = React.ComponentProps<typeof Datepicker>;
 
 export function Table({ className, ...props }: React.TableHTMLAttributes<HTMLTableElement>) {
-  return <table className={cn("w-full text-left text-sm", className)} {...props} />;
+  return <table className={cn("w-full text-left text-[15px]", className)} {...props} />;
 }
 export function TableHead({ className, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) {
-  return <thead className={cn("border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500", className)} {...props} />;
+  return <thead className={cn("border-b border-emerald-100 bg-[#eaf6ec] text-[13px] uppercase text-slate-600", className)} {...props} />;
 }
 export function TableBody(props: React.HTMLAttributes<HTMLTableSectionElement>) {
   return <tbody {...props} />;

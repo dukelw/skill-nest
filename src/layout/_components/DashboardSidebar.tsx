@@ -31,13 +31,13 @@ const Sidebar = ({
         isOpen ? "w-[260px]" : "w-[84px]"
       }`}
     >
-      <div className="flex h-16 shrink-0 items-center border-b border-slate-200 px-5">
-      <button
-        onClick={toggleSidebar}
-          className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-[#f7faf8] hover:text-slate-900"
-      >
+      <div className="flex h-16 shrink-0 items-center border-b border-emerald-100 px-5">
+        <button
+          onClick={toggleSidebar}
+          className="flex h-10 w-10 items-center justify-center rounded-lg border border-emerald-100 bg-[#eef7ef] text-slate-600 transition hover:bg-[#dcf5e2] hover:text-slate-900"
+        >
           <Menu className="h-4 w-4" />
-      </button>
+        </button>
       </div>
 
       <div className="hidden flex-grow space-y-1 px-4 py-5 md:block">
@@ -48,7 +48,7 @@ const Sidebar = ({
           return (
             <Link className="cursor-pointer" href={item.href} key={index}>
               <button
-                className={`mb-1 flex min-h-9 w-full cursor-pointer items-center rounded-md px-2.5 py-1.5 text-[13px] font-medium transition-colors duration-150 ${
+                className={`mb-1 flex min-h-10 w-full cursor-pointer items-center rounded-md px-3 py-2 text-[14px] font-semibold transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-emerald-200 ${
                   isOpen ? "justify-start" : "justify-center"
                 } ${
                   isActive
@@ -81,7 +81,7 @@ const Sidebar = ({
               return (
                 <Link className="cursor-pointer" href={item.href} key={index}>
                   <button
-                    className={`mb-1 flex min-h-9 w-full items-center rounded-md px-2.5 py-1.5 text-[13px] font-medium transition-colors duration-150 ${
+                    className={`mb-1 flex min-h-10 w-full items-center rounded-md px-3 py-2 text-[14px] font-semibold transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-emerald-200 ${
                       isActive
                         ? "bg-transparent text-[#2b9a3d]"
                         : "text-slate-500 hover:bg-[#f7faf8] hover:text-slate-900"

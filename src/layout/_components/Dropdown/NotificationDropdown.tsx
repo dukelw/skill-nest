@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { Avatar, Badge } from "~/components/ui/primitives";
-import { BellIcon } from "lucide-react";
+import { BellIcon, CheckCheck, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { FiBell } from "react-icons/fi";
@@ -61,7 +61,7 @@ export default function NotificationDropdown({
       }}
       ref={ref}
     >
-      <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-100 hover:text-slate-950">
+      <span className="flex h-11 w-11 items-center justify-center rounded-full border border-emerald-100 bg-[#eef7ef] text-slate-700 transition hover:bg-[#dcf5e2] hover:text-emerald-700">
         <FiBell size={18} />
       </span>
       {unreadCount > 0 && (
@@ -74,30 +74,34 @@ export default function NotificationDropdown({
       )}
 
       {showDropdown && (
-        <div className="absolute right-0 top-full z-50 mt-3 w-100 overflow-hidden rounded-lg border border-slate-200 bg-white text-slate-900 shadow-xl shadow-slate-900/10">
-          <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-4 py-3 font-semibold text-slate-950">
+        <div className="absolute right-0 top-full z-50 mt-3 w-100 overflow-hidden rounded-lg border border-emerald-100 bg-[#f7fbf7] text-slate-900 shadow-xl shadow-slate-900/10">
+          <div className="flex items-center justify-between border-b border-emerald-100 bg-[#eef7ef] px-4 py-3 font-semibold text-slate-950">
             <div className="flex items-center">
               <BellIcon className="w-5 h-5 inline-block mr-2" />
               {t("notifications")}
             </div>
             <div className="flex items-center gap-1 ml-2">
               <button
-                className="cursor-pointer text-xs font-medium text-emerald-700 hover:underline"
+                title={t("markAllAsRead")}
+                aria-label={t("markAllAsRead")}
+                className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-emerald-100 bg-[#f7fbf7] text-emerald-700 transition hover:bg-[#dcf5e2]"
                 onClick={(e) => {
                   e.stopPropagation();
                   markAllAsRead();
                 }}
               >
-                {t("markAllAsRead")}
+                <CheckCheck className="h-4 w-4" />
               </button>
               <button
-                className="ml-1 cursor-pointer text-xs font-medium text-red-600 hover:underline"
+                title={t("deleteAll")}
+                aria-label={t("deleteAll")}
+                className="ml-1 inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-red-100 bg-red-50 text-red-600 transition hover:bg-red-100"
                 onClick={(e) => {
                   e.stopPropagation();
                   deleteAll();
                 }}
               >
-                {t("deleteAll")}
+                <Trash2 className="h-4 w-4" />
               </button>
             </div>
           </div>

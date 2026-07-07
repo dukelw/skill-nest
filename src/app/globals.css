@@ -1,8 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..800;1,14..32,400..800&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #eef7ef;
   --foreground: #111827;
 
   --text-black: #111827;
@@ -19,19 +19,19 @@
   --purple: #7c3aed;
   --blue: #2563eb;
   --light: #f2fbf4;
-  --surface: #ffffff;
-  --surface-strong: #ffffff;
-  --surface-muted: #f7faf8;
+  --surface: #f7fbf7;
+  --surface-strong: #f4faf5;
+  --surface-muted: #eaf6ec;
   --muted-text: #64748b;
   --border-soft: #e5ebe6;
-  --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.05);
-  --shadow-lift: 0 8px 20px rgba(15, 23, 42, 0.08);
+  --shadow-soft: 0 1px 2px rgba(20, 83, 45, 0.06);
+  --shadow-lift: 0 8px 20px rgba(20, 83, 45, 0.1);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --font-roboto: var(--font-roboto);
 }
@@ -131,13 +131,24 @@
 }
 
 body {
-  background: #ffffff;
+  background: var(--background) !important;
   color: var(--text-black);
-  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 16px;
+  line-height: 1.6;
   min-height: 100vh;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
+}
+
+html,
+body,
+.font-sans,
+.font-mono,
+.app-shell,
+.app-shell * {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
 }
 
 ::selection {
@@ -166,26 +177,71 @@ summary,
 
 @layer components {
   .app-shell {
-    background: #ffffff;
+    background: var(--background) !important;
   }
 
   .app-sidebar {
-    @apply border-r border-slate-200 bg-white text-slate-900;
+    @apply border-r border-emerald-100 text-slate-900;
+    background: #f7fbf7;
     box-shadow: 1px 0 0 rgba(15, 23, 42, 0.03);
   }
 
   .app-header {
-    @apply border-b border-slate-200 bg-white text-slate-900;
+    @apply border-b border-emerald-100 text-slate-900;
+    background: #f7fbf7;
     box-shadow: var(--shadow-soft);
   }
 
   .app-main {
-    background: #fbfdfb;
+    background: var(--background) !important;
+  }
+
+  .app-main .bg-white,
+  .app-main .bg-white\/80,
+  .app-main .bg-white\/88,
+  .app-main .bg-white\/90,
+  .app-main .bg-white\/95 {
+    background-color: var(--surface) !important;
+  }
+
+  .app-main .bg-slate-50,
+  .app-main .bg-gray-50 {
+    background-color: var(--surface-muted) !important;
+  }
+
+  .app-main .border-slate-200,
+  .app-main .border-slate-100 {
+    border-color: #d6e8da !important;
+  }
+
+  .app-main .text-xs {
+    font-size: 0.8125rem;
+    line-height: 1.35rem;
+  }
+
+  .app-main .text-sm {
+    font-size: 0.9375rem;
+    line-height: 1.55rem;
+  }
+
+  .app-main .text-base {
+    font-size: 1.0625rem;
+    line-height: 1.7rem;
+  }
+
+  .app-main h1 {
+    font-size: clamp(1.75rem, 2vw, 2.35rem);
+    line-height: 1.2;
+  }
+
+  .app-main h2 {
+    font-size: clamp(1.35rem, 1.4vw, 1.75rem);
+    line-height: 1.25;
   }
 
   .glass-panel {
-    background: #ffffff;
-    border: 1px solid #e4e9e5;
+    background: var(--surface);
+    border: 1px solid #d6e8da;
     box-shadow: var(--shadow-soft);
     backdrop-filter: blur(18px);
   }
@@ -195,15 +251,15 @@ summary,
   }
 
   .section-title {
-    @apply text-xl font-bold tracking-tight text-slate-950;
+    @apply text-2xl font-bold tracking-tight text-slate-950;
   }
 
   .section-kicker {
-    @apply text-xs font-semibold uppercase tracking-wider text-emerald-700;
+    @apply text-[13px] font-semibold uppercase tracking-wider text-emerald-700;
   }
 
   .card-polished {
-    border: 1px solid #e4e9e5;
+    border: 1px solid #d6e8da;
     border-radius: 10px;
     background: var(--surface-strong);
     box-shadow: var(--shadow-soft);
@@ -217,7 +273,8 @@ summary,
   }
 
   .modal-titlebar {
-    @apply border-b border-slate-100 bg-white px-6 py-4;
+    @apply border-b border-emerald-100 px-6 py-5;
+    background: #f7fbf7;
   }
 
   .modal-body-pad {
@@ -225,22 +282,30 @@ summary,
   }
 
   .modal-footer-actions {
-    @apply justify-end gap-2 border-t border-slate-100 bg-slate-50/70 px-6 py-4;
+    @apply justify-end gap-2 border-t border-emerald-100 px-6 py-4;
+    background: #eef7ef;
   }
 
   .file-input-card {
-    @apply flex w-full items-center justify-between gap-3 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-600 transition hover:border-emerald-400 hover:bg-emerald-50/50;
+    @apply flex w-full items-center justify-between gap-3 rounded-lg border border-dashed border-emerald-200 px-3 py-3 text-[15px] text-slate-700 transition hover:border-emerald-400;
+    background: #eef7ef;
   }
 
   .classroom-card {
-    @apply block overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md;
+    @apply block overflow-hidden rounded-lg border border-emerald-100 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md;
+    background: var(--surface);
   }
 
   .detail-panel {
-    @apply rounded-lg border border-slate-200 bg-white shadow-sm;
+    @apply rounded-lg border border-emerald-100 shadow-sm;
+    background: var(--surface);
   }
 
   .auth-stage {
-    background: #f8faf8;
+    background: var(--background);
+  }
+
+  nav > span:last-child .crumb-separator {
+    display: none;
   }
 }
