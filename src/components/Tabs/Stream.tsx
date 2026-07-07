@@ -375,13 +375,15 @@ export default function Stream() {
         {/* Background Image */}
         <Image
           alt="Thumbnail"
-          src={
-            classroom?.thumbnail || "/logo-bg.png"
-          }
+          src={classroom?.thumbnail || "/logo-big.png"}
           fill
-          className="object-cover"
+          className={classroom?.thumbnail ? "object-cover" : "object-contain p-8"}
         />
-        <div className="absolute inset-0 bg-black/25" />
+        <div
+          className={`absolute inset-0 ${
+            classroom?.thumbnail ? "bg-black/25" : "bg-emerald-950/10"
+          }`}
+        />
 
         {/* Classroom Name - Bottom Left */}
         <div className="absolute bottom-5 left-5 right-5">

@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 import Loader from "~/components/Partial/Loader";
 import EmptyState from "~/components/EmptyState";
 
-const DEFAULT_CLASSROOM_THUMBNAIL = "/logo-bg.png";
+const DEFAULT_CLASSROOM_THUMBNAIL = "/logo-small.png";
 
 export default function Classroom() {
   const { studentClassrooms, setStudentClassrooms } = useClassroomStore();
@@ -118,7 +118,9 @@ export default function Classroom() {
                 src={classroom.thumbnail || DEFAULT_CLASSROOM_THUMBNAIL}
                 alt={`${classroom.name} thumbnail`}
                 fill
-                className="object-cover transition duration-300 group-hover:scale-105"
+                className={`transition duration-300 group-hover:scale-105 ${
+                  classroom.thumbnail ? "object-cover" : "object-contain p-8"
+                }`}
               />
               <div className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-xs font-bold text-slate-700 shadow-sm">
                 <Users className="h-3.5 w-3.5 text-emerald-700" />

@@ -15,7 +15,7 @@ import { BookOpen, LockKeyhole, Presentation, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import EmptyState from "~/components/EmptyState";
 
-const DEFAULT_CLASSROOM_THUMBNAIL = "/logo-bg.png";
+const DEFAULT_CLASSROOM_THUMBNAIL = "/logo-small.png";
 
 export default function Teaching() {
   const { teacherClassrooms, setTeacherClassrooms } = useClassroomStore();
@@ -125,7 +125,9 @@ export default function Teaching() {
                 src={classroom.thumbnail || DEFAULT_CLASSROOM_THUMBNAIL}
                 alt={`${classroom.name} thumbnail`}
                 fill
-                className="object-cover transition duration-300 group-hover:scale-105"
+                className={`transition duration-300 group-hover:scale-105 ${
+                  classroom.thumbnail ? "object-cover" : "object-contain p-8"
+                }`}
               />
             </div>
             <div className="flex min-w-0 flex-col justify-between p-5">

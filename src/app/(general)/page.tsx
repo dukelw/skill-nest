@@ -235,12 +235,12 @@ export default function HomePage() {
       >
         <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
           <Image
-            src={
-              classroom.thumbnail || "/logo-bg.png"
-            }
+            src={classroom.thumbnail || "/logo-small.png"}
             alt={`${classroom.name} thumbnail`}
             fill
-            className="object-cover transition duration-300 group-hover:scale-105"
+            className={`transition duration-300 group-hover:scale-105 ${
+              classroom.thumbnail ? "object-cover" : "object-contain p-8"
+            }`}
           />
           <div className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-xs font-semibold text-slate-700 shadow-sm">
             <Users className="h-3.5 w-3.5 text-emerald-700" />
